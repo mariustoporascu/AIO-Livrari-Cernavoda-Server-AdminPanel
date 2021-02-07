@@ -1,0 +1,70 @@
+﻿@page
+@model CreateCategoryModel
+@{
+    ViewData["Title"] = "Edit Category";
+    var base_path = Request.PathBase;
+}
+<div class="container">
+    <h1>Edit Shop Category</h1>
+    <form method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <input asp-for="@Model.Category.CategoryId" type="hidden" />
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Input</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Name</th>
+                    <td class="form-group">
+                        <input asp-for="@Model.Category.Name" class="form-control" />
+                        <span asp-validation-for="@Model.Category.Name" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Photo</th>
+                    <td class="form-group">
+                        <input type="hidden" asp-for="@Model.Category.Photo" />
+                        @if (@Model.Category.Photo != null)
+                        {
+                            var image_path = $"{base_path}/Image/{Model.Category.Photo}";
+                            <img id="categoryphoto" style="width:150px;height:150px; object-fit:cover" src="@image_path">
+                        }
+                        else
+                        {
+                            <img id="categoryphoto" style="width:150px;height:150px; object-fit:cover" src="">
+                        }
+                        <input type="file"
+                               accept=".png,.jpg,.jpeg,.gif,.tif"
+                               asp-for="@Model.Category.Photo"
+                               class="form-control"
+                               style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+                               onchange="document.getElementById('categoryphoto').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="@Model.Category.Photo" class="text-danger"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        @if (Model.Category.Name != null)
+        {
+            <button type="submit" class="btn btn-primary" asp-route-categId="@Model.Category.CategoryId">
+                <text>Save Changes</text>
+            </button>;
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary">
+                <text>Add New Category</text>
+            </button>;
+        }
+        <a class="btn btn-warning" asp-area="AdminPanel" asp-page="/Category/Index">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

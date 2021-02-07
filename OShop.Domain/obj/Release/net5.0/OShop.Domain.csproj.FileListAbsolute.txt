@@ -1,0 +1,12 @@
+E:\prog\dev\MariusOnlineShop\OShop.Domain\bin\Release\net5.0\OShop.Domain.deps.json
+E:\prog\dev\MariusOnlineShop\OShop.Domain\bin\Release\net5.0\OShop.Domain.dll
+E:\prog\dev\MariusOnlineShop\OShop.Domain\bin\Release\net5.0\ref\OShop.Domain.dll
+E:\prog\dev\MariusOnlineShop\OShop.Domain\bin\Release\net5.0\OShop.Domain.pdb
+E:\prog\dev\MariusOnlineShop\OShop.Domain\obj\Release\net5.0\OShop.Domain.csprojAssemblyReference.cache
+E:\prog\dev\MariusOnlineShop\OShop.Domain\obj\Release\net5.0\OShop.Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\prog\dev\MariusOnlineShop\OShop.Domain\obj\Release\net5.0\OShop.Domain.AssemblyInfoInputs.cache
+E:\prog\dev\MariusOnlineShop\OShop.Domain\obj\Release\net5.0\OShop.Domain.AssemblyInfo.cs
+E:\prog\dev\MariusOnlineShop\OShop.Domain\obj\Release\net5.0\OShop.Domain.csproj.CoreCompileInputs.cache
+E:\prog\dev\MariusOnlineShop\OShop.Domain\obj\Release\net5.0\OShop.Domain.dll
+E:\prog\dev\MariusOnlineShop\OShop.Domain\obj\Release\net5.0\ref\OShop.Domain.dll
+E:\prog\dev\MariusOnlineShop\OShop.Domain\obj\Release\net5.0\OShop.Domain.pdb

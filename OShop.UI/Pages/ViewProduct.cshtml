@@ -1,0 +1,51 @@
+﻿@page
+@model ViewProductModel
+@{
+    ViewData["Title"] = @Model.Products.Name;
+    var base_path = Request.PathBase;
+}
+<h1 style="text-align:center">@Model.Categ.FirstOrDefault(categ => categ.CategoryId == Model.Products.CategoryRefId).Name / @Model.Products.Name</h1>
+<div class="container">
+    <div id="productviewleft" class="col-lg-6 col-md-6 col-sm-6">
+        <div>
+            @if (Model.Products.Photo != null)
+            {
+                var image_path = $"{base_path}/Image/{Model.Products.Photo}";
+                <img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="@image_path">
+            }
+            else
+            {
+                <img id="productphoto" src="">
+            }
+        </div>
+
+    </div>
+    <div id="productviewright" class="col-lg-6 col-md-6 col-sm-6">
+        <div style="font-size: 20px;">
+            Product Description:
+            @Model.Products.Description
+        </div>
+        <div style="font-size: 20px;">
+            @if (Model.Products.Stock > 5)
+            {<div style="color:darkblue">Availability: In Stock</div>}
+            else if (Model.Products.Stock == 0)
+            {<div style="color:darkred">Availability: Not In Stock</div>}
+            else
+            {<div style="color:darkorange">Availability: Limited Quantity</div>}
+        </div>
+        <div style="font-size: 20px;color:darkblue">
+            Unit Price: @Model.Products.Price $
+        </div>
+        <div>
+            @if (Model.Products.Stock != 0)
+            {
+            <form method="post">
+                <input type="hidden" name="ProductId" value="@Model.Products.ProductId" />
+                <input type="hidden" name="CartId" value="@Model.ShoppingCartId" />
+                <input type="hidden" name="Price" value="@Model.Products.Price" />
+                <button type="submit" class="btn btn-outline-primary btn-sm" asp-area="ShoppingCart" asp-page="/AddToCart">Add To Cart</button>
+            </form>
+            }
+        </div>
+    </div>
+</div>

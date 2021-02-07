@@ -1,0 +1,47 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Categories";
+    var base_path = Request.PathBase;
+}
+<div class="container">
+    <h1>Shop Categories</h1>
+    <h2>
+        <a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Category/CreateCategory">Add New Category</a>
+        <a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Product/Index">Go To Products</a>
+    </h2>
+
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Photo</th>
+                <th style="text-align:right">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model.Categories)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>
+                        @if (category.Photo != null)
+                        {
+                            var image_path = $"{base_path}/Image/{category.Photo}";
+                            <img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="@image_path">
+                        }
+                        else
+                        {
+                            <img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="">
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="AdminPanel" asp-page="/Category/DeleteCategory" asp-route-categId="@category.CategoryId">Remove Category</a>
+                        <a class="btn btn-primary" style="float:right" asp-area="AdminPanel" asp-page="/Category/CreateCategory" asp-route-categId="@category.CategoryId">Edit Category</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

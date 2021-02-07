@@ -1,0 +1,8 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "C:\\Users\\Bumbulica\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\Bumbulica\\.nuget\\packages"
+    ]
+  }
+}

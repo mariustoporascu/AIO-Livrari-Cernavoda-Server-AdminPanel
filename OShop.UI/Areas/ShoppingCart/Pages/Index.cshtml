@@ -1,0 +1,85 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Shopping Cart";
+    var base_path = Request.PathBase;
+}
+
+<div class="container">
+    <h1>Shopping Cart</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Photo</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.Products)
+            { var cartitem = Model.CartItems.FirstOrDefault(item => item.ProductRefId == product.ProductId);
+            <tr>
+                <td>@product.Name</td>
+                <td>@Model.Categ.FirstOrDefault(categ => categ.CategoryId == product.CategoryRefId).Name</td>
+                <td>
+                    <form id="@product.ProductId" method="post">
+                        <input type="hidden" name="ShoppingCartId" value="@Model.ShoppingCart.CartId" />
+                        <input type="hidden" name="ProductId" value="@product.ProductId" />
+                        <input type="hidden" name="ProductPrice" value="@product.Price" />
+                        <input type="hidden" name="PrevQuantity" value="@cartitem.Quantity"/>
+                        <input type="number" required min="1" max="@product.Stock" name="Quantity" value="@cartitem.Quantity" />
+                    </form>
+                </td>
+                <td>@product.Price</td>
+                <td>
+                    @if (@product.Photo != null)
+                    {
+                        var image_path = $"{base_path}/Image/{product.Photo}";
+                        <img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="@image_path">
+                    }
+                    else
+                    {
+                        <img id="productphoto" style="width:50px;height:50px; object-fit:cover" src="">
+                    }
+                </td>
+                <td>
+                    <button form="@product.ProductId" type="submit" class="btn btn-warning" asp-area="ShoppingCart" asp-page="/UpdateCartItem">Update Quantity</button>
+                    <a class="btn btn-danger" asp-area="ShoppingCart" asp-page="/RemoveCartItem" 
+                       asp-route-Quantity="@cartitem.Quantity" 
+                       asp-route-ProductPrice="@product.Price" asp-route-ProductId="@product.ProductId" 
+                       asp-route-ShoppingCartId="@Model.ShoppingCart.CartId">Remove</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>Total</td>
+                <td>Action</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>@Model.ShoppingCart.TotalInCart</td>
+                <td>
+                    <a class="btn btn-primary" asp-area="" asp-page="/Index">Continue Shopping...</a>
+                    @if (Model.CartItems.Count() > 0)
+                    {
+                        <a class="btn btn-primary" asp-area="ShoppingCart" asp-page="/Checkout">Go to checkout!</a>
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

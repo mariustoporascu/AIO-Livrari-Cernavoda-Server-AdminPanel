@@ -1,0 +1,40 @@
+﻿using OShop.Database;
+using OShop.Domain.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OShop.Application.ProductInOrders
+{
+    public class CreateProductInOrder
+    {
+        private readonly ApplicationDbContext _context;
+
+        public CreateProductInOrder(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task Do(ProductInOrdersViewModel vm)
+        {
+            _context.ProductInOrders.Add(new ProductInOrder
+            {
+                OrderRefId = vm.OrderRefId,
+                ProductRefId = vm.ProductRefId,
+                UsedQuantity = vm.UsedQuantity,
+            });
+            await _context.SaveChangesAsync();
+        }
+    }
+
+    public class ProductInOrdersViewModel
+    {
+        public int OrderRefId { get; set; }
+
+        public int ProductRefId { get; set; }
+
+        public int UsedQuantity { get; set; }
+    }
+}

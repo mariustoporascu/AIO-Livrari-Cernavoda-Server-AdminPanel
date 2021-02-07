@@ -1,0 +1,103 @@
+﻿@page
+@model CreateProductModel
+@{
+    ViewData["Title"] = "Edit Product";
+    var base_path = Request.PathBase;
+}
+<div class="container">
+    <h1>Edit Shop Product</h1>
+    <form method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <input asp-for="@Model.Product.ProductId" type="hidden" />
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Input</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Name</th>
+                    <td class="form-group">
+                        <input asp-for="@Model.Product.Name" class="form-control" />
+                        <span asp-validation-for="@Model.Product.Name" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Category</th>
+                    <td>
+                        <select asp-for="@Model.Product.CategoryRefId" class="form-control">
+                            @foreach (var category in Model.Categ)
+                            {
+                                <option value="@category.CategoryId">@category.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="@Model.Product.CategoryRefId" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>
+                        <input asp-for="@Model.Product.Description" class="form-control" />
+                        <span asp-validation-for="@Model.Product.Description" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Price</th>
+                    <td>
+                        <input min="0.01" max="10000" asp-for="@Model.Product.Price" class="form-control" />
+                        <span asp-validation-for="@Model.Product.Price" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Stock</th>
+                    <td>
+                        <input min="0" max="10000" asp-for="@Model.Product.Stock" class="form-control" />
+                        <span asp-validation-for="@Model.Product.Stock" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Photo</th>
+                    <td class="form-group">
+                        <input type="hidden" asp-for="@Model.Product.Photo" />
+                        @if (@Model.Product.Photo != null)
+                        {
+                            var image_path = $"{base_path}/Image/{Model.Product.Photo}";
+                            <img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="@image_path">
+                        }
+                        else
+                        {
+                            <img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="">
+                        }
+                        <input type="file"
+                               accept=".png,.jpg,.jpeg,.gif,.tif"
+                               asp-for="@Model.Product.Photo"
+                               class="form-control"
+                               style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+                               onchange="document.getElementById('productphoto').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="@Model.Product.Photo" class="text-danger"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        @if (Model.Product.Name != null)
+        {
+            <button type="submit" class="btn btn-primary" asp-route-productId="@Model.Product.ProductId">
+                <text>Save Changes</text>
+            </button>;
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary">
+                <text>Add New Product</text>
+            </button>;
+        }
+        <a class="btn btn-warning" asp-area="AdminPanel" asp-page="/Product/Index">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
