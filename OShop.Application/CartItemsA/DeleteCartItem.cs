@@ -10,9 +10,9 @@ namespace OShop.Application.CartItemsA
 {
     public class DeleteCartItem
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public DeleteCartItem(ApplicationDbContext context)
+        public DeleteCartItem(OnlineShopDbContext context)
         {
             _context = context;
         }

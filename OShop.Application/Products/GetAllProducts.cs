@@ -2,6 +2,8 @@
 using OShop.Database;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,15 +12,15 @@ namespace OShop.Application.Products
 {
     public class GetAllProducts
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public GetAllProducts(ApplicationDbContext context)
+        public GetAllProducts(OnlineShopDbContext context)
         {
             _context = context;
         }
 
-        public IEnumerable<ProductViewModel> Do() =>
-            _context.Products.AsNoTracking().ToList().Select(prod => new ProductViewModel
+        public IEnumerable<ProductVMUI> Do() =>
+            _context.Products.AsNoTracking().ToList().Select(prod => new ProductVMUI
             {
                 ProductId = prod.ProductId,
                 Name = prod.Name,
@@ -28,5 +30,7 @@ namespace OShop.Application.Products
                 Photo = prod.Photo,
                 CategoryRefId = prod.CategoryRefId,
             });
+        
     }
+    
 }

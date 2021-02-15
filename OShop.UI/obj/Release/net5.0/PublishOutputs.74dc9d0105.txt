@@ -64,8 +64,10 @@ E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\PubTmp\Out\Microsoft.Id
 E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.dll
 E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\PubTmp\Out\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\PubTmp\Out\Microsoft.IdentityModel.Tokens.dll
+E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\PubTmp\Out\MySqlConnector.dll
 E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\PubTmp\Out\Newtonsoft.Json.dll
 E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\PubTmp\Out\PhotoSauce.MagicScaler.dll
+E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\PubTmp\Out\Pomelo.EntityFrameworkCore.MySql.dll
 E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\PubTmp\Out\System.Configuration.ConfigurationManager.dll
 E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\PubTmp\Out\System.Diagnostics.DiagnosticSource.dll
 E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll

@@ -14,10 +14,10 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
 {
     public class UpdateCartItemModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
 
-        public UpdateCartItemModel(ApplicationDbContext context)
+        public UpdateCartItemModel(OnlineShopDbContext context)
         {
             _context = context;
         }

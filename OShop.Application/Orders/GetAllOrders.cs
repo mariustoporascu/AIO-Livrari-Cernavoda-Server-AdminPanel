@@ -10,9 +10,9 @@ namespace OShop.Application.Orders
 {
     public class GetAllOrders
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public GetAllOrders(ApplicationDbContext context)
+        public GetAllOrders(OnlineShopDbContext context)
         {
             _context = context;
         }

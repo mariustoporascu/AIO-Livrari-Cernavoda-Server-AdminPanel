@@ -10,9 +10,9 @@ namespace OShop.Application.Categories
 {
     public class DeleteCategory
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public DeleteCategory(ApplicationDbContext context)
+        public DeleteCategory(OnlineShopDbContext context)
         {
             _context = context;
         }

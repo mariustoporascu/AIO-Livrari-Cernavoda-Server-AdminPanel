@@ -11,9 +11,9 @@ namespace OShop.Application.Categories
 {
     public class UpdateCategory
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public UpdateCategory(ApplicationDbContext context)
+        public UpdateCategory(OnlineShopDbContext context)
         {
             _context = context;
         }

@@ -44,8 +44,9 @@ namespace OShop.UI.Areas.Identity.Pages.RolesManagement
             var user = await _userManager.FindByIdAsync(userId);
             UserName = user.UserName;
             ManageUserRolesVMs = new List<ManageUserRolesVM>();
+            var roles = _roleManager.Roles.ToList();
             int index = 0;
-            foreach (var role in _roleManager.Roles)
+            foreach (var role in roles)
             {
                 var manageUserRoles = new ManageUserRolesVM
                 {

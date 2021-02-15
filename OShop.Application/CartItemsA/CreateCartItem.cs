@@ -12,9 +12,9 @@ namespace OShop.Application.CartItemsA
 {
     public class CreateCartItem
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public CreateCartItem(ApplicationDbContext context)
+        public CreateCartItem(OnlineShopDbContext context)
         {
             _context = context;
         }

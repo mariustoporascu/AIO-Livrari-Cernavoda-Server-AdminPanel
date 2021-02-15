@@ -15,9 +15,9 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Category
     [Authorize(Roles = "SuperAdmin")]
     public class IndexModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public IndexModel(ApplicationDbContext context)
+        public IndexModel(OnlineShopDbContext context)
         {
             _context = context;
         }

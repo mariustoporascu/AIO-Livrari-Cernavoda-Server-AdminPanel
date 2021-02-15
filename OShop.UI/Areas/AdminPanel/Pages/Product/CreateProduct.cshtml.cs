@@ -12,23 +12,24 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Areas.AdminPanel.Pages.Product
 {
     [Authorize(Roles = "SuperAdmin")]
     public class CreateProductModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
         private readonly IFileManager _fileManager;
 
-        public CreateProductModel(ApplicationDbContext context, IFileManager fileManager)
+        public CreateProductModel(OnlineShopDbContext context, IFileManager fileManager)
         {
             _context = context;
             _fileManager = fileManager;
         }
 
         [BindProperty]
-        public ProductViewModel Product { get; set; }
+        public ProductVMUI Product { get; set; }
 
         [BindProperty]
         public IEnumerable<CategoryViewModel> Categ { get; set; }
@@ -37,11 +38,11 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
         {
             Categ = new GetAllCategories(_context).Do();
             if (productId == null)
-                Product = new ProductViewModel();
+                Product = new ProductVMUI();
             else
             {
                 var getProduct = new GetProduct(_context).Do(productId);
-                Product = new ProductViewModel
+                Product = new ProductVMUI
                 {
                     ProductId = getProduct.ProductId,
                     Name = getProduct.Name,
@@ -71,9 +72,11 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
                 {
                     Product.Photo = Product.Photo;
                 }
+
+
                 if (Product.ProductId > 0)
                 {
-                    var product = new ProductViewModel
+                    var product = new ProductVMUI
                     {
                         ProductId = Product.ProductId,
                         Name = Product.Name,
@@ -83,10 +86,10 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
                         Photo = Product.Photo,
                         CategoryRefId = Product.CategoryRefId,
                     };
-                    await new UpdateProduct(_context).Do(product);
+                    await new UpdateProduct(_context, _fileManager).Do(product);
                 }
                 else
-                    await new CreateProduct(_context).Do(Product);
+                    await new CreateProduct(_context, _fileManager).Do(Product);
                 return RedirectToPage("./Index");
             }
             return RedirectToPage("Error");

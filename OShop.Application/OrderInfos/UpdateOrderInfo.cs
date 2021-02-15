@@ -10,9 +10,9 @@ namespace OShop.Application.OrderInfos
 {
     public class UpdateOrderInfo
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public UpdateOrderInfo(ApplicationDbContext context)
+        public UpdateOrderInfo(OnlineShopDbContext context)
         {
             _context = context;
         }

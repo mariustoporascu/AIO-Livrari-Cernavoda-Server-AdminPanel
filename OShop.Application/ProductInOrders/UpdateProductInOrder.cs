@@ -10,9 +10,9 @@ namespace OShop.Application.ProductInOrders
 {
     public class UpdateProductInOrder
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public UpdateProductInOrder(ApplicationDbContext context)
+        public UpdateProductInOrder(OnlineShopDbContext context)
         {
             _context = context;
         }

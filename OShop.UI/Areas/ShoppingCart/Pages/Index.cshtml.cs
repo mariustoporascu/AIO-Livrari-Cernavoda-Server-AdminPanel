@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Areas.ShoppingCart.Pages
 {
@@ -22,12 +23,12 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public IndexModel(ILogger<IndexModel> logger, ApplicationDbContext context,
+        public IndexModel(ILogger<IndexModel> logger, OnlineShopDbContext context,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
         {
@@ -38,7 +39,7 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
             _httpContextAccessor = httpContextAccessor;
         }
         [BindProperty]
-        public IEnumerable<ProductViewModel> Products { get; set; }
+        public IEnumerable<ProductVMUI> Products { get; set; }
 
         [BindProperty]
         public IEnumerable<CategoryViewModel> Categ { get; set; }

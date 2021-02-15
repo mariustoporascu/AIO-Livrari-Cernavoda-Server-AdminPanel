@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using OShop.Application.CartItemsA;
 using OShop.Application.Categories;
+using OShop.Application.FileManager;
 using OShop.Application.OrderInfos;
 using OShop.Application.Orders;
 using OShop.Application.ProductInOrders;
@@ -17,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Areas.ShoppingCart.Pages
 {
@@ -24,13 +26,14 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
     public class PlaceOrderModel : PageModel
     {
         private readonly ILogger<PlaceOrderModel> _logger;
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IFileManager _fileManager;
 
-        public PlaceOrderModel(ILogger<PlaceOrderModel> logger, ApplicationDbContext context,
-            UserManager<ApplicationUser> userManager,
+        public PlaceOrderModel(ILogger<PlaceOrderModel> logger, OnlineShopDbContext context,
+            UserManager<ApplicationUser> userManager, IFileManager fileManager,
             SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
@@ -38,9 +41,10 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
             _userManager = userManager;
             _signInManager = signInManager;
             _httpContextAccessor = httpContextAccessor;
+            _fileManager = fileManager;
         }
 
-        public IEnumerable<ProductViewModel> Products { get; set; }
+        public IEnumerable<ProductVMUI> Products { get; set; }
 
         public IEnumerable<CategoryViewModel> Categ { get; set; }
 
@@ -69,7 +73,7 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
                     ProductRefId = cartitem.ProductRefId,
                     UsedQuantity = cartitem.Quantity,
                 });
-                await new UpdateProduct(_context).UpdateStockAfterOrder(cartitem.ProductRefId, cartitem.Quantity);
+                await new UpdateProduct(_context, _fileManager).UpdateStockAfterOrder(cartitem.ProductRefId, cartitem.Quantity);
             }
             Order.Status = "Ordered";
             Order.TotalOrdered = ShoppingCart.TotalInCart;

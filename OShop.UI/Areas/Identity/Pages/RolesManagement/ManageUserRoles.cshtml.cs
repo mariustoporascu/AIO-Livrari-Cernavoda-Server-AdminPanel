@@ -35,7 +35,7 @@ namespace OShop.UI.Areas.Identity.Pages.RolesManagement
 
         public async Task OnGet()
         {
-            var users = _userManager.Users.AsNoTracking().AsEnumerable();
+            var users = _userManager.Users.AsNoTracking().AsEnumerable().ToList();
             var userRoles = new List<UserRolesViewModel>();
             foreach (ApplicationUser user in users)
             {

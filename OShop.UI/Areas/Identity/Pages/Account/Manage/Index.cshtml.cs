@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using OShop.Application.FileManager;
 using OShop.Database;
 
 namespace OShop.UI.Areas.Identity.Pages.Account.Manage
@@ -16,13 +17,16 @@ namespace OShop.UI.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IFileManager _fileManager;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            IFileManager fileManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _fileManager = fileManager;
         }
 
         public string Username { get; set; }
@@ -48,7 +52,7 @@ namespace OShop.UI.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
             [Display(Name = "Profile Picture")]
-            public byte[] ProfilePicture { get; set; }
+            public string ProfilePicture { get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -120,11 +124,11 @@ namespace OShop.UI.Areas.Identity.Pages.Account.Manage
             if (Request.Form.Files.Count > 0)
             {
                 IFormFile file = Request.Form.Files.FirstOrDefault();
-                using (var dataStream = new MemoryStream())
+                if (!string.IsNullOrEmpty(user.ProfilePicture))
                 {
-                    await file.CopyToAsync(dataStream);
-                    user.ProfilePicture = dataStream.ToArray();
+                    _fileManager.RemoveImage(user.ProfilePicture, "ProfilePhoto");
                 }
+                user.ProfilePicture = await _fileManager.SaveImage(file, "ProfilePhoto");
                 await _userManager.UpdateAsync(user);
             }
             if (user.UsernameChangeLimit > 0)

@@ -10,9 +10,9 @@ namespace OShop.Application.ProductInOrders
 {
     public class DeleteProductInOrder
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public DeleteProductInOrder(ApplicationDbContext context)
+        public DeleteProductInOrder(OnlineShopDbContext context)
         {
             _context = context;
         }

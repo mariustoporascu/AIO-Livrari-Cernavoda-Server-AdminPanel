@@ -17,10 +17,10 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Category
     [Authorize(Roles = "SuperAdmin")]
     public class CreateCategoryModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
         private readonly IFileManager _fileManager;
 
-        public CreateCategoryModel(ApplicationDbContext context, IFileManager fileManager)
+        public CreateCategoryModel(OnlineShopDbContext context, IFileManager fileManager)
         {
             _context = context;
             _fileManager = fileManager;

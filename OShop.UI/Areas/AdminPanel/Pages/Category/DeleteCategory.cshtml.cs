@@ -14,9 +14,9 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Category
     [Authorize(Roles = "SuperAdmin")]
     public class DeleteCategoryModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public DeleteCategoryModel(ApplicationDbContext context)
+        public DeleteCategoryModel(OnlineShopDbContext context)
         {
             _context = context;
         }

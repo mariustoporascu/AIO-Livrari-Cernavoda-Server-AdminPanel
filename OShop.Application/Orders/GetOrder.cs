@@ -10,9 +10,9 @@ namespace OShop.Application.Orders
 {
     public class GetOrder
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public GetOrder(ApplicationDbContext context)
+        public GetOrder(OnlineShopDbContext context)
         {
             _context = context;
         }
@@ -35,7 +35,7 @@ namespace OShop.Application.Orders
 
         public OrderViewModel Do(int orderId, string status)
         {
-            var order = _context.Orders.AsNoTracking().FirstOrDefault(order => order.OrderId == orderId && order.Status == status);
+            var order = _context.Orders.AsNoTracking().FirstOrDefault(order => order.OrderId == orderId && order.Status == status || order.OrderId == orderId);
             if (order == null)
                 return null;
             else

@@ -14,15 +14,16 @@ using OShop.Application.Products;
 using OShop.Application.Orders;
 using OShop.Domain.Models;
 using OShop.Application.ProductInOrders;
+using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Areas.Identity.Pages.Account.Manage
 {
     public partial class OrdersModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public OrdersModel(ApplicationDbContext context,
+        public OrdersModel(OnlineShopDbContext context,
             UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
@@ -32,7 +33,7 @@ namespace OShop.UI.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public IEnumerable<OrderViewModel> Orders { get; set; }
         [BindProperty]
-        public IEnumerable<ProductViewModel> Products { get; set; }
+        public IEnumerable<ProductVMUI> Products { get; set; }
         [BindProperty]
         public IEnumerable<ProductInOrdersViewModel> ProductInOrders { get; set; }
 
@@ -43,7 +44,8 @@ namespace OShop.UI.Areas.Identity.Pages.Account.Manage
             if(orderId != -1)
             {
                 ProductInOrders = new GetAllProductInOrder(_context).Do(Orders.FirstOrDefault(order => order.OrderId == orderId).OrderId);
-                Products = new GetAllProducts(_context).Do().Where(prod => ProductInOrders.Select(product => product.ProductRefId).Contains(prod.ProductId));
+                Products = new GetAllProducts(_context).Do()
+                    .Where(prod => ProductInOrders.Select(product => product.ProductRefId).Contains(prod.ProductId));
             }     
         }
 

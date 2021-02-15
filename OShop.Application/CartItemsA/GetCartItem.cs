@@ -10,9 +10,9 @@ namespace OShop.Application.CartItemsA
 {
     public class GetCartItem
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public GetCartItem(ApplicationDbContext context)
+        public GetCartItem(OnlineShopDbContext context)
         {
             _context = context;
         }

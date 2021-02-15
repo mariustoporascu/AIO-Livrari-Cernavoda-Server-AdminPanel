@@ -6,22 +6,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.Application.Products
 {
     public class GetProduct
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public GetProduct(ApplicationDbContext context)
+        public GetProduct(OnlineShopDbContext context)
         {
             _context = context;
         }
 
-        public ProductViewModel Do(int? productId)
+        public ProductVMUI Do(int? productId)
         {
             var product = _context.Products.AsNoTracking().FirstOrDefault(prod => prod.ProductId == productId);
-            return new ProductViewModel
+            return new ProductVMUI
             {
                 ProductId = product.ProductId,
                 Name = product.Name,

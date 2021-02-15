@@ -11,9 +11,9 @@ namespace OShop.Application.Categories
 {
     public class GetCategory
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public GetCategory(ApplicationDbContext context)
+        public GetCategory(OnlineShopDbContext context)
         {
             _context = context;
         }

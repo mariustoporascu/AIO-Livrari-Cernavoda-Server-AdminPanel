@@ -12,9 +12,9 @@ namespace OShop.Application.ShoppingCarts
 {
     public class CreateShoppingCart
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public CreateShoppingCart(ApplicationDbContext context)
+        public CreateShoppingCart(OnlineShopDbContext context)
         {
             _context = context;
         }

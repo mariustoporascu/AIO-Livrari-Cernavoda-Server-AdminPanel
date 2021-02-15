@@ -161,3 +161,7 @@ E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\Razor\Areas\Identity\Pa
 E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\Razor\Areas\Identity\Pages\RolesManagement\ModifyUserRoles.cshtml.g.cs
 E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\Razor\Areas\Identity\Pages\RolesManagement\RemoveRole.cshtml.g.cs
 E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\Razor\Areas\Identity\Pages\RolesManagement\_ViewImports.cshtml.g.cs
+E:\prog\dev\MariusOnlineShop\OShop.UI\bin\Release\net5.0\MySqlConnector.dll
+E:\prog\dev\MariusOnlineShop\OShop.UI\bin\Release\net5.0\Pomelo.EntityFrameworkCore.MySql.dll
+E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\Razor\Areas\AdminPanel\Pages\OrderInfo.cshtml.g.cs
+E:\prog\dev\MariusOnlineShop\OShop.UI\obj\Release\net5.0\Razor\Areas\AdminPanel\Pages\OrderManage.cshtml.g.cs

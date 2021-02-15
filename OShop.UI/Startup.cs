@@ -14,6 +14,10 @@ using OShop.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OShop.Application.FileManager;
+using Microsoft.AspNetCore.Http;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Pomelo.EntityFrameworkCore.MySql.Storage;
+using MySql.Data.MySqlClient;
 
 namespace OShop.UI
 {
@@ -29,7 +33,10 @@ namespace OShop.UI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<OnlineShopDbContext>(options => options.UseMySql(Configuration
+                .GetConnectionString("DefaultConnection")));
+
+                //.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
@@ -37,11 +44,10 @@ namespace OShop.UI
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
             })
-                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddEntityFrameworkStores<OnlineShopDbContext>()
                     .AddDefaultUI()
                     .AddDefaultTokenProviders();
             services.AddTransient<IFileManager, FileManager>();
-            services.AddControllersWithViews();
             services.AddRazorPages()
                 .AddMvcOptions(option => 
                 option.CacheProfiles.Add("MonthlyRazor", new CacheProfile { Duration = 60 * 60 * 24 * 7 * 4 }));

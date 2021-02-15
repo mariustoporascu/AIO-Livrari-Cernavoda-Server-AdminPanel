@@ -11,9 +11,9 @@ namespace OShop.Application.OrderInfos
 {
     public class CreateOrderInfo
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public CreateOrderInfo(ApplicationDbContext context)
+        public CreateOrderInfo(OnlineShopDbContext context)
         {
             _context = context;
         }

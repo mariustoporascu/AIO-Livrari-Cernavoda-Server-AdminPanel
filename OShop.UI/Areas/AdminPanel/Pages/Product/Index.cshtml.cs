@@ -9,21 +9,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Areas.AdminPanel.Pages.Product
 {
     [Authorize(Roles = "SuperAdmin")]
     public class IndexModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public IndexModel(ApplicationDbContext context)
+        public IndexModel(OnlineShopDbContext context)
         {
             _context = context;
         }
 
         [BindProperty]
-        public IEnumerable<ProductViewModel> Products { get; set; }
+        public IEnumerable<ProductVMUI> Products { get; set; }
 
         [BindProperty]
         public IEnumerable<CategoryViewModel> Categ { get; set; }

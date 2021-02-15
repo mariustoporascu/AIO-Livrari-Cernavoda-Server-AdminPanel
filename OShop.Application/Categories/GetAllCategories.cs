@@ -11,9 +11,9 @@ namespace OShop.Application.Categories
 {
     public class GetAllCategories
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public GetAllCategories(ApplicationDbContext context)
+        public GetAllCategories(OnlineShopDbContext context)
         {
             _context = context;
         }

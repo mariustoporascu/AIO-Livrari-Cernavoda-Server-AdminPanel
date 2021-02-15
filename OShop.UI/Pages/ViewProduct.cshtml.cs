@@ -13,17 +13,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Pages
 {
     [AllowAnonymous]
     public class ViewProductModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ViewProductModel(ApplicationDbContext context, 
+        public ViewProductModel(OnlineShopDbContext context, 
             UserManager<ApplicationUser> userManager,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -33,7 +34,7 @@ namespace OShop.UI.Pages
         }
 
         [BindProperty]
-        public ProductViewModel Products { get; set; }
+        public ProductVMUI Products { get; set; }
 
         [BindProperty]
         public IEnumerable<CategoryViewModel> Categ { get; set; }

@@ -13,10 +13,10 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
 {
     public class RemoveCartItemModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
 
-        public RemoveCartItemModel(ApplicationDbContext context)
+        public RemoveCartItemModel(OnlineShopDbContext context)
         {
             _context = context;
         }

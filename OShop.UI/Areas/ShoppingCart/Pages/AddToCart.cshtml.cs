@@ -17,16 +17,16 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
 {
     public class AddToCartModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
 
-        public AddToCartModel(ApplicationDbContext context)
+        public AddToCartModel(OnlineShopDbContext context)
         {
             _context = context;
         }
 
         [BindProperty]
-        public ProductViewModel Products { get; set; }
+        public ProductVMUI Products { get; set; }
 
         [BindProperty]
         public ShoppingCartViewModel ShoppingCart { get; set; }

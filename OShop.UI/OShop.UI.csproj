@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>9f0738da-b7c6-4253-a94c-10257a8beec6</UserSecretsId>
   </PropertyGroup>
 
@@ -39,9 +39,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\content\categoryphoto\*.*" CopyToPublishDirectory="Never" />
-    <Content Update="wwwroot\content\productphoto\*.*" CopyToPublishDirectory="Never" />
-    <Content Update="wwwroot\content\userprofilephoto\*.*" CopyToPublishDirectory="Never" />
+    <Content Update="wwwroot\content\categoryphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+    <Content Update="wwwroot\content\productphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+    <Content Update="wwwroot\content\userprofilephoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\content\categoryphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="wwwroot\content\productphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="wwwroot\content\userprofilephoto\*.*" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
   
   <ItemGroup>
@@ -49,5 +55,5 @@
     <Folder Include="wwwroot\content\productphoto\" />
     <Folder Include="wwwroot\content\userprofilephoto\" />
   </ItemGroup>
-
+  
 </Project>

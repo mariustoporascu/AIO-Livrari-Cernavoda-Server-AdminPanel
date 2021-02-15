@@ -11,9 +11,9 @@ namespace OShop.Application.Categories
 {
     public class CreateCategory
     {
-        private readonly ApplicationDbContext _context;
+        private readonly OnlineShopDbContext _context;
 
-        public CreateCategory(ApplicationDbContext context)
+        public CreateCategory(OnlineShopDbContext context)
         {
             _context = context;
         }
