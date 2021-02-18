@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using OShop.Database;
-using System.Threading.Tasks;
-using OShop.Application.Products;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
+using OShop.Application.Products;
+using OShop.Database;
+using System.Threading.Tasks;
 
 namespace OShop.ReactUI.Controllers
 {
@@ -29,9 +25,10 @@ namespace OShop.ReactUI.Controllers
 
         [HttpGet("getproduct/{productId}")]
         public IActionResult GetProduct(int productId) => Ok();
-        
+
         [HttpPost("createproduct")]
-        public async Task<IActionResult> AddProductAsync([FromForm] ProductVMReactUI vm) {
+        public async Task<IActionResult> AddProductAsync([FromForm] ProductVMReactUI vm)
+        {
             if (ModelState.IsValid)
             {
                 await new CreateProduct(_context, _fileManager).DoReact(vm);
@@ -41,7 +38,8 @@ namespace OShop.ReactUI.Controllers
         }
 
         [HttpPut("updateproduct")]
-        public async Task<IActionResult> UpdateProductAsync([FromForm] ProductVMReactUI vm) {
+        public async Task<IActionResult> UpdateProductAsync([FromForm] ProductVMReactUI vm)
+        {
             if (ModelState.IsValid)
             {
                 await new UpdateProduct(_context, _fileManager).DoReact(vm);
@@ -50,13 +48,13 @@ namespace OShop.ReactUI.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("deleteproduct/{productId}")]
-        public async Task<IActionResult> RemoveProductAsync(int productId)
+        [HttpDelete("deleteproduct/{name}")]
+        public async Task<IActionResult> RemoveProductAsync(string name)
         {
-            await new DeleteProduct(_context, _fileManager).Do(productId);
+            await new DeleteProduct(_context, _fileManager).Do(name);
             return Ok();
         }
-        
+
         [HttpGet("getallcategories")]
         public IActionResult ManageCategories() => Ok(new GetAllCategories(_context).Do());
 

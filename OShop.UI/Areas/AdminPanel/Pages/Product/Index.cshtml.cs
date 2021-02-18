@@ -4,12 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.Categories;
 using OShop.Application.Products;
 using OShop.Database;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Areas.AdminPanel.Pages.Product
 {

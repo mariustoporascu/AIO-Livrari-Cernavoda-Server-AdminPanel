@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.FileManager;
 using OShop.Database;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OShop.UI.Areas.Identity.Pages.Account.Manage
 {
@@ -123,13 +121,21 @@ namespace OShop.UI.Areas.Identity.Pages.Account.Manage
             }
             if (Request.Form.Files.Count > 0)
             {
+                var extensionAccepted = new string[] { ".jpg", ".png", ".jpeg" };
                 IFormFile file = Request.Form.Files.FirstOrDefault();
-                if (!string.IsNullOrEmpty(user.ProfilePicture))
+                var extension = Path.GetExtension(file.FileName);
+                if (!extensionAccepted.Contains(extension.ToLower()))
+                    return RedirectToPage("/Error", new { Area = "" });
+                else
                 {
-                    _fileManager.RemoveImage(user.ProfilePicture, "ProfilePhoto");
+                    if (!string.IsNullOrEmpty(user.ProfilePicture))
+                    {
+                        _fileManager.RemoveImage(user.ProfilePicture, "ProfilePhoto");
+                    }
+                    user.ProfilePicture = await _fileManager.SaveImage(file, "ProfilePhoto");
+                    await _userManager.UpdateAsync(user);
                 }
-                user.ProfilePicture = await _fileManager.SaveImage(file, "ProfilePhoto");
-                await _userManager.UpdateAsync(user);
+
             }
             if (user.UsernameChangeLimit > 0)
             {

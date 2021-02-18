@@ -3,14 +3,11 @@ using OShop.Application.FileManager;
 using OShop.Database;
 using OShop.Domain.Models;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.Application.Products
 {
@@ -78,7 +75,7 @@ namespace OShop.Application.Products
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
 
-        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg"})]
+        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg" })]
         public IFormFile Photo { get; set; }
 
         public int CategoryRefId { get; set; }

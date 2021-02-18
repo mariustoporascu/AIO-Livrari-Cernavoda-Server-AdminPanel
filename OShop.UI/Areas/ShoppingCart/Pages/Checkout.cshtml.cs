@@ -14,29 +14,27 @@ using OShop.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Areas.ShoppingCart.Pages
 {
     [Authorize(Roles = "Customer")]
     public class CheckoutModel : PageModel
     {
-        private readonly ILogger<CheckoutModel> _logger;
+
         private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CheckoutModel(ILogger<CheckoutModel> logger, OnlineShopDbContext context,
+        public CheckoutModel( OnlineShopDbContext context,
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor)
         {
-            _logger = logger;
+
             _context = context;
             _userManager = userManager;
-            _signInManager = signInManager;
+
             _httpContextAccessor = httpContextAccessor;
         }
         [BindProperty]
@@ -101,7 +99,7 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
             var currUser = _userManager.GetUserId(User);
             Order = new GetOrder(_context).Do(currUser, "Pending");
             var orderInfo = new GetOrderInfo(_context).Do(Order.OrderId);
-            if(orderInfo == null)
+            if (orderInfo == null)
             {
                 await new CreateOrderInfo(_context).Do(new OrderInfosViewModel
                 {
@@ -114,7 +112,8 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
             }
             else
             {
-                await new UpdateOrderInfo(_context).Do(new OrderInfosViewModel {
+                await new UpdateOrderInfo(_context).Do(new OrderInfosViewModel
+                {
                     OrderInfoId = orderInfo.OrderInfoId,
                     FirstName = OrderInfos.FirstName,
                     LastName = OrderInfos.LastName,

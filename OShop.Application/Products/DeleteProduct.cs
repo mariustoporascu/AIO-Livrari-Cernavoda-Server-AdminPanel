@@ -1,10 +1,6 @@
 ﻿using OShop.Application.FileManager;
 using OShop.Database;
-using OShop.Domain.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OShop.Application.Products
@@ -20,11 +16,11 @@ namespace OShop.Application.Products
             _fileManager = fileManager;
         }
 
-        public async Task Do(int productId)
+        public async Task Do(string productName)
         {
-            var product = _context.Products.FirstOrDefault(product => product.ProductId == productId);
+            var product = _context.Products.FirstOrDefault(product => product.Name.ToLower() == productName.ToLower());
             _context.Products.Remove(product);
-            if(!string.IsNullOrEmpty(product.Photo))
+            if (!string.IsNullOrEmpty(product.Photo))
                 _fileManager.RemoveImage(product.Photo, "ProductPhoto");
             await _context.SaveChangesAsync();
         }

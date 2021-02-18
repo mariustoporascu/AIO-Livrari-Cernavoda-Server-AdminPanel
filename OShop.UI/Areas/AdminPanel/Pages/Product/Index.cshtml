@@ -52,8 +52,8 @@
                         }
                     </td>
                     <td>
-                        <a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="AdminPanel" asp-page="/Product/DeleteProduct" asp-route-productId="@product.ProductId">Remove Product</a>
-                        <a class="btn btn-primary" style="float:right" asp-area="AdminPanel" asp-page="/Product/CreateProduct" asp-route-productId="@product.ProductId">Edit Product</a>
+                        <a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="AdminPanel" asp-page="/Product/DeleteProduct" asp-route-productName="@product.Name">Remove</a>
+                        <a class="btn btn-primary" style="float:right" asp-area="AdminPanel" asp-page="/Product/CreateProduct" asp-route-productName="@product.Name">Edit</a>
                     </td>
                 </tr>
             }

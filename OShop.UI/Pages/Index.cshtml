@@ -24,17 +24,17 @@
         @if (@product.Photo != null)
         {
             var image_path = $"{base_path}/Image/{product.Photo}";
-            <a asp-area="" asp-page="/ViewProduct" asp-route-productId="@product.ProductId">
+            <a asp-area="" asp-page="/ViewProduct" asp-route-productName="@product.Name">
                 <img id="productphoto" style="width:130px;height:130px; object-fit:cover" src="@image_path">
             </a>
         }
         else
         {
-            <a asp-area="" asp-page="/ViewProduct" asp-route-productId="@product.ProductId">
+            <a asp-area="" asp-page="/ViewProduct" asp-route-productName="@product.Name">
                 <img id="productphoto" style="width:130px;height:130px; object-fit:cover" src="">
             </a>
         }
-        <a style="text-decoration:none; font-size: 20px;color:black" asp-area="" asp-page="/ViewProduct" asp-route-productId="@product.ProductId">@product.Name</a>
+        <a style="text-decoration:none; font-size: 20px;color:black" asp-area="" asp-page="/ViewProduct" asp-route-productName="@product.Name">@product.Name</a>
         <div style="font-size: 16px;color:darkblue">@product.Price $</div>
         <div style="font-size: 16px;">
             @if (product.Stock > 5)
@@ -45,7 +45,7 @@
             {<div style="color:darkorange">Limited Quantity</div>}
         </div>
         <div style="display:flex;justify-content:center">
-            <a class="btn btn-outline-success btn-sm" asp-area="" asp-page="/ViewProduct" asp-route-productId="@product.ProductId">View Details</a>
+            <a class="btn btn-outline-success btn-sm" asp-area="" asp-page="/ViewProduct" asp-route-productName="@product.Name">View Details</a>
             @if (product.Stock != 0)
             {
                 <form method="post">

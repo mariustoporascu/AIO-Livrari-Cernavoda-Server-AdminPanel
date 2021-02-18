@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OShop.Application.FileManager;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OShop.ReactUI.Controllers
 {

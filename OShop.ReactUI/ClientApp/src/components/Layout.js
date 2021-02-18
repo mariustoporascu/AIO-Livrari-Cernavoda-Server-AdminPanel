@@ -1,20 +1,17 @@
-import React, { Component } from 'react';
-import { NavMenu } from './NavMenu';
-import { ManageProducts } from './ManageProducts';
+import React, { Children, Component } from "react";
+import { NavMenu } from "./NavMenu";
+import { Container } from "reactstrap";
 
 export class Layout extends Component {
-    static displayName = Layout.name;
+  static displayName = Layout.name;
 
-    render() {
-        return (
-            <div>
-                <NavMenu />
+  render() {
+    return (
+      <div>
+        <NavMenu />
 
-                <div>
-                    <ManageProducts />
-                    
-                </div>
-            </div>
-        );
-    }
+        <Container>{this.props.children}</Container>
+      </div>
+    );
+  }
 }

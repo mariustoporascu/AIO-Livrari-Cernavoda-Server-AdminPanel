@@ -37,8 +37,8 @@
                         }
                     </td>
                     <td>
-                        <a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="AdminPanel" asp-page="/Category/DeleteCategory" asp-route-categId="@category.CategoryId">Remove Category</a>
-                        <a class="btn btn-primary" style="float:right" asp-area="AdminPanel" asp-page="/Category/CreateCategory" asp-route-categId="@category.CategoryId">Edit Category</a>
+                        <a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="AdminPanel" asp-page="/Category/DeleteCategory" asp-route-categName="@category.Name">Remove</a>
+                        <a class="btn btn-primary" style="float:right" asp-area="AdminPanel" asp-page="/Category/CreateCategory" asp-route-categId="@category.CategoryId">Edit</a>
                     </td>
                 </tr>
             }

@@ -1,19 +1,20 @@
-﻿using System;
+﻿using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Options;
 using OShop.Domain.Models;
 
 #nullable disable
 
 namespace OShop.Database
 {
-    public partial class OnlineShopDbContext : IdentityDbContext<ApplicationUser>
+    public partial class OnlineShopDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
 
-        public OnlineShopDbContext(DbContextOptions<OnlineShopDbContext> options)
-            : base(options)
+        public OnlineShopDbContext(DbContextOptions<OnlineShopDbContext> options,
+            IOptions<OperationalStoreOptions> operationalStoreOptions)
+            : base(options, operationalStoreOptions)
         {
         }
 
@@ -28,7 +29,7 @@ namespace OShop.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+
             modelBuilder.Entity<Category>().HasMany<Product>(c => c.Products)
                 .WithOne(p => p.Categories)
                 .HasForeignKey(p => p.CategoryRefId)

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -11,8 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="axios.js" Version="0.18.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.0" />
-    
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.10" />
   </ItemGroup>
 
   <ItemGroup>
@@ -51,51 +50,21 @@
     <ProjectReference Include="..\OShop.Application\OShop.Application.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="wwwroot\content\categoryphoto\categoryphoto_img_01-02-2021-21-29-01.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\categoryphoto\categoryphoto_img_02-02-2021-07-18-42.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\categoryphoto\categoryphoto_img_07-02-2021-15-44-13.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\categoryphoto\categoryphoto_img_07-02-2021-15-44-17.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\categoryphoto\categoryphoto_img_07-02-2021-15-44-22.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\categoryphoto\categoryphoto_img_07-02-2021-15-44-27.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\categoryphoto\categoryphoto_img_07-02-2021-15-44-32.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\productphoto\productphoto_img_02-02-2021-08-17-23.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\productphoto\productphoto_img_02-02-2021-08-17-29.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\productphoto\productphoto_img_02-02-2021-08-17-41.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\productphoto\productphoto_img_02-02-2021-08-17-47.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\productphoto\productphoto_img_02-02-2021-08-17-52.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\productphoto\productphoto_img_02-02-2021-08-17-58.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\productphoto\productphoto_img_02-02-2021-08-18-04.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="wwwroot\content\userprofilephoto\userprofilephoto_img_07-02-2021-15-10-02.png">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
+    <Content Update="wwwroot\content\categoryphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+    <Content Update="wwwroot\content\productphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+    <Content Update="wwwroot\content\userprofilephoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\content\categoryphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="wwwroot\content\productphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="wwwroot\content\userprofilephoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\content\categoryphoto\" />
+    <Folder Include="wwwroot\content\productphoto\" />
+    <Folder Include="wwwroot\content\userprofilephoto\" />
   </ItemGroup>
 
 </Project>

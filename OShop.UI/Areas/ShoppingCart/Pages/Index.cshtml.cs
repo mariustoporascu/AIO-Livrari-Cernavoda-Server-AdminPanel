@@ -9,33 +9,29 @@ using OShop.Application.Categories;
 using OShop.Application.Products;
 using OShop.Application.ShoppingCarts;
 using OShop.Database;
-using OShop.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Areas.ShoppingCart.Pages
 {
     [AllowAnonymous]
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
+
         private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public IndexModel(ILogger<IndexModel> logger, OnlineShopDbContext context,
+        public IndexModel( OnlineShopDbContext context,
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor)
         {
-            _logger = logger;
+
             _context = context;
             _userManager = userManager;
-            _signInManager = signInManager;
+
             _httpContextAccessor = httpContextAccessor;
         }
         [BindProperty]

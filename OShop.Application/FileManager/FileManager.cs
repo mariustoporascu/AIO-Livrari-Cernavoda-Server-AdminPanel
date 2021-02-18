@@ -2,10 +2,8 @@
 using Microsoft.Extensions.Configuration;
 using PhotoSauce.MagicScaler;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OShop.Application.FileManager
@@ -37,10 +35,10 @@ namespace OShop.Application.FileManager
         {
             try
             {
-                string file="";
+                string file = "";
                 if (type == "CategoryPhoto")
                     file = Path.Combine(_imagePathCategoryPhoto, image);
-                else if(type == "ProductPhoto")
+                else if (type == "ProductPhoto")
                     file = Path.Combine(_imagePathProductPhoto, image);
                 else
                     file = Path.Combine(_imagePathUserProfilePhoto, image);
@@ -95,7 +93,7 @@ namespace OShop.Application.FileManager
 
         private ProcessImageSettings ImageOptions() => new ProcessImageSettings
         {
-            
+
             SaveFormat = FileFormat.Jpeg,
             JpegQuality = 50,
             JpegSubsampleMode = ChromaSubsampleMode.Subsample420

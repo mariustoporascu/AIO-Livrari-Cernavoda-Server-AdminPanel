@@ -4,10 +4,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.FileManager;
 using OShop.Application.Products;
 using OShop.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OShop.UI.Areas.AdminPanel.Pages.Product
@@ -24,9 +20,9 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
             _fileManager = fileManager;
         }
 
-        public async Task<IActionResult> OnGet(int productId)
+        public async Task<IActionResult> OnGet(string productName)
         {
-            await new DeleteProduct(_context, _fileManager).Do(productId);
+            await new DeleteProduct(_context, _fileManager).Do(productName);
             return RedirectToPage("./Index");
         }
     }

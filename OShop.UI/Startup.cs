@@ -1,23 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
-using OShop.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using OShop.Domain.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using OShop.Application.FileManager;
-using Microsoft.AspNetCore.Http;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
-using Pomelo.EntityFrameworkCore.MySql.Storage;
-using MySql.Data.MySqlClient;
+using OShop.Database;
 
 namespace OShop.UI
 {
@@ -36,7 +26,7 @@ namespace OShop.UI
             services.AddDbContext<OnlineShopDbContext>(options => options.UseMySql(Configuration
                 .GetConnectionString("DefaultConnection")));
 
-                //.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
@@ -49,7 +39,7 @@ namespace OShop.UI
                     .AddDefaultTokenProviders();
             services.AddTransient<IFileManager, FileManager>();
             services.AddRazorPages()
-                .AddMvcOptions(option => 
+                .AddMvcOptions(option =>
                 option.CacheProfiles.Add("MonthlyRazor", new CacheProfile { Duration = 60 * 60 * 24 * 7 * 4 }));
             services.AddMvc(options =>
             {

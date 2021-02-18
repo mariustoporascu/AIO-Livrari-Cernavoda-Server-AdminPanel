@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.Categories;
 using OShop.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OShop.UI.Areas.AdminPanel.Pages.Category
@@ -21,9 +17,9 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Category
             _context = context;
         }
 
-        public async Task<IActionResult> OnGet(int categId)
+        public async Task<IActionResult> OnGet(string categName)
         {
-            await new DeleteCategory(_context).Do(categId);
+            await new DeleteCategory(_context).Do(categName);
             return RedirectToPage("./Index");
         }
     }

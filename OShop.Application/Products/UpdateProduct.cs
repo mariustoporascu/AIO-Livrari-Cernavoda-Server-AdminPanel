@@ -1,12 +1,8 @@
 ﻿using OShop.Application.FileManager;
 using OShop.Database;
 using OShop.Domain.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.Application.Products
 {

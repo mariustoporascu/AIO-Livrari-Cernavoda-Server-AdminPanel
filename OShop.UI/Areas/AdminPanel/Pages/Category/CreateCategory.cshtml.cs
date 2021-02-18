@@ -5,11 +5,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
 using OShop.Database;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OShop.UI.Areas.AdminPanel.Pages.Category
@@ -51,12 +48,20 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Category
             {
                 if (Request.Form.Files.Count > 0)
                 {
+                    var extensionAccepted = new string[] { ".jpg", ".png", ".jpeg" };
                     IFormFile file = Request.Form.Files.FirstOrDefault();
-                    if (!string.IsNullOrEmpty(Category.Photo))
+                    var extension = Path.GetExtension(file.FileName);
+                    if (!extensionAccepted.Contains(extension.ToLower()))
+                        return RedirectToPage("/Error", new { Area = "" });
+                    else
                     {
-                        _fileManager.RemoveImage(Category.Photo, "CategoryPhoto");
+                        if (!string.IsNullOrEmpty(Category.Photo))
+                        {
+                            _fileManager.RemoveImage(Category.Photo, "CategoryPhoto");
+                        }
+                        Category.Photo = await _fileManager.SaveImage(file, "CategoryPhoto");
                     }
-                    Category.Photo = await _fileManager.SaveImage(file, "CategoryPhoto");
+
                 }
                 else if (Request.Form.Files.Count == 0)
                 {
@@ -76,7 +81,7 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Category
                     await new CreateCategory(_context).Do(Category);
                 return RedirectToPage("./Index");
             }
-            return RedirectToPage("Error");
+            return RedirectToPage("Error", new { Area = "" });
         }
     }
 }

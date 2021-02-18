@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using OShop.Application.CartItemsA;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
-using OShop.Application.OrderInfos;
 using OShop.Application.Orders;
 using OShop.Application.ProductInOrders;
 using OShop.Application.Products;
@@ -16,9 +15,7 @@ using OShop.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Areas.ShoppingCart.Pages
 {
@@ -53,7 +50,7 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
         public IEnumerable<CartItemsViewModel> CartItems { get; set; }
 
         public OrderViewModel Order { get; set; }
-        
+
         public ProductInOrdersViewModel ProductInOrders { get; set; }
 
         public async Task<IActionResult> OnGet()
@@ -65,7 +62,7 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
                 .Where(prod => CartItems.Select(cartItem => cartItem.ProductRefId)
                 .Contains(prod.ProductId));
             Order = new GetOrder(_context).Do(currUser, "Pending");
-            foreach(var cartitem in CartItems.ToList())
+            foreach (var cartitem in CartItems.ToList())
             {
                 await new CreateProductInOrder(_context).Do(new ProductInOrdersViewModel
                 {
@@ -80,7 +77,7 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
             await new UpdateOrder(_context).Do(Order);
             ShoppingCart.Status = "Closed";
             await new UpdateShoppingCart(_context).Do(ShoppingCart);
-            return RedirectToPage("/Index", new { Area = "" });
+            return RedirectToPage("/Account/Manage/Orders", new { Area = "Identity" });
         }
     }
 }

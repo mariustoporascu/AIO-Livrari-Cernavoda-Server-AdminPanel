@@ -7,13 +7,7 @@ using OShop.Application.Categories;
 using OShop.Application.Products;
 using OShop.Application.ShoppingCarts;
 using OShop.Database;
-using OShop.Domain.Models;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Pages
 {
@@ -24,7 +18,7 @@ namespace OShop.UI.Pages
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ViewProductModel(OnlineShopDbContext context, 
+        public ViewProductModel(OnlineShopDbContext context,
             UserManager<ApplicationUser> userManager,
             IHttpContextAccessor httpContextAccessor)
         {
@@ -52,10 +46,10 @@ namespace OShop.UI.Pages
                 return new GetShoppingCart(_context).Do(currUser);
         }
 
-        public void OnGet(int productId)
+        public void OnGet(string productName)
         {
             ShoppingCartId = LoadCart().CartId;
-            Products = new GetProduct(_context).Do(productId);
+            Products = new GetProduct(_context).Do(productName);
             Categ = new GetAllCategories(_context).Do();
         }
     }

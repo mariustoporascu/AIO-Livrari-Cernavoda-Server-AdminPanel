@@ -1,9 +1,5 @@
 ﻿using OShop.Database;
-using OShop.Domain.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OShop.Application.Categories
@@ -17,9 +13,9 @@ namespace OShop.Application.Categories
             _context = context;
         }
 
-        public async Task Do(int categId)
+        public async Task Do(string categName)
         {
-            var categ = _context.Categories.FirstOrDefault(categ => categ.CategoryId == categId);
+            var categ = _context.Categories.FirstOrDefault(categ => categ.Name == categName);
             _context.Categories.Remove(categ);
             await _context.SaveChangesAsync();
         }

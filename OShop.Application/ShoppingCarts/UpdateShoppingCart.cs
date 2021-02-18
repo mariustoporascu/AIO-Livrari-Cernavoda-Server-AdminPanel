@@ -1,9 +1,5 @@
 ﻿using OShop.Database;
 using OShop.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OShop.Application.ShoppingCarts
@@ -34,7 +30,7 @@ namespace OShop.Application.ShoppingCarts
         public async Task UpdateTotal(int cartId, int quantity, decimal price)
         {
             var cart = new GetShoppingCart(_context).Do(cartId);
-            cart.TotalInCart += price*quantity;
+            cart.TotalInCart += price * quantity;
             await this.Do(cart);
         }
     }

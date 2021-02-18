@@ -6,13 +6,10 @@ using OShop.Application.Categories;
 using OShop.Application.FileManager;
 using OShop.Application.Products;
 using OShop.Database;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Areas.AdminPanel.Pages.Product
 {
@@ -34,14 +31,14 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
         [BindProperty]
         public IEnumerable<CategoryViewModel> Categ { get; set; }
 
-        public void OnGet(int? productId)
+        public void OnGet(string productName)
         {
             Categ = new GetAllCategories(_context).Do();
-            if (productId == null)
+            if (productName == null)
                 Product = new ProductVMUI();
             else
             {
-                var getProduct = new GetProduct(_context).Do(productId);
+                var getProduct = new GetProduct(_context).Do(productName);
                 Product = new ProductVMUI
                 {
                     ProductId = getProduct.ProductId,
@@ -61,12 +58,19 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
             {
                 if (Request.Form.Files.Count > 0)
                 {
+                    var extensionAccepted = new string[] { ".jpg", ".png", ".jpeg" };
                     IFormFile file = Request.Form.Files.FirstOrDefault();
-                    if (!string.IsNullOrEmpty(Product.Photo))
+                    var extension = Path.GetExtension(file.FileName);
+                    if (!extensionAccepted.Contains(extension.ToLower()))
+                        return RedirectToPage("/Error", new { Area = "" });
+                    else
                     {
-                        _fileManager.RemoveImage(Product.Photo, "ProductPhoto");
+                        if (!string.IsNullOrEmpty(Product.Photo))
+                        {
+                            _fileManager.RemoveImage(Product.Photo, "ProductPhoto");
+                        }
+                        Product.Photo = await _fileManager.SaveImage(file, "ProductPhoto");
                     }
-                    Product.Photo = await _fileManager.SaveImage(file, "ProductPhoto");
                 }
                 else if (Request.Form.Files.Count == 0)
                 {
@@ -92,7 +96,7 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
                     await new CreateProduct(_context, _fileManager).Do(Product);
                 return RedirectToPage("./Index");
             }
-            return RedirectToPage("Error");
+            return RedirectToPage("/Error", new { Area = "" });
         }
     }
 }

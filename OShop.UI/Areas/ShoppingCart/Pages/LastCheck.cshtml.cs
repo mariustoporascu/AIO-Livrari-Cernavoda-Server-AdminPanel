@@ -14,30 +14,25 @@ using OShop.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static OShop.Application.Products.GetAllProducts;
 
 namespace OShop.UI.Areas.ShoppingCart.Pages
 {
     [Authorize(Roles = "Customer")]
     public class LastCheckModel : PageModel
     {
-        private readonly ILogger<LastCheckModel> _logger;
+
         private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LastCheckModel(ILogger<LastCheckModel> logger, OnlineShopDbContext context,
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
+
+        public LastCheckModel( OnlineShopDbContext context,
+            UserManager<ApplicationUser> userManager
+)
         {
-            _logger = logger;
+
             _context = context;
             _userManager = userManager;
-            _signInManager = signInManager;
-            _httpContextAccessor = httpContextAccessor;
+
         }
         [BindProperty]
         public IEnumerable<ProductVMUI> Products { get; set; }

@@ -1,12 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OShop.Database;
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OShop.Application.Products
 {
@@ -30,7 +25,7 @@ namespace OShop.Application.Products
                 Photo = prod.Photo,
                 CategoryRefId = prod.CategoryRefId,
             });
-        
+
     }
-    
+
 }

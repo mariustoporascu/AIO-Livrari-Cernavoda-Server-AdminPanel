@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.CartItemsA;
 using OShop.Application.ShoppingCarts;
 using OShop.Database;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OShop.UI.Areas.ShoppingCart.Pages
