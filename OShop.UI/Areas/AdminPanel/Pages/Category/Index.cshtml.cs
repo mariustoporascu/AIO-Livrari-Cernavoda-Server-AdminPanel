@@ -18,7 +18,7 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Category
         }
 
         [BindProperty]
-        public IEnumerable<CategoryViewModel> Categories { get; set; }
+        public IEnumerable<CategoryVMUI> Categories { get; set; }
 
         public void OnGet()
         {

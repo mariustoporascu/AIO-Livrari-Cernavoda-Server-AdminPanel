@@ -1,7 +1,9 @@
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,6 +36,8 @@ namespace OShop.ReactUI
             })
                     .AddEntityFrameworkStores<OnlineShopDbContext>()
                     .AddDefaultUI()
+                    .AddRoles<IdentityRole>()
+                    .AddRoleManager<RoleManager<IdentityRole>>()
                     .AddDefaultTokenProviders();
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, OnlineShopDbContext>();
@@ -49,7 +53,12 @@ namespace OShop.ReactUI
             {
                 configuration.RootPath = "ClientApp/build";
             });
+            services.AddMvc(options =>
+            {
+                options.CacheProfiles.Add("MonthlyMvc", new CacheProfile { Duration = 60 * 60 * 24 * 7 * 4 });
+            });
             services.AddTransient<IFileManager, FileManager>();
+            services.AddTransient<IProfileService, ProfileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

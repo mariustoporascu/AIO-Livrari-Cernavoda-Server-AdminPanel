@@ -31,7 +31,7 @@ namespace OShop.UI.Pages
         public ProductVMUI Products { get; set; }
 
         [BindProperty]
-        public IEnumerable<CategoryViewModel> Categ { get; set; }
+        public IEnumerable<CategoryVMUI> Categ { get; set; }
 
         [BindProperty]
         public int ShoppingCartId { get; set; }

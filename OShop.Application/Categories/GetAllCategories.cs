@@ -14,8 +14,8 @@ namespace OShop.Application.Categories
             _context = context;
         }
 
-        public IEnumerable<CategoryViewModel> Do() =>
-            _context.Categories.AsNoTracking().ToList().Select(categ => new CategoryViewModel
+        public IEnumerable<CategoryVMUI> Do() =>
+            _context.Categories.AsNoTracking().ToList().Select(categ => new CategoryVMUI
             {
                 CategoryId = categ.CategoryId,
                 Name = categ.Name,

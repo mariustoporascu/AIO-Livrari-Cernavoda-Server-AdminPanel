@@ -22,7 +22,7 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
         public IEnumerable<ProductVMUI> Products { get; set; }
 
         [BindProperty]
-        public IEnumerable<CategoryViewModel> Categ { get; set; }
+        public IEnumerable<CategoryVMUI> Categ { get; set; }
 
         public void OnGet()
         {

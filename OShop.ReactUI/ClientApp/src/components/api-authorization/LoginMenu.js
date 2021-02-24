@@ -10,7 +10,8 @@ export class LoginMenu extends Component {
 
     this.state = {
       isAuthenticated: false,
-      userName: null
+      userName: null,
+      picture: null
     };
   }
 
@@ -30,7 +31,8 @@ export class LoginMenu extends Component {
     ]);
     this.setState({
       isAuthenticated,
-      userName: user && user.name
+      userName: user && user.name,
+      picture: user && user.picture
     });
   }
 
@@ -53,6 +55,20 @@ export class LoginMenu extends Component {
   authenticatedView(userName, profilePath, logoutPath) {
     return (
       <Fragment>
+        <NavItem>
+          <NavLink tag={Link} className="text-dark" to={profilePath}>
+            <img
+              style={{
+                width: 25 + "px",
+                height: 25 + "px",
+                objectFit: "cover",
+                borderRadius: 30 + "px"
+              }}
+              src={`WebImage/GetImage/${this.state.picture}`}
+              alt="profilephoto"
+            />
+          </NavLink>
+        </NavItem>
         <NavItem>
           <NavLink tag={Link} className="text-dark" to={profilePath}>
             Hello {userName}

@@ -43,7 +43,7 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
 
         public IEnumerable<ProductVMUI> Products { get; set; }
 
-        public IEnumerable<CategoryViewModel> Categ { get; set; }
+        public IEnumerable<CategoryVMUI> Categ { get; set; }
 
         public ShoppingCartViewModel ShoppingCart { get; set; }
 

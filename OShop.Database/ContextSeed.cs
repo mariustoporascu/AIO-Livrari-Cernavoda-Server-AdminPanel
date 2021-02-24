@@ -20,7 +20,7 @@ namespace OShop.Database
             //Seed Default User
             var defaultUser = new ApplicationUser
             {
-                UserName = "superadmin@gmail.com",
+                UserName = "superadmin",
                 Email = "superadmin@gmail.com",
                 FirstName = "Marius",
                 LastName = "Toporascu",

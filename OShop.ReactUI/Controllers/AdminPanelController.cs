@@ -58,6 +58,33 @@ namespace OShop.ReactUI.Controllers
         [HttpGet("getallcategories")]
         public IActionResult ManageCategories() => Ok(new GetAllCategories(_context).Do());
 
+        [HttpPost("createcategory")]
+        public async Task<IActionResult> AddCategoryAsync([FromForm] CategoryVMReactUI vm)
+        {
+            if (ModelState.IsValid)
+            {
+                await new CreateCategory(_context, _fileManager).DoReact(vm);
+                return Ok();
+            }
+            return BadRequest();
+        }
 
+        [HttpPut("updatecategory")]
+        public async Task<IActionResult> UpdateCategoryAsync([FromForm] CategoryVMReactUI vm)
+        {
+            if (ModelState.IsValid)
+            {
+                await new UpdateCategory(_context, _fileManager).DoReact(vm);
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete("deletecategory/{name}")]
+        public async Task<IActionResult> RemoveCategoryAsync(string name)
+        {
+            await new DeleteCategory(_context, _fileManager).Do(name);
+            return Ok();
+        }
     }
 }

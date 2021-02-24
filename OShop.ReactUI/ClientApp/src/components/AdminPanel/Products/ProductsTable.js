@@ -16,7 +16,7 @@ export default class ProductsTable extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.counterStates.pageproducts.map(product => (
+            {this.props.counterStates.pageItems.map(product => (
               <tr key={product.productId}>
                 <td>{product.name}</td>
                 <td>

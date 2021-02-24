@@ -14,6 +14,7 @@ namespace OShop.ReactUI.Controllers
         }
 
         [HttpGet("GetImage/{image}")]
+        [ResponseCache(CacheProfileName = "MonthlyMvc")]
         public FileStreamResult Get(string image)
         {
             var mime = image.Substring(image.LastIndexOf('.') + 1);

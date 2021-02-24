@@ -24,16 +24,16 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Category
         }
 
         [BindProperty]
-        public CategoryViewModel Category { get; set; }
+        public CategoryVMUI Category { get; set; }
 
         public void OnGet(int? categId)
         {
             if (categId == null)
-                Category = new CategoryViewModel();
+                Category = new CategoryVMUI();
             else
             {
                 var getCategory = new GetCategory(_context).Do(categId);
-                Category = new CategoryViewModel
+                Category = new CategoryVMUI
                 {
                     CategoryId = getCategory.CategoryId,
                     Name = getCategory.Name,
@@ -69,7 +69,7 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Category
                 }
                 if (Category.CategoryId > 0)
                 {
-                    var category = new CategoryViewModel
+                    var category = new CategoryVMUI
                     {
                         CategoryId = Category.CategoryId,
                         Name = Category.Name,

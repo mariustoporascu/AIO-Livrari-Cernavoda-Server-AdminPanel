@@ -15,7 +15,7 @@
             }
         </li>
         <li class="nav-item" style="align-self: flex-end;">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name.Split("@")[0]!</a>
         </li>
         <li class="nav-item" style="align-self: flex-end;">
             <a class="nav-link text-dark" asp-area="ShoppingCart" asp-page="/Index">Go to Cart</a>

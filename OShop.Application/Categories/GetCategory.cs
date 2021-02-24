@@ -13,10 +13,10 @@ namespace OShop.Application.Categories
             _context = context;
         }
 
-        public CategoryViewModel Do(int? categId)
+        public CategoryVMUI Do(int? categId)
         {
             var categ = _context.Categories.AsNoTracking().FirstOrDefault(categ => categ.CategoryId == categId);
-            return new CategoryViewModel
+            return new CategoryVMUI
             {
                 CategoryId = categ.CategoryId,
                 Name = categ.Name,

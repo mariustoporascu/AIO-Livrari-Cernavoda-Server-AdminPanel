@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Form from "./Form";
 import ProductsTable from "./ProductsTable";
 import axios from "axios";
+import Pagination from "../../Pagination";
 
 export class ManageProducts extends Component {
   static displayName = ManageProducts.name;
@@ -15,25 +16,27 @@ export class ManageProducts extends Component {
       price: 0.01,
       photo: [],
       categoryRefId: 0,
-      products: [],
       categories: [],
-      pageproducts: [],
-      totalpages: [],
-      currpage: null,
+      itemsArray: [],
+      findArray: [],
+      pageItems: [],
+      totalPages: [],
+      currPage: null,
       loadingForm: true,
-      loadingProducts: true
+      loadingItems: true
     };
     this.removeProduct = this.removeProduct.bind(this);
     this.updateAfterPost = this.updateAfterPost.bind(this);
     this.updateAfterPut = this.updateAfterPut.bind(this);
-    this.pagination = this.pagination.bind(this);
+    this.changePage = this.changePage.bind(this);
+    this.find = this.find.bind(this);
   }
 
   async componentDidMount() {
     await axios
       .get("/AdminPanel/getallproducts")
       .then(response => {
-        this.setState({ products: response.data });
+        this.setState({ itemsArray: response.data });
       })
       .catch(error => console.log(error));
     await axios
@@ -43,12 +46,19 @@ export class ManageProducts extends Component {
           categories: response.data,
           categoryRefId: response.data[0].categoryId,
           loadingForm: false,
-          loadingProducts: false
+          loadingItems: false
         });
       })
       .catch(error => console.log(error));
-    await this.pagination(1);
-    await this.pageHelper();
+    await this.setState({
+      totalPages: Pagination.pageHelper(this.state.itemsArray, 5)
+    });
+    var pagination = Pagination.pagination(1, this.state.itemsArray, 5);
+    await this.setState({
+      currPage: 1,
+      pageItems: pagination.filter,
+      loadingItems: false
+    });
   }
 
   handleChange = (nam, val) => {
@@ -56,7 +66,7 @@ export class ManageProducts extends Component {
   };
 
   handleLoading = () => {
-    this.setState({ loadingForm: true, loadingProducts: true });
+    this.setState({ loadingForm: true, loadingItems: true });
   };
 
   handleProduct = product => {
@@ -69,9 +79,13 @@ export class ManageProducts extends Component {
       categoryRefId: product.categoryRefId
     });
   };
+  async changePage(pageNmbr) {
+    var pagination = Pagination.pagination(pageNmbr, this.state.itemsArray, 5);
+    await this.setState({ currPage: pageNmbr, pageItems: pagination.filter });
+  }
 
   async removeProduct(name) {
-    await this.setState({ loadingForm: true, loadingProducts: true });
+    await this.setState({ loadingItems: true });
     await axios
       .delete("/AdminPanel/deleteproduct/" + name)
       .then(response => console.log(response))
@@ -80,19 +94,38 @@ export class ManageProducts extends Component {
       .get("/AdminPanel/getallproducts")
       .then(response => {
         this.setState({
-          products: response.data,
-          loadingForm: false,
-          loadingProducts: false
+          itemsArray: response.data
         });
       })
       .catch(error => console.log(error));
-    await this.pageHelper();
-    if (this.state.totalpages.length < this.state.currpage)
-      await this.pagination(this.state.currpage - 1);
-    else await this.pagination(this.state.currpage);
+    await this.setState({
+      totalPages: Pagination.pageHelper(this.state.itemsArray, 5)
+    });
+    if (this.state.totalPages.length < this.state.currPage) {
+      let pagination = Pagination.pagination(
+        this.state.currPage - 1,
+        this.state.itemsArray,
+        5
+      );
+      await this.setState({
+        currPage: pagination.pageNmbr,
+        pageItems: pagination.filter,
+        loadingItems: false
+      });
+    } else {
+      let pagination = Pagination.pagination(
+        this.state.currPage,
+        this.state.itemsArray,
+        5
+      );
+      await this.setState({
+        pageItems: pagination.filter,
+        loadingItems: false
+      });
+    }
   }
 
-  async updateAfterPost(pagenmbr) {
+  async updateAfterPost(pageNmbr) {
     await this.setState({
       productId: 0,
       name: "",
@@ -100,25 +133,46 @@ export class ManageProducts extends Component {
       stock: 0,
       price: 0.01,
       photo: [],
-      categoryRefId: 1
+      categoryRefId: this.state.categories[0].categoryId
     });
     await axios
       .get("/AdminPanel/getallproducts")
       .then(response => {
         this.setState({
-          products: response.data,
-          loadingForm: false,
-          loadingProducts: false
+          itemsArray: response.data,
+          loadingForm: false
         });
       })
       .catch(error => console.log(error));
-    await this.pageHelper();
-    if (this.state.totalpages.length > pagenmbr)
-      await this.pagination(this.state.totalpages.length);
-    else await this.pagination(pagenmbr);
+    await this.setState({
+      totalPages: Pagination.pageHelper(this.state.itemsArray, 5)
+    });
+    if (this.state.totalPages.length > pageNmbr) {
+      let pagination = Pagination.pagination(
+        this.state.totalPages.length,
+        this.state.itemsArray,
+        5
+      );
+      await this.setState({
+        currPage: pagination.pageNmbr,
+        pageItems: pagination.filter,
+        loadingItems: false
+      });
+    } else {
+      let pagination = Pagination.pagination(
+        pageNmbr,
+        this.state.itemsArray,
+        5
+      );
+      await this.setState({
+        currPage: pagination.pageNmbr,
+        pageItems: pagination.filter,
+        loadingItems: false
+      });
+    }
   }
 
-  async updateAfterPut(pagenmbr) {
+  async updateAfterPut(pageNmbr) {
     await this.setState({
       productId: 0,
       name: "",
@@ -126,58 +180,60 @@ export class ManageProducts extends Component {
       stock: 0,
       price: 0.01,
       photo: [],
-      categoryRefId: 1
+      categoryRefId: this.state.categories[0].categoryId
     });
     await axios
       .get("/AdminPanel/getallproducts")
       .then(response => {
         this.setState({
-          products: response.data,
-          loadingForm: false,
-          loadingProducts: false
+          itemsArray: response.data,
+          loadingForm: false
         });
       })
       .catch(error => console.log(error));
-
-    await this.pageHelper();
-    await this.pagination(pagenmbr);
-  }
-
-  async pagination(pagenmbr) {
-    var productnumber = pagenmbr * 5;
-    var productsize = this.state.products.length;
-    var i;
-    var productsfilter = [];
-    await this.setState({ loading: true });
-    if (productnumber > productsize)
-      for (i = productnumber - 5; i < productsize; i++) {
-        productsfilter.push(this.state.products[i]);
-      }
-    else {
-      for (i = productnumber - 5; i < productnumber; i++) {
-        productsfilter.push(this.state.products[i]);
-      }
-    }
     await this.setState({
-      pageproducts: productsfilter,
-      currpage: pagenmbr,
-      loadingProducts: false
+      totalPages: Pagination.pageHelper(this.state.itemsArray, 5)
+    });
+    let pagination = Pagination.pagination(pageNmbr, this.state.itemsArray, 5);
+    await this.setState({
+      currPage: pagination.pageNmbr,
+      pageItems: pagination.filter,
+      loadingItems: false
     });
   }
-
-  async pageHelper() {
-    var totalproducts = this.state.products.length;
-    var totpages = Math.ceil(totalproducts / 5);
-    var i;
-    var pages = [];
-    for (i = 1; i < totpages + 1; i++) {
-      pages.push(i);
+  async find(event) {
+    var value = event.target.value;
+    await this.setState({ loadingItems: true });
+    if (!!value) {
+      await this.setState({
+        findArray: this.state.itemsArray.filter(product =>
+          product.name.toLowerCase().includes(value.toLowerCase())
+        )
+      });
+      await this.setState({
+        totalPages: Pagination.pageHelper(this.state.findArray, 5)
+      });
+      let pagination = Pagination.pagination(1, this.state.findArray, 5);
+      await this.setState({
+        currPage: 1,
+        pageItems: pagination.filter,
+        loadingItems: false
+      });
+    } else {
+      await this.setState({
+        totalPages: Pagination.pageHelper(this.state.itemsArray, 5)
+      });
+      let pagination = Pagination.pagination(1, this.state.itemsArray, 5);
+      await this.setState({
+        currPage: 1,
+        pageItems: pagination.filter,
+        loadingItems: false
+      });
     }
-    await this.setState({ totalpages: pages });
   }
 
   render() {
-    let productContents = this.state.loadingProducts ? (
+    let productContents = this.state.loadingItems ? (
       <p>
         <em>Loading products...</em>
       </p>
@@ -201,25 +257,22 @@ export class ManageProducts extends Component {
         passUpdPut={this.updateAfterPut}
       />
     );
-
+    let pagination = (
+      <Pagination counterStates={this.state} passChangePage={this.changePage} />
+    );
     return (
       <div>
         <h1 id="tabelLabel">Product List</h1>
         <p>This component demonstrates fetching data from the server.</p>
         {formContents}
+        <input
+          type="text"
+          name="find"
+          placeholder="Search product"
+          onChange={this.find}
+        />
         {productContents}
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          {this.state.totalpages.map(page => (
-            <button
-              key={page}
-              className="btn btn-outline-success btn-sm"
-              style={{ marginRight: 10 + "px" }}
-              onClick={() => this.pagination(page)}
-            >
-              Page {page}
-            </button>
-          ))}
-        </div>
+        {pagination}
       </div>
     );
   }

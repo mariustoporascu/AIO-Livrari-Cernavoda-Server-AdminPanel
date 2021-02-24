@@ -15,6 +15,13 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
+        <li class="nav-item" style="align-self: center;">
+            @if (UserManager.GetUserAsync(User).Result.ProfilePicture != null)
+            {
+                var image_path = $"/WebImage/GetImage/{UserManager.GetUserAsync(User).Result.ProfilePicture}";
+                <img style="width:40px;height:40px; object-fit:cover; border-radius:30px" src="@image_path">
+            }
+        </li>
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
         </li>
@@ -30,7 +37,7 @@
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">Register</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login"asp-route-returnUrl="@returnUrl">Login</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@returnUrl">Login</a>
         </li>
     }
 </ul>
