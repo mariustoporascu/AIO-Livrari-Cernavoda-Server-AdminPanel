@@ -3,6 +3,7 @@ import Form from "./Form";
 import CategoriesTable from "./CategoriesTable";
 import axios from "axios";
 import Pagination from "../../Pagination";
+import Loading from "../../loading";
 
 export class ManageCategories extends Component {
   static displayName = ManageCategories.name;
@@ -211,9 +212,7 @@ export class ManageCategories extends Component {
 
   render() {
     let categoriesContents = this.state.loadingItems ? (
-      <p>
-        <em>Loading categories...</em>
-      </p>
+      <Loading />
     ) : (
       <CategoriesTable
         counterStates={this.state}
@@ -222,9 +221,7 @@ export class ManageCategories extends Component {
       />
     );
     let formContents = this.state.loadingForm ? (
-      <p>
-        <em>refreshing form...</em>
-      </p>
+      ""
     ) : (
       <Form
         passHandler={this.handleChange}

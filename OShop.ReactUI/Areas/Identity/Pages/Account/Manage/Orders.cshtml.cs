@@ -38,7 +38,7 @@ namespace OShop.ReactUI.Areas.Identity.Pages.Account.Manage
             if (orderId != -1)
             {
                 ProductInOrders = new GetAllProductInOrder(_context).Do(Orders.FirstOrDefault(order => order.OrderId == orderId).OrderId);
-                Products = new GetAllProducts(_context).Do()
+                Products = new GetAllProducts(_context).Do(0)
                     .Where(prod => ProductInOrders.Select(product => product.ProductRefId).Contains(prod.ProductId));
             }
         }

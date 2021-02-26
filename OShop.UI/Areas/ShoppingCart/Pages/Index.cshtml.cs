@@ -60,7 +60,7 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
         {
             ShoppingCart = LoadCart();
             CartItems = new GetCartItems(_context).Do(ShoppingCart.CartId);
-            Products = new GetAllProducts(_context).Do()
+            Products = new GetAllProducts(_context).Do(0)
                 .Where(prod => CartItems.Select(cartItem => cartItem.ProductRefId)
                 .Contains(prod.ProductId));
             Categ = new GetAllCategories(_context).Do();

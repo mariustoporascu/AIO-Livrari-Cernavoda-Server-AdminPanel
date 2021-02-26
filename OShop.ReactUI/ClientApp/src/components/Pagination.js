@@ -38,7 +38,11 @@ export default class Pagination extends Component {
         {this.props.counterStates.totalPages.map(page => (
           <button
             key={page}
-            className="btn btn-outline-success btn-sm"
+            className={
+              page === this.props.counterStates.currPage
+                ? "active btn btn-outline-warning btn-sm"
+                : "btn btn-outline-warning btn-sm"
+            }
             style={{ marginRight: 10 + "px" }}
             onClick={() => this.props.passChangePage(page)}
           >

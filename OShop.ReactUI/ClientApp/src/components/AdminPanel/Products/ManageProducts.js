@@ -3,6 +3,7 @@ import Form from "./Form";
 import ProductsTable from "./ProductsTable";
 import axios from "axios";
 import Pagination from "../../Pagination";
+import Loading from "../../loading";
 
 export class ManageProducts extends Component {
   static displayName = ManageProducts.name;
@@ -234,9 +235,7 @@ export class ManageProducts extends Component {
 
   render() {
     let productContents = this.state.loadingItems ? (
-      <p>
-        <em>Loading products...</em>
-      </p>
+      <Loading />
     ) : (
       <ProductsTable
         counterStates={this.state}
@@ -245,9 +244,7 @@ export class ManageProducts extends Component {
       />
     );
     let formContents = this.state.loadingForm ? (
-      <p>
-        <em>refreshing form...</em>
-      </p>
+      ""
     ) : (
       <Form
         passHandler={this.handleChange}

@@ -14,8 +14,25 @@ namespace OShop.Application.Products
             _context = context;
         }
 
-        public IEnumerable<ProductVMUI> Do() =>
-            _context.Products.AsNoTracking().ToList().Select(prod => new ProductVMUI
+        public IEnumerable<ProductVMUI> Do(int cartId)
+        {
+            if (cartId > 0)
+            {
+                var cartItems = _context.CartItems.AsNoTracking().Where(cart => cart.CartRefId == cartId);
+
+                return _context.Products.AsNoTracking().Where(prod => cartItems.Select(cartItem => cartItem.ProductRefId)
+                    .Contains(prod.ProductId)).Select(prod => new ProductVMUI
+                {
+                    ProductId = prod.ProductId,
+                    Name = prod.Name,
+                    Description = prod.Description,
+                    Stock = prod.Stock,
+                    Price = prod.Price,
+                    Photo = prod.Photo,
+                    CategoryRefId = prod.CategoryRefId,
+                });
+            }
+            return _context.Products.AsNoTracking().ToList().Select(prod => new ProductVMUI
             {
                 ProductId = prod.ProductId,
                 Name = prod.Name,
@@ -25,6 +42,8 @@ namespace OShop.Application.Products
                 Photo = prod.Photo,
                 CategoryRefId = prod.CategoryRefId,
             });
+        }
+            
 
     }
 

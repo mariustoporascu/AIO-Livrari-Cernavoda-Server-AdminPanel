@@ -67,11 +67,7 @@ export class LoginMenu extends Component {
               src={`WebImage/GetImage/${this.state.picture}`}
               alt="profilephoto"
             />
-          </NavLink>
-        </NavItem>
-        <NavItem>
-          <NavLink tag={Link} className="text-dark" to={profilePath}>
-            Hello {userName}
+            <span>Hello {userName}</span>
           </NavLink>
         </NavItem>
         <NavItem>

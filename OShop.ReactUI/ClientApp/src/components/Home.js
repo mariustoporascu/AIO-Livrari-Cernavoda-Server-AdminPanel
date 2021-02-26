@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { NavLink } from "reactstrap";
+import { NavLink, Alert } from "reactstrap";
 import { Link } from "react-router-dom";
 import "./Home.css";
 import axios from "axios";
 import Pagination from "./Pagination";
 import authService from "./api-authorization/AuthorizeService";
+import Loading from "./loading";
 
 export class Home extends Component {
   static displayName = Home.name;
@@ -58,13 +59,15 @@ export class Home extends Component {
       loading: false
     });
   }
-
-  applyStock = stock => {
+  componentWillUnmount() {
+    authService.unsubscribe(this._subscription);
+  }
+  static applyStock(stock) {
     if (stock > 5) return <div style={{ color: "darkblue" }}>In Stock</div>;
     else if (stock === 0)
       return <div style={{ color: "darkred" }}>Not In Stock</div>;
     else return <div style={{ color: "darkorange" }}>Limited Quantity</div>;
-  };
+  }
   async changePage(pageNmbr) {
     var pagination = Pagination.pagination(pageNmbr, this.state.itemsArray, 12);
     await this.setState({ currPage: pageNmbr, pageItems: pagination.filter });
@@ -101,88 +104,107 @@ export class Home extends Component {
     }
   }
 
+  static addtocart = async event => {
+    event.persist();
+    event.preventDefault();
+    const form = new FormData(event.target);
+
+    await axios
+      .post("/ShoppingCart/addcartitem", form)
+      .then(result => console.log(result))
+      .catch(error => console.log(error));
+    Alert("Added to cart");
+  };
+
+  static productsTable(state) {
+    return (
+      <div id="main-page-products" className="row">
+        {state.pageItems.map(product => (
+          <div
+            key={product.productId}
+            id="products"
+            className="col-lg-4 col-md-4 col-sm-6"
+          >
+            <NavLink tag={Link} to="/">
+              <img
+                style={{
+                  width: 130 + "px",
+                  height: 130 + "px",
+                  objectFit: "cover"
+                }}
+                src={`WebImage/GetImage/${product.photo}`}
+              />
+            </NavLink>
+            <NavLink
+              tag={Link}
+              to="/"
+              style={{
+                textDecoration: "none",
+                fontSize: 20 + "px",
+                color: "black"
+              }}
+            >
+              {product.name}
+            </NavLink>
+            <div style={{ fontSize: 16 + "px", color: "darkblue" }}>
+              {product.price} $
+            </div>
+            {Home.applyStock(product.stock)}
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <NavLink
+                tag={Link}
+                to="/"
+                className="btn btn-outline-success btn-sm"
+                style={{
+                  paddingLeft: 8 + "px",
+                  paddingRight: 8 + "px",
+                  paddingTop: 4 + "px",
+                  paddingBottom: 4 + "px"
+                }}
+              >
+                View Details
+              </NavLink>
+              <form onSubmit={Home.addtocart}>
+                <input
+                  type="hidden"
+                  name="ProductRefId"
+                  value={product.productId}
+                />
+                <input type="hidden" name="CartRefId" value={state.cartId} />
+                <input type="hidden" name="Quantity" value="1" />
+                <button
+                  className="btn btn-outline-primary btn-sm"
+                  type="submit"
+                >
+                  Add To Cart
+                </button>
+              </form>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
   render() {
     let pagination = (
       <Pagination counterStates={this.state} passChangePage={this.changePage} />
     );
-
+    let contents = this.state.loading ? (
+      <Loading />
+    ) : (
+      Home.productsTable(this.state)
+    );
     return (
       <div>
-        <input
-          type="text"
-          name="find"
-          placeholder="Search product"
-          onChange={this.find}
-        />
-        <div id="main-page-products" className="row">
-          {this.state.pageItems.map(product => (
-            <div
-              key={product.productId}
-              id="products"
-              className="col-lg-4 col-md-4 col-sm-6"
-            >
-              <NavLink tag={Link} to="/">
-                <img
-                  style={{
-                    width: 130 + "px",
-                    height: 130 + "px",
-                    objectFit: "cover"
-                  }}
-                  src={`WebImage/GetImage/${product.photo}`}
-                />
-              </NavLink>
-              <NavLink
-                tag={Link}
-                to="/"
-                style={{
-                  textDecoration: "none",
-                  fontSize: 20 + "px",
-                  color: "black"
-                }}
-              >
-                {product.name}
-              </NavLink>
-              <div style={{ fontSize: 16 + "px", color: "darkblue" }}>
-                {product.price} $
-              </div>
-              {this.applyStock(product.stock)}
-              <div style={{ display: "flex", justifyContent: "center" }}>
-                <NavLink
-                  tag={Link}
-                  to="/"
-                  className="btn btn-outline-success btn-sm"
-                  style={{
-                    paddingLeft: 8 + "px",
-                    paddingRight: 8 + "px",
-                    paddingTop: 4 + "px",
-                    paddingBottom: 4 + "px"
-                  }}
-                >
-                  View Details
-                </NavLink>
-                <form method="post" action="/ShoppingCart/addcartitem">
-                  <input
-                    type="hidden"
-                    name="ProductRefId"
-                    value={product.productId}
-                  />
-                  <input
-                    type="hidden"
-                    name="CartRefId"
-                    value={this.state.cartId}
-                  />
-                  <input type="hidden" name="Quantity" value="1" />
-                  <button
-                    className="btn btn-outline-primary btn-sm"
-                    type="submit"
-                  >
-                    Add To Cart
-                  </button>
-                </form>
-              </div>
-            </div>
-          ))}
+        <div className="row">
+          <input
+            type="text"
+            name="find"
+            placeholder="Search product"
+            onChange={this.find}
+          />
         </div>
+        {contents}
         {pagination}
       </div>
     );
