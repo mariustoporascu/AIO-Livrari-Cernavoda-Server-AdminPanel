@@ -6,7 +6,10 @@ export default class Form extends Component {
     let nam = event.target.name;
     let val = event.target.value;
     this.props.passHandler(nam, val);
-    this.setCustomValidity(event);
+    if(nam!== "categoryRefId" && nam!== "photo"){
+      this.setCustomValidity(event);
+    }
+    
   };
 
   myChangeHandlerFiles = event => {
@@ -200,6 +203,7 @@ export default class Form extends Component {
                     name="photo"
                     onChange={this.myChangeHandlerFiles}
                   />
+                  
                 </td>
               </tr>
               <tr>
@@ -220,6 +224,7 @@ export default class Form extends Component {
                       </option>
                     ))}
                   </select>
+                  
                 </td>
               </tr>
             </tbody>

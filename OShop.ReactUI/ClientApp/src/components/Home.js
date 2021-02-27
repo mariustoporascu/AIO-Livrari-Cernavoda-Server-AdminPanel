@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { NavLink, Alert } from "reactstrap";
+import { NavLink } from "reactstrap";
 import { Link } from "react-router-dom";
 import "./Home.css";
 import axios from "axios";
@@ -113,7 +113,7 @@ export class Home extends Component {
       .post("/ShoppingCart/addcartitem", form)
       .then(result => console.log(result))
       .catch(error => console.log(error));
-    Alert("Added to cart");
+    alert("Added to cart");
   };
 
   static productsTable(state) {
@@ -172,6 +172,7 @@ export class Home extends Component {
                 />
                 <input type="hidden" name="CartRefId" value={state.cartId} />
                 <input type="hidden" name="Quantity" value="1" />
+                <input type="hidden" name="Price" value={product.price}/>
                 <button
                   className="btn btn-outline-primary btn-sm"
                   type="submit"

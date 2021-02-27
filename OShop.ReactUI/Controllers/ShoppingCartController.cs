@@ -33,10 +33,12 @@ namespace OShop.ReactUI.Controllers
         public IActionResult GetCartItems(int cartId) => Ok(new GetCartItems(_context).Do(cartId));
 
         [HttpPost("addcartitem")]
-        public async Task<IActionResult> AddToCart([FromForm] CartItemsViewModel vm) {
+        public async Task<IActionResult> AddToCart([FromForm] CartItemsViewModel vm,
+            [FromForm] decimal Price) {
             if (ModelState.IsValid)
             {
                 await new CreateCartItem(_context).Do(vm);
+                await new UpdateShoppingCart(_context).UpdateTotal(vm.CartRefId, 1, Price);
                 return Ok();
             }
             return BadRequest();

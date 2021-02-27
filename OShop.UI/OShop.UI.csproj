@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>9f0738da-b7c6-4253-a94c-10257a8beec6</UserSecretsId>
+    <EnableDefaultItems>false</EnableDefaultItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -42,12 +43,6 @@
     <Content Update="wwwroot\content\categoryphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
     <Content Update="wwwroot\content\productphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
     <Content Update="wwwroot\content\userprofilephoto\*.*" CopyToPublishDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="wwwroot\content\categoryphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
-    <Content Include="wwwroot\content\productphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
-    <Content Include="wwwroot\content\userprofilephoto\*.*" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
   
   <ItemGroup>
