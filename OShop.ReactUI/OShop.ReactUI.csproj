@@ -12,16 +12,10 @@
 
   <ItemGroup>
     <PackageReference Include="axios.js" Version="0.18.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.12" />
+    
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.12" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.12">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
-  </ItemGroup>
+    
+    </ItemGroup>
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
@@ -62,6 +56,7 @@
     <Content Update="wwwroot\content\categoryphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
     <Content Update="wwwroot\content\productphoto\*.*" CopyToPublishDirectory="PreserveNewest" />
     <Content Update="wwwroot\content\userprofilephoto\*.*" CopyToPublishDirectory="PreserveNewest" />
+    <Content Update="ClientApp\src\components\static\cart.jpg" CopyToPublishDirectory="PreserveNewest"/>
   </ItemGroup>
 
   <ItemGroup>

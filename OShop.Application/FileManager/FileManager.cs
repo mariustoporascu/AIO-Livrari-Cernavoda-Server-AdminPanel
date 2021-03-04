@@ -76,11 +76,13 @@ namespace OShop.Application.FileManager
                 var pathtype = save_path.Split("/", 3)
                     .FirstOrDefault(pathtype => pathtype == "categoryphoto" || pathtype == "productphoto" || pathtype == "userprofilephoto");
                 var fileName = $"{pathtype}_img_{DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss")}{mime}";
-
-                using (var fileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
-                {
-                    MagicImageProcessor.ProcessImage(image.OpenReadStream(), fileStream, ImageOptions());
-                }
+                
+                using(var outputFileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
+                    await image.CopyToAsync(outputFileStream);
+                // using (var fileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
+                // {
+                //     MagicImageProcessor.ProcessImage(image.OpenReadStream(), fileStream,null);
+                // }
 
                 return fileName;
             }

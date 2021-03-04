@@ -24,7 +24,6 @@ namespace OShop.UI.Pages
         public IndexModel(
             OnlineShopDbContext context,
             UserManager<ApplicationUser> userManager,
-
             IHttpContextAccessor httpContextAccessor)
         {
 

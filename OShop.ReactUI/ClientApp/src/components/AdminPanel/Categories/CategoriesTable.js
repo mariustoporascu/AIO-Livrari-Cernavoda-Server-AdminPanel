@@ -1,4 +1,5 @@
-﻿import React, { Component } from "react";
+﻿/*eslint unicode-bom: ["error", "always"]*/
+import React, { Component } from "react";
 
 export default class CategoriesTable extends Component {
   render() {
@@ -13,7 +14,7 @@ export default class CategoriesTable extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.counterStates.pageItems.map(category => (
+            {this.props.counterStates.pageItems.map((category) => (
               <tr key={category.categoryId}>
                 <td>{category.name}</td>
                 <td>
@@ -22,9 +23,8 @@ export default class CategoriesTable extends Component {
                     style={{
                       width: 50 + "px",
                       height: 50 + "px",
-                      objectFit: "cover"
+                      objectFit: "cover",
                     }}
-                    alt="categoryphoto"
                   />
                 </td>
                 <td>

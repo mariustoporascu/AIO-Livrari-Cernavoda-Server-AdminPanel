@@ -1,15 +1,20 @@
-﻿import React, { Component } from "react";
+﻿/*eslint unicode-bom: ["error", "always"]*/
+import React, { Component } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+toast.configure();
 
 export default class Form extends Component {
-  myChangeHandler = event => {
+  myChangeHandler = (event) => {
     let nam = event.target.name;
     let val = event.target.value;
     this.props.passHandler(nam, val);
     this.setCustomValidity(event);
   };
 
-  myChangeHandlerFiles = event => {
+  myChangeHandlerFiles = (event) => {
     event.preventDefault();
     const file = event.target.files[0];
     if (
@@ -24,7 +29,7 @@ export default class Form extends Component {
     }
   };
 
-  postContent = async event => {
+  postContent = async (event) => {
     event.persist();
     event.preventDefault();
     this.props.passLoading();
@@ -34,8 +39,8 @@ export default class Form extends Component {
       form.append("photo", this.props.counterStates.photo);
       await axios
         .post("/AdminPanel/createcategory", form)
-        .then(result => console.log(result))
-        .catch(error => console.log(error));
+        .then(() => toast.success("Added", { autoClose: 2000 }))
+        .catch(() => toast.error("Error", { autoClose: 2000 }));
 
       await this.props.passUpdPost(this.props.counterStates.currPage);
     } else {
@@ -45,13 +50,13 @@ export default class Form extends Component {
 
       await axios
         .put("/AdminPanel/updatecategory", form)
-        .then(result => console.log(result))
-        .catch(error => console.log(error));
+        .then(() => toast.success("Updated", { autoClose: 2000 }))
+        .catch(() => toast.error("Error", { autoClose: 2000 }));
 
       await this.props.passUpdPut(this.props.counterStates.currPage);
     }
   };
-  setCustomValidity = event => {
+  setCustomValidity = (event) => {
     event.preventDefault();
     if (event.target.value === "") {
       document.getElementById("span " + event.target.name).textContent =
@@ -88,11 +93,7 @@ export default class Form extends Component {
     }
     return (
       <div>
-        <form
-          onSubmit={
-            /*() =>*/ this.postContent /*(this.props.counterStates.currPage)*/
-          }
-        >
+        <form onSubmit={this.postContent}>
           <input
             name="categoryId"
             value={this.props.counterStates.categoryId}

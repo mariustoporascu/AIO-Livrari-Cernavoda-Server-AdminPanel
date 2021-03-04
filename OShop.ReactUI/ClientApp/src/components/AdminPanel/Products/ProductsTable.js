@@ -1,4 +1,5 @@
-﻿import React, { Component } from "react";
+﻿/*eslint unicode-bom: ["error", "always"]*/
+import React, { Component } from "react";
 
 export default class ProductsTable extends Component {
   render() {
@@ -16,13 +17,14 @@ export default class ProductsTable extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.counterStates.pageItems.map(product => (
+            {this.props.counterStates.pageItems.map((product) => (
               <tr key={product.productId}>
                 <td>{product.name}</td>
                 <td>
                   {
                     this.props.counterStates.categories.filter(
-                      category => category.categoryId === product.categoryRefId
+                      (category) =>
+                        category.categoryId === product.categoryRefId
                     )[0].name
                   }
                 </td>
@@ -34,9 +36,8 @@ export default class ProductsTable extends Component {
                     style={{
                       width: 50 + "px",
                       height: 50 + "px",
-                      objectFit: "cover"
+                      objectFit: "cover",
                     }}
-                    alt="productphoto"
                   />
                 </td>
                 <td>

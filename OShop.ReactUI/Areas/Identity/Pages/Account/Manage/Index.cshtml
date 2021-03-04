@@ -38,7 +38,7 @@
                 @if (Model.Input.ProfilePicture != null)
                 {
                     var image_path = $"{base_path}/WebImage/GetImage/{Model.Input.ProfilePicture}";
-                    <img id="profilePicture" style="width:350px;height:350px; object-fit:cover" src="@image_path">
+                    <img id="profilePicture" style="width:350px;height:350px; object-fit:cover" src="@image_path" alt="profilePicture">
                 }
                 else
                 {

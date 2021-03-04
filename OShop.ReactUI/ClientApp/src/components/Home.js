@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import { NavLink } from "reactstrap";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./Home.css";
 import axios from "axios";
 import Pagination from "./Pagination";
 import authService from "./api-authorization/AuthorizeService";
 import Loading from "./loading";
 
+toast.configure();
 export class Home extends Component {
   static displayName = Home.name;
   constructor(props) {
@@ -20,7 +23,7 @@ export class Home extends Component {
       isAuthenticated: false,
       customerId: null,
       currPage: null,
-      loading: true
+      loading: true,
     };
     this.changePage = this.changePage.bind(this);
     this.find = this.find.bind(this);
@@ -32,31 +35,33 @@ export class Home extends Component {
   async populateState() {
     const [isAuthenticated, user] = await Promise.all([
       authService.isAuthenticated(),
-      authService.getUser()
+      authService.getUser(),
     ]);
-    await this.setState({
+    this.setState({
       isAuthenticated,
-      customerId: user && user.sub
+      customerId: user && user.sub,
     });
+
     await axios
       .get("ShoppingCart/getcart/" + this.state.customerId)
-      .then(response => this.setState({ cartId: response.data.cartId }))
-      .catch(error => console.log(error));
+      .then((response) => this.setState({ cartId: response.data.cartId }))
+      .catch((error) => console.log(error));
+
     await axios
       .get("/Home/getallproducts")
-      .then(response => {
+      .then((response) => {
         this.setState({ itemsArray: response.data });
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
     await axios.get("");
-    await this.setState({
-      totalPages: Pagination.pageHelper(this.state.itemsArray, 12)
+    this.setState({
+      totalPages: Pagination.pageHelper(this.state.itemsArray, 12),
     });
     var pagination = Pagination.pagination(1, this.state.itemsArray, 12);
-    await this.setState({
+    this.setState({
       currPage: 1,
       pageItems: pagination.filter,
-      loading: false
+      loading: false,
     });
   }
   componentWillUnmount() {
@@ -70,56 +75,55 @@ export class Home extends Component {
   }
   async changePage(pageNmbr) {
     var pagination = Pagination.pagination(pageNmbr, this.state.itemsArray, 12);
-    await this.setState({ currPage: pageNmbr, pageItems: pagination.filter });
+    this.setState({ currPage: pageNmbr, pageItems: pagination.filter });
   }
 
   async find(event) {
     var value = event.target.value;
-    await this.setState({ loading: true });
+    this.setState({ loading: true });
     if (!!value) {
-      await this.setState({
-        findArray: this.state.itemsArray.filter(product =>
+      this.setState({
+        findArray: this.state.itemsArray.filter((product) =>
           product.name.toLowerCase().includes(value.toLowerCase())
-        )
+        ),
       });
-      await this.setState({
-        totalPages: Pagination.pageHelper(this.state.findArray, 12)
+      this.setState({
+        totalPages: Pagination.pageHelper(this.state.findArray, 12),
       });
       let pagination = Pagination.pagination(1, this.state.findArray, 12);
-      await this.setState({
+      this.setState({
         currPage: 1,
         pageItems: pagination.filter,
-        loading: false
+        loading: false,
       });
     } else {
-      await this.setState({
-        totalPages: Pagination.pageHelper(this.state.itemsArray, 12)
+      this.setState({
+        totalPages: Pagination.pageHelper(this.state.itemsArray, 12),
       });
       let pagination = Pagination.pagination(1, this.state.itemsArray, 12);
-      await this.setState({
+      this.setState({
         currPage: 1,
         pageItems: pagination.filter,
-        loading: false
+        loading: false,
       });
     }
   }
 
-  static addtocart = async event => {
+  static addtocart = async (event) => {
     event.persist();
     event.preventDefault();
     const form = new FormData(event.target);
 
     await axios
       .post("/ShoppingCart/addcartitem", form)
-      .then(result => console.log(result))
-      .catch(error => console.log(error));
-    alert("Added to cart");
+      .then(() => toast.success("Added to cart", { autoClose: 2000 }))
+      .catch(() => toast.error("Already in cart", { autoClose: 2000 }));
   };
 
   static productsTable(state) {
     return (
       <div id="main-page-products" className="row">
-        {state.pageItems.map(product => (
+        {state.pageItems.map((product) => (
           <div
             key={product.productId}
             id="products"
@@ -130,7 +134,7 @@ export class Home extends Component {
                 style={{
                   width: 130 + "px",
                   height: 130 + "px",
-                  objectFit: "cover"
+                  objectFit: "cover",
                 }}
                 src={`WebImage/GetImage/${product.photo}`}
               />
@@ -141,7 +145,7 @@ export class Home extends Component {
               style={{
                 textDecoration: "none",
                 fontSize: 20 + "px",
-                color: "black"
+                color: "black",
               }}
             >
               {product.name}
@@ -159,7 +163,7 @@ export class Home extends Component {
                   paddingLeft: 8 + "px",
                   paddingRight: 8 + "px",
                   paddingTop: 4 + "px",
-                  paddingBottom: 4 + "px"
+                  paddingBottom: 4 + "px",
                 }}
               >
                 View Details
@@ -172,7 +176,7 @@ export class Home extends Component {
                 />
                 <input type="hidden" name="CartRefId" value={state.cartId} />
                 <input type="hidden" name="Quantity" value="1" />
-                <input type="hidden" name="Price" value={product.price}/>
+                <input type="hidden" name="Price" value={product.price} />
                 <button
                   className="btn btn-outline-primary btn-sm"
                   type="submit"

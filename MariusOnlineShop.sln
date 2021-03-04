@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OShop.UI", "OShop.UI\OShop.UI.csproj", "{B3633213-C85E-47EC-AD2E-9CE09FE0F9E6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OShop.Domain", "OShop.Domain\OShop.Domain.csproj", "{351F3BD7-F6CB-4D24-A5C8-65F1FA63A381}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OShop.Application", "OShop.Application\OShop.Application.csproj", "{3672D173-7968-4808-861A-E7A4EE640DFA}"
@@ -22,8 +20,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B3633213-C85E-47EC-AD2E-9CE09FE0F9E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3633213-C85E-47EC-AD2E-9CE09FE0F9E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{351F3BD7-F6CB-4D24-A5C8-65F1FA63A381}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{351F3BD7-F6CB-4D24-A5C8-65F1FA63A381}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{351F3BD7-F6CB-4D24-A5C8-65F1FA63A381}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -1,4 +1,5 @@
-﻿import React, { Component } from "react";
+﻿/*eslint unicode-bom: ["error", "always"]*/
+import React, { Component } from "react";
 
 export default class Pagination extends Component {
   static pagination(pageNmbr, itemsArray, itemsPerPage) {
@@ -17,7 +18,7 @@ export default class Pagination extends Component {
     }
     return {
       filter,
-      pageNmbr
+      pageNmbr,
     };
   }
 
@@ -35,7 +36,7 @@ export default class Pagination extends Component {
   render() {
     return (
       <div style={{ display: "flex", justifyContent: "center" }}>
-        {this.props.counterStates.totalPages.map(page => (
+        {this.props.counterStates.totalPages.map((page) => (
           <button
             key={page}
             className={

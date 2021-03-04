@@ -1,18 +1,21 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+toast.configure();
 
 export default class Form extends Component {
-  myChangeHandler = event => {
+  myChangeHandler = (event) => {
     let nam = event.target.name;
     let val = event.target.value;
     this.props.passHandler(nam, val);
-    if(nam!== "categoryRefId" && nam!== "photo"){
+    if (nam !== "categoryRefId" && nam !== "photo") {
       this.setCustomValidity(event);
     }
-    
   };
 
-  myChangeHandlerFiles = event => {
+  myChangeHandlerFiles = (event) => {
     event.preventDefault();
     const file = event.target.files[0];
     if (
@@ -28,42 +31,36 @@ export default class Form extends Component {
     }
   };
 
-  postContent = async event => {
+  postContent = async (event) => {
     event.persist();
     event.preventDefault();
     this.props.passLoading();
     const form = new FormData();
-    if (this.props.counterStates.categoryId === 0) {
-      form.append("name", this.props.counterStates.name);
-      form.append("description", this.props.counterStates.description);
-      form.append("stock", this.props.counterStates.stock);
-      form.append("price", this.props.counterStates.price);
-      form.append("photo", this.props.counterStates.photo);
-      form.append("categoryRefId", this.props.counterStates.categoryRefId);
+    form.append("name", this.props.counterStates.name);
+    form.append("description", this.props.counterStates.description);
+    form.append("stock", this.props.counterStates.stock);
+    form.append("price", this.props.counterStates.price);
+    form.append("photo", this.props.counterStates.photo);
+    form.append("categoryRefId", this.props.counterStates.categoryRefId);
+    if (this.props.counterStates.productId === 0) {
       await axios
         .post("/AdminPanel/createproduct", form)
-        .then(result => console.log(result))
-        .catch(error => console.log(error));
+        .then(() => toast.success("Added", { autoClose: 2000 }))
+        .catch(() => toast.error("Error", { autoClose: 2000 }));
 
       await this.props.passUpdPost(this.props.counterStates.currPage);
     } else {
       form.append("productId", this.props.counterStates.productId);
-      form.append("name", this.props.counterStates.name);
-      form.append("description", this.props.counterStates.description);
-      form.append("stock", this.props.counterStates.stock);
-      form.append("price", this.props.counterStates.price);
-      form.append("photo", this.props.counterStates.photo);
-      form.append("categoryRefId", this.props.counterStates.categoryRefId);
 
       await axios
         .put("/AdminPanel/updateproduct", form)
-        .then(result => console.log(result))
-        .catch(error => console.log(error));
+        .then(() => toast.success("Updated", { autoClose: 2000 }))
+        .catch(() => toast.error("Error", { autoClose: 2000 }));
 
       await this.props.passUpdPut(this.props.counterStates.currPage);
     }
   };
-  setCustomValidity = event => {
+  setCustomValidity = (event) => {
     event.preventDefault();
     if (event.target.value === "") {
       if (event.target.name === "name" || event.target.name === "description") {
@@ -203,7 +200,6 @@ export default class Form extends Component {
                     name="photo"
                     onChange={this.myChangeHandlerFiles}
                   />
-                  
                 </td>
               </tr>
               <tr>
@@ -215,7 +211,7 @@ export default class Form extends Component {
                     onChange={this.myChangeHandler}
                     className="form-control"
                   >
-                    {this.props.counterStates.categories.map(category => (
+                    {this.props.counterStates.categories.map((category) => (
                       <option
                         key={category.categoryId}
                         value={category.categoryId}
@@ -224,7 +220,6 @@ export default class Form extends Component {
                       </option>
                     ))}
                   </select>
-                  
                 </td>
               </tr>
             </tbody>

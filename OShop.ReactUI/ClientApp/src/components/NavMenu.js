@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { LoginMenu } from "./api-authorization/LoginMenu";
 import "./NavMenu.css";
 import authService from "./api-authorization/AuthorizeService";
+import cart from "./static/cart.jpg";
 
 export class NavMenu extends Component {
   static displayName = NavMenu.name;
@@ -103,7 +104,7 @@ export class NavMenu extends Component {
                         height: 25 + "px",
                         objectFit: "cover"
                       }}
-                      src={require("./static/cart.jpg")}
+                      src={cart}
                       alt="cart"
                     />
                   </NavLink>
