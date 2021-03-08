@@ -15,29 +15,6 @@ export class CartInfo extends Component {
     this.state = {
       isAuthenticated: false,
       customerId: null,
-      quantitySelection: [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        8,
-        9,
-        10,
-        11,
-        12,
-        13,
-        14,
-        15,
-        16,
-        17,
-        18,
-        19,
-        20,
-      ],
-      selectedQuantity: null,
       cart: [],
       cartItems: [],
       products: [],
@@ -137,6 +114,10 @@ export class CartInfo extends Component {
     authService.unsubscribe(this._subscription);
   }
   render() {
+    let quantitySelection = new Array();
+    for (var i = 1; i < 21; i++) {
+      quantitySelection.push(i);
+    }
     let cart = this.state.loading ? (
       <Loading />
     ) : (
@@ -169,7 +150,7 @@ export class CartInfo extends Component {
                     size="3"
                     onChange={this.updateQuantity}
                   >
-                    {this.state.quantitySelection.map((select) => (
+                    {quantitySelection.map((select) => (
                       <option key={select} value={select}>
                         {select}
                       </option>

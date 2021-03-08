@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OShop.Application.CartItemsA;
+using OShop.Application.FileManager;
 using OShop.Application.OrderInfos;
 using OShop.Application.Orders;
+using OShop.Application.ProductInOrders;
 using OShop.Application.Products;
 using OShop.Application.ShoppingCarts;
 using OShop.Database;
@@ -19,19 +21,21 @@ namespace OShop.ReactUI.Controllers
     public class ShoppingCartController : Controller
     {
         private readonly OnlineShopDbContext _context;
-
+        private readonly IFileManager _fileManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ShoppingCartController(OnlineShopDbContext context,
-
+            IFileManager fileManager,
             IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _fileManager = fileManager;
             _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet("getcart/{customerId}")]
-        public async Task<IActionResult> AnonymousCart(string customerId){
+        public async Task<IActionResult> AnonymousCart(string customerId)
+        {
             var currUser = customerId;
             var cookieValueFromContext = _httpContextAccessor.HttpContext.Request.Cookies["anonymousUsr"];
 
@@ -99,7 +103,8 @@ namespace OShop.ReactUI.Controllers
 
         [HttpPost("addcartitem")]
         public async Task<IActionResult> AddToCart([FromForm] CartItemsViewModel vm,
-            [FromForm] decimal Price) {
+            [FromForm] decimal Price)
+        {
             if (ModelState.IsValid)
             {
                 await new CreateCartItem(_context).Do(vm);
@@ -107,30 +112,32 @@ namespace OShop.ReactUI.Controllers
                 return Ok();
             }
             return BadRequest();
-        } 
+        }
         [HttpPut("updatecartitem")]
         public async Task<IActionResult> UpdateCartItem([FromForm] CartItemsViewModel vm,
-            [FromForm] decimal Price, [FromForm] int PrevQuantity) {
+            [FromForm] decimal Price, [FromForm] int PrevQuantity)
+        {
             if (ModelState.IsValid)
             {
                 await new UpdateCartItem(_context).Do(new CartItemsViewModel
-            {
-                CartRefId = vm.CartRefId,
-                ProductRefId = vm.ProductRefId,
-                Quantity = vm.Quantity,
-            });
-            if (PrevQuantity > vm.Quantity)
-                await new UpdateShoppingCart(_context).UpdateTotal(vm.CartRefId, PrevQuantity - vm.Quantity, -Price);
-            else
-                await new UpdateShoppingCart(_context).UpdateTotal(vm.CartRefId, vm.Quantity - PrevQuantity, Price);
-            
+                {
+                    CartRefId = vm.CartRefId,
+                    ProductRefId = vm.ProductRefId,
+                    Quantity = vm.Quantity,
+                });
+                if (PrevQuantity > vm.Quantity)
+                    await new UpdateShoppingCart(_context).UpdateTotal(vm.CartRefId, PrevQuantity - vm.Quantity, -Price);
+                else
+                    await new UpdateShoppingCart(_context).UpdateTotal(vm.CartRefId, vm.Quantity - PrevQuantity, Price);
+
                 return Ok();
             }
             return BadRequest();
-        } 
+        }
         [HttpDelete("removecartitem")]
         public async Task<IActionResult> RemoveCartItem(int CartRefId, int ProductRefId,
-            int Quantity, decimal Price) {
+            int Quantity, decimal Price)
+        {
             if (ModelState.IsValid)
             {
                 await new DeleteCartItem(_context).Do(CartRefId, ProductRefId);
@@ -138,11 +145,13 @@ namespace OShop.ReactUI.Controllers
                 return Ok();
             }
             return BadRequest();
-        } 
+        }
         [HttpGet("orderinfo/{customerId}")]
-        public async Task<IActionResult> GetOrderInfo(string customerId){
+        public async Task<IActionResult> GetOrderInfo(string customerId)
+        {
             var currUser = customerId;
-            if(currUser == "null"){
+            if (currUser == "null")
+            {
                 currUser = _httpContextAccessor.HttpContext.Request.Cookies["anonymousUsr"];
             }
             var Order = new GetOrder(_context).Do(currUser, "Pending");
@@ -150,29 +159,61 @@ namespace OShop.ReactUI.Controllers
             {
                 await new CreateOrder(_context).Do(new OrderViewModel
                 {
-                   Status = "Pending",
-                   CustomerId = currUser                    
+                    Status = "Pending",
+                    CustomerId = currUser
                 });
                 Order = new GetOrder(_context).Do(currUser, "Pending");
             }
             var OrderInfos = new GetOrderInfo(_context).Do(Order.OrderId);
             if (OrderInfos == null)
-                OrderInfos = new OrderInfosViewModel{OrderRefId=Order.OrderId};
+                OrderInfos = new OrderInfosViewModel { OrderRefId = Order.OrderId };
             return Ok(OrderInfos);
         }
-        
+
         [HttpPost("addorderinfo")]
-        public async Task<IActionResult> AddOrderInfo([FromForm] OrderInfosViewModel vm){
-            if(ModelState.IsValid){
+        public async Task<IActionResult> AddOrderInfo([FromForm] OrderInfosViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
                 await new CreateOrderInfo(_context).Do(vm);
                 return Ok();
             }
             return BadRequest();
         }
         [HttpPut("updateorderinfo")]
-        public async Task<IActionResult> UpdateOrderInfo([FromForm] OrderInfosViewModel vm){
-            if(ModelState.IsValid){
+        public async Task<IActionResult> UpdateOrderInfo([FromForm] OrderInfosViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
                 await new UpdateOrderInfo(_context).Do(vm);
+                return Ok();
+            }
+            return BadRequest();
+        }
+        [HttpPut("placeorder")]
+        public async Task<IActionResult> PlaceOrder([FromForm] OrderViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
+                await new UpdateOrder(_context).Do(vm);
+                var ShoppingCart = new GetShoppingCart(_context).Do(vm.CustomerId);
+                var CartItems = new GetCartItems(_context).Do(ShoppingCart.CartId);
+                var Products = new GetAllProducts(_context).Do(ShoppingCart.CartId)
+                    .Where(prod => CartItems.Select(cartItem => cartItem.ProductRefId)
+                    .Contains(prod.ProductId));
+
+                foreach (var cartitem in CartItems.ToList())
+                {
+                    await new CreateProductInOrder(_context).Do(new ProductInOrdersViewModel
+                    {
+                        OrderRefId = vm.OrderId,
+                        ProductRefId = cartitem.ProductRefId,
+                        UsedQuantity = cartitem.Quantity,
+                    });
+                    await new UpdateProduct(_context, _fileManager).UpdateStockAfterOrder(cartitem.ProductRefId, cartitem.Quantity);
+                }
+                ShoppingCart.Status = "Closed";
+                await new UpdateShoppingCart(_context).Do(ShoppingCart);
                 return Ok();
             }
             return BadRequest();

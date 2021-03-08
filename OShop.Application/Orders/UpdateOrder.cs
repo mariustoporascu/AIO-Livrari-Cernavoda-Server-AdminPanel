@@ -1,5 +1,6 @@
 ﻿using OShop.Database;
 using OShop.Domain.Models;
+using System;
 using System.Threading.Tasks;
 
 namespace OShop.Application.Orders
@@ -21,7 +22,7 @@ namespace OShop.Application.Orders
                 Status = vm.Status,
                 CustomerId = vm.CustomerId,
                 TotalOrdered = vm.TotalOrdered,
-                Created = vm.Created,
+                Created = DateTime.Now,
             };
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();

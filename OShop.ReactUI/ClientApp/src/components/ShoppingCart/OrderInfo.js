@@ -18,6 +18,7 @@ export default class OrderInfo extends Component {
       lastName: "",
       address: "",
       phoneNo: "",
+      disabledBtn: true,
       orderRefId: 0,
       data: [],
       loading: true,
@@ -44,6 +45,14 @@ export default class OrderInfo extends Component {
         orderRefId: this.state.data.orderRefId,
         loading: false,
       });
+    }
+    if (
+      !!this.state.firstName &&
+      !!this.state.lastName &&
+      !!this.state.address &&
+      !!this.state.phoneNo
+    ) {
+      this.setState({ disabledBtn: false });
     }
   }
   setValues = (event) => {
@@ -89,14 +98,43 @@ export default class OrderInfo extends Component {
         .then(() => toast.success("Saved", { autoClose: 2000 }))
         .catch((error) => console.log(error));
     }
+    this.setState({ disabledBtn: false });
     this.toggle();
   };
 
   render() {
+    let showSpan = this.state.disabledBtn ? (
+      <span
+        className="d-inline-block"
+        tabIndex="0"
+        data-toggle="tooltip"
+        title="You must add order info to proceed"
+        style={{
+          float: "right",
+        }}
+      >
+        <a
+          className="btn btn-warning disabled"
+          style={{ margin: 1 + "em", float: "right" }}
+          href="/checkout"
+        >
+          Checkout
+        </a>
+      </span>
+    ) : (
+      <a
+        className="btn btn-warning"
+        style={{ margin: 1 + "em", float: "right" }}
+        href="/checkout"
+      >
+        Checkout
+      </a>
+    );
     let modalWindow = this.state.loading ? (
       <Loading />
     ) : (
       <div>
+        {showSpan}
         <Button
           color="primary"
           style={{ margin: 1 + "em", float: "right" }}
@@ -104,6 +142,7 @@ export default class OrderInfo extends Component {
         >
           Add Order Info
         </Button>
+
         <Modal
           isOpen={this.state.modal}
           toggle={this.toggle}

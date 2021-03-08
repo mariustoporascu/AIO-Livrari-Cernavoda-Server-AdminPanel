@@ -5,6 +5,7 @@ import { Home } from "./components/Home";
 import { ManageProducts } from "./components/AdminPanel/Products/ManageProducts";
 import { ManageCategories } from "./components/AdminPanel/Categories/ManageCategories";
 import { CartInfo } from "./components/ShoppingCart/CartInfo";
+import { Checkout } from "./components/ShoppingCart/Checkout";
 
 import AuthorizeRoute from "./components/api-authorization/AuthorizeRoute";
 import ApiAuthorizationRoutes from "./components/api-authorization/ApiAuthorizationRoutes";
@@ -32,6 +33,7 @@ export default class App extends Component {
           component={ApiAuthorizationRoutes}
         />
         <Route path="/shoppingcart" component={CartInfo} />
+        <Route path="/checkout" component={Checkout} />
       </Layout>
     );
   }

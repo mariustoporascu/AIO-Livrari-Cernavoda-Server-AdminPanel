@@ -24,7 +24,7 @@ namespace OShop.Application.Orders
                 Status = vm.Status,
                 CustomerId = vm.CustomerId,
                 TotalOrdered = vm.TotalOrdered,
-                Created = vm.Created,
+                Created = DateTime.Now,
             });
             await _context.SaveChangesAsync();
         }

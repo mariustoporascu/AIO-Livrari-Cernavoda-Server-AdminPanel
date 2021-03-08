@@ -27,7 +27,7 @@ namespace OShop.Application.Orders
         public IEnumerable<OrderViewModel> Do(string customerId, int orderId)
         {
             if (orderId == -1)
-                return _context.Orders.AsNoTracking().Where(order => order.CustomerId == customerId).ToList().Select(order => new OrderViewModel
+                return _context.Orders.AsNoTracking().Where(order => order.CustomerId == customerId && order.Status =="Ordered").ToList().Select(order => new OrderViewModel
                 {
                     OrderId = order.OrderId,
                     Status = order.Status,
