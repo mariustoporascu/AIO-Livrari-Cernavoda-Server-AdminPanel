@@ -16,9 +16,10 @@ namespace OShop.Application.Categories
             _fileManager = fileManager;
         }
 
-        public async Task Do(string categName)
+        public async Task Do(int categoryId)
         {
-            var category = _context.Categories.FirstOrDefault(categ => categ.Name == categName);
+            var category = _context.Categories
+                .FirstOrDefault(categ => categ.CategoryId == categoryId);
             _context.Categories.Remove(category);
             if (!string.IsNullOrEmpty(category.Photo))
                 _fileManager.RemoveImage(category.Photo, "CategoryPhoto");

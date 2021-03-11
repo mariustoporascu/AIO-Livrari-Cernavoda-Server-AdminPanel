@@ -3,7 +3,7 @@
 import axios from "axios";
 import React, { Component } from "react";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import Loading from "../loading";
+import Loading from "../Loading";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

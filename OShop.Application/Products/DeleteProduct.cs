@@ -16,9 +16,10 @@ namespace OShop.Application.Products
             _fileManager = fileManager;
         }
 
-        public async Task Do(string productName)
+        public async Task Do(int productId)
         {
-            var product = _context.Products.FirstOrDefault(product => product.Name.ToLower() == productName.ToLower());
+            var product = _context.Products
+                .FirstOrDefault(product => product.ProductId == productId);
             _context.Products.Remove(product);
             if (!string.IsNullOrEmpty(product.Photo))
                 _fileManager.RemoveImage(product.Photo, "ProductPhoto");

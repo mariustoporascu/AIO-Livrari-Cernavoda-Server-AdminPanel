@@ -7,7 +7,7 @@ import "./Home.css";
 import axios from "axios";
 import Pagination from "./Pagination";
 import authService from "./api-authorization/AuthorizeService";
-import Loading from "./loading";
+import Loading from "./Loading";
 
 toast.configure();
 export class Home extends Component {
@@ -137,6 +137,7 @@ export class Home extends Component {
                   objectFit: "cover",
                 }}
                 src={`WebImage/GetImage/${product.photo}`}
+                alt="product"
               />
             </NavLink>
             <NavLink

@@ -8,7 +8,7 @@ import {
   NavItem,
   NavLink,
 } from "reactstrap";
-import axios from "axios";
+import { CartItemsForNavbar } from "./ShoppingCart/CartItemsForNavbar";
 import { Link } from "react-router-dom";
 import { LoginMenu } from "./api-authorization/LoginMenu";
 import "./NavMenu.css";
@@ -26,9 +26,6 @@ export class NavMenu extends Component {
       collapsed: true,
       isAuthenticated: false,
       role: null,
-      user: null,
-      cartId: null,
-      cartItems: [],
     };
   }
   componentDidMount() {
@@ -47,17 +44,7 @@ export class NavMenu extends Component {
     this.setState({
       isAuthenticated,
       role: user && user.role,
-      user: user && user.sub,
     });
-
-    await axios
-      .get("ShoppingCart/getcart/" + this.state.user)
-      .then((response) => this.setState({ cartId: response.data.cartId }))
-      .catch((error) => console.log(error));
-    await axios
-      .get("ShoppingCart/getcartitems/" + this.state.cartId)
-      .then((response) => this.setState({ cartItems: response.data }))
-      .catch((error) => console.log(error));
   }
 
   toggleNavbar() {
@@ -67,7 +54,6 @@ export class NavMenu extends Component {
   }
 
   render() {
-    let cartCount = this.state.cartItems.length;
     return (
       <header>
         <Navbar
@@ -91,27 +77,46 @@ export class NavMenu extends Component {
                   </NavLink>
                 </NavItem>
                 {this.state.role && this.state.role.includes("SuperAdmin") ? (
-                  <NavItem>
-                    <NavLink
-                      tag={Link}
-                      className="text-dark"
-                      to="/adminpanel/manageproducts"
-                    >
-                      Products
-                    </NavLink>
-                  </NavItem>
+                  <div style={{ display: "inline-flex" }}>
+                    <NavItem>
+                      <NavLink
+                        tag={Link}
+                        className="text-dark"
+                        to="/adminpanel/manageproductsredo"
+                      >
+                        ProductsRedo
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        tag={Link}
+                        className="text-dark"
+                        to="/adminpanel/managecategoriesredo"
+                      >
+                        CategoriesRedo
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        tag={Link}
+                        className="text-dark"
+                        to="/adminpanel/manageproducts"
+                      >
+                        Products
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        tag={Link}
+                        className="text-dark"
+                        to="/adminpanel/managecategories"
+                      >
+                        Categories
+                      </NavLink>
+                    </NavItem>
+                  </div>
                 ) : null}
-                {this.state.role && this.state.role.includes("SuperAdmin") ? (
-                  <NavItem>
-                    <NavLink
-                      tag={Link}
-                      className="text-dark"
-                      to="/adminpanel/managecategories"
-                    >
-                      Categories
-                    </NavLink>
-                  </NavItem>
-                ) : null}
+
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/shoppingcart">
                     <img
@@ -123,18 +128,7 @@ export class NavMenu extends Component {
                       src={cart}
                       alt="cart"
                     />
-                    <span
-                      style={{
-                        backgroundColor: "yellow",
-                        fontSize: 0.8 + "em",
-                        borderRadius: 1 + "em",
-                        position: "relative",
-                        top: 1 + "em",
-                        right: 0.5 + "em",
-                      }}
-                    >
-                      {cartCount}
-                    </span>
+                    <CartItemsForNavbar />
                   </NavLink>
                 </NavItem>
                 <LoginMenu />

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { Component } from "react";
 import authService from "../api-authorization/AuthorizeService";
-import Loading from "../loading";
+import Loading from "../Loading";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -148,6 +148,7 @@ export class Checkout extends Component {
                       objectFit: "cover",
                     }}
                     src={`WebImage/GetImage/${product.photo}`}
+                    alt="product"
                   />
                 </td>
               </tr>

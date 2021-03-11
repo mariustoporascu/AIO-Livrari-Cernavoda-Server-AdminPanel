@@ -2,7 +2,7 @@
 import axios from "axios";
 import React, { Component } from "react";
 import authService from "../api-authorization/AuthorizeService";
-import Loading from "../loading";
+import Loading from "../Loading";
 import OrderInfo from "./OrderInfo";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -114,7 +114,7 @@ export class CartInfo extends Component {
     authService.unsubscribe(this._subscription);
   }
   render() {
-    let quantitySelection = new Array();
+    let quantitySelection = [];
     for (var i = 1; i < 21; i++) {
       quantitySelection.push(i);
     }
@@ -174,6 +174,7 @@ export class CartInfo extends Component {
                       objectFit: "cover",
                     }}
                     src={`WebImage/GetImage/${product.photo}`}
+                    alt="product"
                   />
                 </td>
 

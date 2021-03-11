@@ -12,6 +12,8 @@ import ApiAuthorizationRoutes from "./components/api-authorization/ApiAuthorizat
 import { ApplicationPaths } from "./components/api-authorization/ApiAuthorizationConstants";
 
 import "./custom.css";
+import ManageProductsRedo from "./components/AdminPanelRedo/Products/ManageProducts";
+import ManageCategoriesRedo from "./components/AdminPanelRedo/Categories/ManageCategories";
 
 export default class App extends Component {
   static displayName = App.name;
@@ -20,6 +22,14 @@ export default class App extends Component {
     return (
       <Layout>
         <Route exact path="/" component={Home} />
+        <AuthorizeRoute
+          path="/adminpanel/manageproductsredo"
+          component={ManageProductsRedo}
+        />
+        <AuthorizeRoute
+          path="/adminpanel/managecategoriesredo"
+          component={ManageCategoriesRedo}
+        />
         <AuthorizeRoute
           path="/adminpanel/manageproducts"
           component={ManageProducts}

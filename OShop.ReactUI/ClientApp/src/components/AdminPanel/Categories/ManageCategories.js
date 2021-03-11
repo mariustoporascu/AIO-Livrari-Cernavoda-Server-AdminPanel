@@ -4,7 +4,7 @@ import Form from "./Form";
 import CategoriesTable from "./CategoriesTable";
 import axios from "axios";
 import Pagination from "../../Pagination";
-import Loading from "../../loading";
+import Loading from "../../Loading";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

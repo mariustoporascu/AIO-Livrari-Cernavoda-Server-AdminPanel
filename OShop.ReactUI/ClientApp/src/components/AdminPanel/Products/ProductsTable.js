@@ -38,6 +38,7 @@ export default class ProductsTable extends Component {
                       height: 50 + "px",
                       objectFit: "cover",
                     }}
+                    alt="product"
                   />
                 </td>
                 <td>

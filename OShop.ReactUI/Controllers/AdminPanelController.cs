@@ -48,10 +48,10 @@ namespace OShop.ReactUI.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("deleteproduct/{name}")]
-        public async Task<IActionResult> RemoveProductAsync(string name)
+        [HttpDelete("deleteproduct/{productId}")]
+        public async Task<IActionResult> RemoveProductAsync(int productId)
         {
-            await new DeleteProduct(_context, _fileManager).Do(name);
+            await new DeleteProduct(_context, _fileManager).Do(productId);
             return Ok();
         }
 
@@ -80,10 +80,10 @@ namespace OShop.ReactUI.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("deletecategory/{name}")]
-        public async Task<IActionResult> RemoveCategoryAsync(string name)
+        [HttpDelete("deletecategory/{categoryId}")]
+        public async Task<IActionResult> RemoveCategoryAsync(int categoryId)
         {
-            await new DeleteCategory(_context, _fileManager).Do(name);
+            await new DeleteCategory(_context, _fileManager).Do(categoryId);
             return Ok();
         }
     }

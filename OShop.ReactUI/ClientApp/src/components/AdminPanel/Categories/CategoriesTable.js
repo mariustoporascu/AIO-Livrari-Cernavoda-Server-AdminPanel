@@ -25,6 +25,7 @@ export default class CategoriesTable extends Component {
                       height: 50 + "px",
                       objectFit: "cover",
                     }}
+                    alt="category"
                   />
                 </td>
                 <td>
