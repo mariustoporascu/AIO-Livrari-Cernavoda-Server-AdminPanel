@@ -1,242 +1,129 @@
-import React, { createContext, Component } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import Loading from "../components/Loading";
 import { toast } from "react-toastify";
+import { useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-
-toast.configure();
+//import { LoginActions } from "../components/api-authorization/ApiAuthorizationConstants";
 
 export const DataContext = createContext();
 
-class DataContextProvider extends Component {
-  state = {
-    productId: 0,
-    categoryId: 0,
-    name: "",
-    description: "",
-    stock: 0,
-    price: 0.01,
-    photo: [],
-    categoryRefId: 0,
-    categories: [],
-    products: [],
-    paginationFor: null,
-    itemsPerPage: 4,
-    isLoading: true,
-  };
+const DataContextProvider = (props) => {
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
 
-  async componentDidMount() {
-    const location = window.location.pathname;
-    if (location.includes("categories")) {
-      this.setState({ paginationFor: "categories" });
-    } else {
-      this.setState({ paginationFor: "products" });
-    }
+  const [isLoading, setIsLoading] = useState(true);
 
-    await axios
-      .get("/AdminPanel/getallcategories")
-      .then((response) => {
-        this.setState({
-          categories: response.data,
-          categoryRefId: response.data[0].categoryId,
-        });
-      })
-      .catch((error) => console.log(error));
-    await axios
-      .get("/AdminPanel/getallproducts")
-      .then((response) => {
-        this.setState({ products: response.data, isLoading: false });
-      })
-      .catch((error) => console.log(error));
-  }
+  const [totalPages, setTotalPages] = useState([]);
+  const [currPage, setCurrPage] = useState(1);
 
-  handleInputs = (event) => {
-    let name = event.target.name;
-    let value = event.target.value;
-    this.setState({ [name]: value });
-    if (name !== "categoryRefId" && name !== "photo") {
-      this.setCustomValidity(event);
-    }
-  };
-  handleFile = (event) => {
-    event.preventDefault();
-    const file = event.target.files[0];
-    if (
-      !!file &&
-      file.type !== "image/png" &&
-      file.type !== "image/jpg" &&
-      file.type !== "image/jpeg"
-    ) {
-      alert("You selected unaccepted format");
-      event.target.files = null;
-    } else {
-      this.setState({ photo: file });
-    }
-  };
+  toast.configure();
+  const location = useLocation();
 
-  editProduct = (product) => {
-    this.setState({
-      productId: product.productId,
-      name: product.name,
-      description: product.description,
-      stock: product.stock,
-      price: product.price,
-      categoryRefId: product.categoryRefId,
-    });
-  };
-  editCategory = (category) => {
-    this.setState({
-      categoryId: category.categoryId,
-      name: category.name,
-      description: category.description,
-    });
-  };
-
-  setCustomValidity = (event) => {
-    event.preventDefault();
-    if (event.target.value === "") {
-      if (event.target.name === "name" || event.target.name === "description") {
-        document.getElementById("span " + event.target.name).textContent =
-          "This cannot be empty";
-      } else {
-        document.getElementById("span " + event.target.name).textContent =
-          "Value must be a number between " +
-          event.target.min +
-          " and " +
-          event.target.max;
-      }
-    } else {
-      document.getElementById("span " + event.target.name).textContent = "";
-    }
-  };
-  toggleLoading = () => {
-    this.setState({ isLoading: !this.state.isLoading });
-  };
-
-  postContent = async () => {
-    let type;
-    const form = new FormData();
-    form.append("name", this.state.name);
-    form.append("photo", this.state.photo);
-    if (this.state.paginationFor === "products") {
-      form.append("description", this.state.description);
-      form.append("stock", this.state.stock);
-      form.append("price", this.state.price);
-      form.append("categoryRefId", this.state.categoryRefId);
-      if (this.state.productId === 0) {
-        await axios
-          .post("/AdminPanel/createproduct", form)
-          .then(() => toast.success("Added", { autoClose: 2000 }))
-          .catch(() => toast.error("Error", { autoClose: 2000 }));
-        type = "post";
-      } else {
-        form.append("productId", this.state.productId);
-        await axios
-          .put("/AdminPanel/updateproduct", form)
-          .then(() => toast.success("Updated", { autoClose: 2000 }))
-          .catch(() => toast.error("Error", { autoClose: 2000 }));
-        type = "put";
-      }
-      await axios
-        .get("/AdminPanel/getallproducts")
-        .then((response) => {
-          this.setState({
-            products: response.data,
-          });
-        })
-        .catch((error) => console.log(error));
-    } else {
-      if (this.state.categoryId === 0) {
-        await axios
-          .post("/AdminPanel/createcategory", form)
-          .then(() => toast.success("Added", { autoClose: 2000 }))
-          .catch(() => toast.error("Error", { autoClose: 2000 }));
-        type = "post";
-      } else {
-        form.append("categoryId", this.state.categoryId);
-        await axios
-          .put("/AdminPanel/updatecategory", form)
-          .then(() => toast.success("Updated", { autoClose: 2000 }))
-          .catch(() => toast.error("Error", { autoClose: 2000 }));
-        type = "put";
-      }
+  useEffect(() => {
+    const populateData = async () => {
       await axios
         .get("/AdminPanel/getallcategories")
         .then((response) => {
-          this.setState({
-            categories: response.data,
-          });
+          setCategories(response.data);
         })
         .catch((error) => console.log(error));
-    }
-
-    this.resetForm();
-
-    return type;
-  };
-
-  removeItem = async (id) => {
-    if (this.state.paginationFor === "products") {
-      var prodIndex = this.state.products.findIndex(
-        (obj) => obj.productId === id
-      );
-      this.state.products.splice(prodIndex, 1);
       await axios
-        .delete("/AdminPanel/deleteproduct/" + id)
-        .then(() => toast.success("Removed", { autoClose: 2000 }))
-        .catch(() => toast.error("Error", { autoClose: 2000 }));
-    } else {
-      var categIndex = this.state.categories.findIndex(
-        (obj) => obj.categoryId === id
-      );
-      this.state.categories.splice(categIndex, 1);
-      await axios
-        .delete("/AdminPanel/deletecategory/" + id)
-        .then(() => toast.success("Removed", { autoClose: 2000 }))
-        .catch(() => toast.error("Error", { autoClose: 2000 }));
+        .get("/AdminPanel/getallproducts")
+        .then((response) => {
+          setProducts(response.data);
+        })
+        .catch((error) => console.log(error));
+      if (isLoading) {
+        setIsLoading(false);
+      }
+    };
+    populateData();
+  }, [isLoading]);
+
+  useEffect(() => {
+    let paginationItems;
+    let itemsPerPage;
+
+    if (categories.length !== 0 && products.length !== 0) {
+      switch (location.pathname) {
+        case "/adminpanel/managecategories":
+          paginationItems = categories;
+          itemsPerPage = 4;
+          break;
+        case "/adminpanel/manageproducts":
+          paginationItems = products;
+          itemsPerPage = 4;
+          break;
+        default:
+          paginationItems = products;
+          itemsPerPage = 12;
+          break;
+      }
+      let totalItems = paginationItems.length;
+      let totPages = Math.ceil(totalItems / itemsPerPage);
+
+      let pages = [];
+      for (let i = 0; i < totPages; i++) {
+        pages.push(i + 1);
+      }
+      setTotalPages(pages);
+    }
+  }, [products, categories, location]);
+
+  useEffect(() => {
+    setCurrPage(1);
+  }, [location]);
+
+  const changePage = (value) => {
+    setCurrPage(value);
+  };
+
+  const removeItem = async (id) => {
+    let newArray;
+    switch (location.pathname) {
+      case "/adminpanel/managecategories":
+        await axios
+          .delete("/AdminPanel/deletecategory/" + id)
+          .then(() => toast.success("Removed", { autoClose: 2000 }))
+          .catch(() => toast.error("Error", { autoClose: 2000 }));
+        newArray = categories.filter((categ) => categ.categoryId !== id);
+        setCategories(newArray);
+
+        break;
+      case "/adminpanel/manageproducts":
+        await axios
+          .delete("/AdminPanel/deleteproduct/" + id)
+          .then(() => toast.success("Removed", { autoClose: 2000 }))
+          .catch(() => toast.error("Error", { autoClose: 2000 }));
+        newArray = products.filter((prod) => prod.productId !== id);
+        break;
+      default:
+        break;
     }
   };
 
-  resetForm = () => {
-    if (this.state.paginationFor === "products") {
-      this.setState({
-        productId: 0,
-        name: "",
-        description: "",
-        stock: 0,
-        price: 0.01,
-        photo: [],
-        categoryRefId: this.state.categories[0].categoryId,
-      });
-    } else {
-      this.setState({
-        categoryId: 0,
-        name: "",
-      });
-    }
+  const toggleReload = () => {
+    setIsLoading(true);
   };
 
-  render() {
-    let page = this.state.isLoading ? (
-      <Loading />
-    ) : (
-      <DataContext.Provider
-        value={{
-          ...this.state,
-          handleInputs: this.handleInputs,
-          handleFile: this.handleFile,
-          setCustomValidity: this.setCustomValidity,
-          editProduct: this.editProduct,
-          editCategory: this.editCategory,
-          removeItem: this.removeItem,
-          postContent: this.postContent,
-        }}
-      >
-        {this.props.children}
-      </DataContext.Provider>
-    );
-    return <div>{page}</div>;
-  }
-}
+  return (
+    <DataContext.Provider
+      value={{
+        categories,
+        products,
+        removeItem,
+        toggleReload,
+        totalPages,
+        currPage,
+        changePage,
+        location,
+        toast,
+      }}
+    >
+      {props.children}
+    </DataContext.Provider>
+  );
+};
 
 export default DataContextProvider;

@@ -82,24 +82,6 @@ export class NavMenu extends Component {
                       <NavLink
                         tag={Link}
                         className="text-dark"
-                        to="/adminpanel/manageproductsredo"
-                      >
-                        ProductsRedo
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        tag={Link}
-                        className="text-dark"
-                        to="/adminpanel/managecategoriesredo"
-                      >
-                        CategoriesRedo
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        tag={Link}
-                        className="text-dark"
                         to="/adminpanel/manageproducts"
                       >
                         Products
