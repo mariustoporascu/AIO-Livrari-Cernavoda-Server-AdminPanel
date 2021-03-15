@@ -1,11 +1,14 @@
 import React, { useState, useContext, createContext, useEffect } from "react";
 import { DataContext } from "./DataContext";
 import axios from "axios";
+import { PaginationContext } from "./PaginationContext";
 
 export const FormHandlerContext = createContext();
 
 const FormHandlerContextProvider = (props) => {
   const { categories, toggleReload, location, toast } = useContext(DataContext);
+  const { totalPages, changePage } = useContext(PaginationContext);
+
   const [productId, setProductId] = useState(0);
   const [categoryId, setCategoryId] = useState(0);
   const [name, setName] = useState("");
@@ -120,6 +123,7 @@ const FormHandlerContextProvider = (props) => {
           .post("/AdminPanel/createproduct", form)
           .then(() => toast.success("Added", { autoClose: 2000 }))
           .catch(() => toast.error("Error", { autoClose: 2000 }));
+        changePage(totalPages.length);
       } else {
         form.append("productId", productId);
         await axios
@@ -133,6 +137,7 @@ const FormHandlerContextProvider = (props) => {
           .post("/AdminPanel/createcategory", form)
           .then(() => toast.success("Added", { autoClose: 2000 }))
           .catch(() => toast.error("Error", { autoClose: 2000 }));
+        changePage(totalPages.length);
       } else {
         form.append("categoryId", categoryId);
         await axios
@@ -145,12 +150,15 @@ const FormHandlerContextProvider = (props) => {
     toggleReload();
   };
 
-  const onEditProduct = (product) => {
+  const onEditShowForm = () => {
     let value = document.getElementById("addUpdate").style.display;
     if (value === "none") {
       document.getElementById("addUpdate").style.display = "";
       document.getElementById("addUpdateBtn").textContent = "Hide Form";
     }
+  };
+  const onEditProduct = (product) => {
+    onEditShowForm();
     setProductId(product.productId);
     setName(product.name);
     setDescription(product.description);
@@ -158,12 +166,9 @@ const FormHandlerContextProvider = (props) => {
     setPrice(product.price);
     setCategoryRefId(product.categoryRefId);
   };
+
   const onEditCategory = (category) => {
-    let value = document.getElementById("addUpdate").style.display;
-    if (value === "none") {
-      document.getElementById("addUpdate").style.display = "";
-      document.getElementById("addUpdateBtn").textContent = "Hide Form";
-    }
+    onEditShowForm();
     setCategoryId(category.categoryId);
     setName(category.name);
   };

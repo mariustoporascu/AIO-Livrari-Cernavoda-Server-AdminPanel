@@ -20,6 +20,7 @@ const ProductsForm = () => {
     setCustomValidity,
     resetForm,
   } = useContext(FormHandlerContext);
+
   let buttonType = !productId ? "Add New" : "Update";
   return (
     <div>

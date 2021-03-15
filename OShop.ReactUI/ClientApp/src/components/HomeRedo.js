@@ -1,14 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { NavLink } from "reactstrap";
 import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
 import "./Home.css";
+
+import { PaginationContext } from "../contexts/PaginationContext";
 import { DataContext } from "../contexts/DataContext";
 
 const Home = () => {
-  const { products, currPage, changePage } = useContext(DataContext);
-  const [pageItems, setPageItems] = useState([]);
-  const [findString, setFindString] = useState("");
+  const { pageItems } = useContext(PaginationContext);
+  const { findItems } = useContext(DataContext);
 
   const applyStock = (stock) => {
     if (stock > 5) return <div style={{ color: "darkblue" }}>In Stock</div>;
@@ -17,31 +18,6 @@ const Home = () => {
     else return <div style={{ color: "darkorange" }}>Limited Quantity</div>;
   };
 
-  useEffect(() => {
-    let finish = currPage * 12;
-    let start = currPage - 1;
-    if (products.length !== 0) {
-      if (!!findString) {
-        setPageItems(
-          products
-            .filter((prod) =>
-              prod.name.toLowerCase().includes(findString.toLowerCase())
-            )
-            .slice(start * 12, finish)
-        );
-        if (currPage !== 1) {
-          changePage(1);
-        }
-      } else {
-        setPageItems(products.slice(start * 12, finish));
-      }
-    }
-  }, [products, currPage, findString, changePage]);
-
-  const findItems = (event) => {
-    let name = event.target.value;
-    setFindString(name);
-  };
   // const addtocart = async (event) => {
   //   event.preventDefault();
   //   const form = new FormData(event.target);
@@ -57,7 +33,7 @@ const Home = () => {
         className="text-center"
         type="text"
         placeholder="Search product"
-        onChange={findItems}
+        onChange={(e) => findItems(e)}
       />
       <div id="main-page-products" className="row">
         {pageItems.map((product) => (

@@ -1,44 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { DataContext } from "../../../contexts/DataContext";
 import { FormHandlerContext } from "../../../contexts/FormHandlerContext";
+import { PaginationContext } from "../../../contexts/PaginationContext";
 
 const ProductsTable = () => {
-  const { products, removeItem, currPage, changePage } = useContext(
-    DataContext
-  );
+  const { pageItems } = useContext(PaginationContext);
+  const { findItems, removeItem } = useContext(DataContext);
   const { onEditProduct } = useContext(FormHandlerContext);
-  const [pageItems, setPageItems] = useState([]);
-  const [findString, setFindString] = useState("");
-
-  useEffect(() => {
-    let finish = currPage * 4;
-    let start = currPage - 1;
-    if (products.length !== 0) {
-      if (!!findString) {
-        setPageItems(
-          products
-            .filter((prod) =>
-              prod.name.toLowerCase().includes(findString.toLowerCase())
-            )
-            .slice(start * 4, finish)
-        );
-        if (currPage !== 1) {
-          changePage(1);
-        }
-      } else {
-        setPageItems(products.slice(start * 4, finish));
-      }
-    }
-  }, [products, currPage, findString, changePage]);
-
-  useEffect(() => {
-    setFindString("");
-  }, [products]);
-
-  const findItems = (event) => {
-    let name = event.target.value;
-    setFindString(name);
-  };
 
   return (
     <div>

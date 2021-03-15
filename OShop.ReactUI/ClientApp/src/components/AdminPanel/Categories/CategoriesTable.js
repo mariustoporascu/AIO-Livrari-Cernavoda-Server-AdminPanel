@@ -1,44 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { DataContext } from "../../../contexts/DataContext";
 import { FormHandlerContext } from "../../../contexts/FormHandlerContext";
+import { PaginationContext } from "../../../contexts/PaginationContext";
 
 const CategoriesTable = () => {
-  const { categories, removeItem, currPage, changePage } = useContext(
-    DataContext
-  );
+  const { pageItems } = useContext(PaginationContext);
+  const { findItems, removeItem } = useContext(DataContext);
   const { onEditCategory } = useContext(FormHandlerContext);
-  const [pageItems, setPageItems] = useState([]);
-  const [findString, setFindString] = useState("");
-
-  useEffect(() => {
-    let finish = currPage * 4;
-    let start = currPage - 1;
-    if (categories.length !== 0) {
-      if (!!findString) {
-        setPageItems(
-          categories
-            .filter((categ) =>
-              categ.name.toLowerCase().includes(findString.toLowerCase())
-            )
-            .slice(start * 4, finish)
-        );
-        if (currPage !== 1) {
-          changePage(1);
-        }
-      } else {
-        setPageItems(categories.slice(start * 4, finish));
-      }
-    }
-  }, [categories, currPage, findString, changePage]);
-
-  useEffect(() => {
-    setFindString("");
-  }, [categories]);
-
-  const findItems = (event) => {
-    let name = event.target.value;
-    setFindString(name);
-  };
 
   return (
     <div>

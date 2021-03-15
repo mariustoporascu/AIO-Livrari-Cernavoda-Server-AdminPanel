@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
-import Loading from "../components/Loading";
+
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,8 +14,7 @@ const DataContextProvider = (props) => {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [totalPages, setTotalPages] = useState([]);
-  const [currPage, setCurrPage] = useState(1);
+  const [findString, setFindString] = useState("");
 
   toast.configure();
   const location = useLocation();
@@ -41,44 +40,6 @@ const DataContextProvider = (props) => {
     populateData();
   }, [isLoading]);
 
-  useEffect(() => {
-    let paginationItems;
-    let itemsPerPage;
-
-    if (categories.length !== 0 && products.length !== 0) {
-      switch (location.pathname) {
-        case "/adminpanel/managecategories":
-          paginationItems = categories;
-          itemsPerPage = 4;
-          break;
-        case "/adminpanel/manageproducts":
-          paginationItems = products;
-          itemsPerPage = 4;
-          break;
-        default:
-          paginationItems = products;
-          itemsPerPage = 12;
-          break;
-      }
-      let totalItems = paginationItems.length;
-      let totPages = Math.ceil(totalItems / itemsPerPage);
-
-      let pages = [];
-      for (let i = 0; i < totPages; i++) {
-        pages.push(i + 1);
-      }
-      setTotalPages(pages);
-    }
-  }, [products, categories, location]);
-
-  useEffect(() => {
-    setCurrPage(1);
-  }, [location]);
-
-  const changePage = (value) => {
-    setCurrPage(value);
-  };
-
   const removeItem = async (id) => {
     let newArray;
     switch (location.pathname) {
@@ -89,7 +50,6 @@ const DataContextProvider = (props) => {
           .catch(() => toast.error("Error", { autoClose: 2000 }));
         newArray = categories.filter((categ) => categ.categoryId !== id);
         setCategories(newArray);
-
         break;
       case "/adminpanel/manageproducts":
         await axios
@@ -97,6 +57,7 @@ const DataContextProvider = (props) => {
           .then(() => toast.success("Removed", { autoClose: 2000 }))
           .catch(() => toast.error("Error", { autoClose: 2000 }));
         newArray = products.filter((prod) => prod.productId !== id);
+        setProducts(newArray);
         break;
       default:
         break;
@@ -105,6 +66,12 @@ const DataContextProvider = (props) => {
 
   const toggleReload = () => {
     setIsLoading(true);
+    return true;
+  };
+
+  const findItems = (event) => {
+    let name = event.target.value;
+    setFindString(name);
   };
 
   return (
@@ -114,9 +81,8 @@ const DataContextProvider = (props) => {
         products,
         removeItem,
         toggleReload,
-        totalPages,
-        currPage,
-        changePage,
+        findString,
+        findItems,
         location,
         toast,
       }}

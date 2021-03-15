@@ -1,14 +1,17 @@
 import React, { useContext, useEffect } from "react";
-import { DataContext } from "../contexts/DataContext";
+import { PaginationContext } from "../contexts/PaginationContext";
 
 const Pagination = () => {
-  const { totalPages, currPage, changePage } = useContext(DataContext);
+  const { totalPages, currPage, changePage } = useContext(PaginationContext);
+
   useEffect(() => {
-    console.log(totalPages.length);
-    if (currPage > totalPages.length) {
-      changePage(totalPages.length);
+    if (totalPages.length !== 0) {
+      if (currPage > totalPages.length) {
+        changePage(totalPages.length);
+      }
     }
-  }, [totalPages]);
+  }, [totalPages, currPage, changePage]);
+
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       {totalPages.map((page) => (

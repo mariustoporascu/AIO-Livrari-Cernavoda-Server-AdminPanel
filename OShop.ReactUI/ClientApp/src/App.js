@@ -14,6 +14,7 @@ import ApiAuthorizationRoutes from "./components/api-authorization/ApiAuthorizat
 import { ApplicationPaths } from "./components/api-authorization/ApiAuthorizationConstants";
 
 import "./custom.css";
+import PaginationContextProvider from "./contexts/PaginationContext";
 
 export default class App extends Component {
   static displayName = App.name;
@@ -22,21 +23,23 @@ export default class App extends Component {
     return (
       <DataContextProvider>
         <Layout>
-          <Route exact path="/" component={HomeRedo} />
-          <AuthorizeRoute
-            path="/adminpanel/manageproducts"
-            component={ManageProducts}
-          />
-          <AuthorizeRoute
-            path="/adminpanel/managecategories"
-            component={ManageCategories}
-          />
-          <Route
-            path={ApplicationPaths.ApiAuthorizationPrefix}
-            component={ApiAuthorizationRoutes}
-          />
-          <Route path="/shoppingcart" component={CartInfo} />
-          <Route path="/checkout" component={Checkout} />
+          <PaginationContextProvider>
+            <Route exact path="/" component={HomeRedo} />
+            <AuthorizeRoute
+              path="/adminpanel/manageproducts"
+              component={ManageProducts}
+            />
+            <AuthorizeRoute
+              path="/adminpanel/managecategories"
+              component={ManageCategories}
+            />
+            <Route
+              path={ApplicationPaths.ApiAuthorizationPrefix}
+              component={ApiAuthorizationRoutes}
+            />
+            <Route path="/shoppingcart" component={CartInfo} />
+            <Route path="/checkout" component={Checkout} />
+          </PaginationContextProvider>
         </Layout>
       </DataContextProvider>
     );
