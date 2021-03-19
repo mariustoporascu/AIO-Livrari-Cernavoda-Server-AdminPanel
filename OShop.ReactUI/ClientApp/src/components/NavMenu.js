@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useContext, useState } from "react";
 import {
   Collapse,
   Container,
@@ -8,117 +8,100 @@ import {
   NavItem,
   NavLink,
 } from "reactstrap";
-import { CartItemsForNavbar } from "./ShoppingCart/CartItemsForNavbar";
+
 import { Link } from "react-router-dom";
 import { LoginMenu } from "./api-authorization/LoginMenu";
 import "./NavMenu.css";
-import authService from "./api-authorization/AuthorizeService";
 import cart from "./static/cart.jpg";
+import { CartContext } from "../contexts/CartContext";
 
-export class NavMenu extends Component {
-  static displayName = NavMenu.name;
+const NavMenu = () => {
+  const [collapsed, setCollapsed] = useState(true);
+  const { userInfo, isAuthenticatedUser, cartItems } = useContext(CartContext);
 
-  constructor(props) {
-    super(props);
+  const toggleNavbar = () => {
+    setCollapsed(!collapsed);
+  };
 
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = {
-      collapsed: true,
-      isAuthenticated: false,
-      role: null,
-    };
-  }
-  componentDidMount() {
-    this._subscription = authService.subscribe(() => this.populateState());
-    this.populateState();
-  }
+  return (
+    <header>
+      <Navbar
+        className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3"
+        light
+      >
+        <Container>
+          <NavbarBrand tag={Link} to="/">
+            OShop.ReactUI
+          </NavbarBrand>
+          <NavbarToggler onClick={toggleNavbar} className="mr-2" />
+          <Collapse
+            className="d-sm-inline-flex flex-sm-row-reverse"
+            isOpen={!collapsed}
+            navbar
+          >
+            <ul className="navbar-nav flex-grow">
+              <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/">
+                  Home
+                </NavLink>
+              </NavItem>
+              {isAuthenticatedUser &&
+              userInfo &&
+              userInfo.role &&
+              userInfo.role.includes("SuperAdmin") ? (
+                <div style={{ display: "inline-flex" }}>
+                  <NavItem>
+                    <NavLink
+                      tag={Link}
+                      className="text-dark"
+                      to="/adminpanel/manageproducts"
+                    >
+                      Products
+                    </NavLink>
+                  </NavItem>
+                  <NavItem>
+                    <NavLink
+                      tag={Link}
+                      className="text-dark"
+                      to="/adminpanel/managecategories"
+                    >
+                      Categories
+                    </NavLink>
+                  </NavItem>
+                </div>
+              ) : null}
 
-  componentWillUnmount() {
-    authService.unsubscribe(this._subscription);
-  }
-  async populateState() {
-    const [isAuthenticated, user] = await Promise.all([
-      authService.isAuthenticated(),
-      authService.getUser(),
-    ]);
-    this.setState({
-      isAuthenticated,
-      role: user && user.role,
-    });
-  }
-
-  toggleNavbar() {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
-  }
-
-  render() {
-    return (
-      <header>
-        <Navbar
-          className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3"
-          light
-        >
-          <Container>
-            <NavbarBrand tag={Link} to="/">
-              OShop.ReactUI
-            </NavbarBrand>
-            <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-            <Collapse
-              className="d-sm-inline-flex flex-sm-row-reverse"
-              isOpen={!this.state.collapsed}
-              navbar
-            >
-              <ul className="navbar-nav flex-grow">
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/">
-                    Home
-                  </NavLink>
-                </NavItem>
-                {this.state.role && this.state.role.includes("SuperAdmin") ? (
-                  <div style={{ display: "inline-flex" }}>
-                    <NavItem>
-                      <NavLink
-                        tag={Link}
-                        className="text-dark"
-                        to="/adminpanel/manageproducts"
-                      >
-                        Products
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        tag={Link}
-                        className="text-dark"
-                        to="/adminpanel/managecategories"
-                      >
-                        Categories
-                      </NavLink>
-                    </NavItem>
-                  </div>
-                ) : null}
-
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/shoppingcart">
-                    <img
-                      style={{
-                        width: 25 + "px",
-                        height: 25 + "px",
-                        objectFit: "cover",
-                      }}
-                      src={cart}
-                      alt="cart"
-                    />
-                    <CartItemsForNavbar />
-                  </NavLink>
-                </NavItem>
-                <LoginMenu />
-              </ul>
-            </Collapse>
-          </Container>
-        </Navbar>
-      </header>
-    );
-  }
-}
+              <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/shoppingcart">
+                  <img
+                    style={{
+                      width: 25 + "px",
+                      height: 25 + "px",
+                      objectFit: "cover",
+                    }}
+                    src={cart}
+                    alt="cart"
+                  />
+                  <span
+                    style={{
+                      backgroundColor: "yellow",
+                      fontSize: 0.8 + "em",
+                      borderRadius: 1 + "em",
+                      position: "relative",
+                      top: 1 + "em",
+                      right: 0.5 + "em",
+                    }}
+                  >
+                    {cartItems.length}
+                  </span>
+                </NavLink>
+              </NavItem>
+              <LoginMenu />
+            </ul>
+          </Collapse>
+        </Container>
+      </Navbar>
+    </header>
+  );
+};
+export default NavMenu;

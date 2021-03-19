@@ -38,20 +38,20 @@ namespace OShop.Database
             modelBuilder.Entity<CartItems>().HasOne<ShoppingCart>(cp => cp.ShoppingCart)
                 .WithMany(c => c.CartItems)
                 .HasForeignKey(cp => cp.CartRefId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<CartItems>().HasOne<Product>(cp => cp.Products)
                 .WithMany(p => p.CartItems)
                 .HasForeignKey(cp => cp.ProductRefId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ProductInOrder>().HasKey(cp => new { cp.OrderRefId, cp.ProductRefId });
             modelBuilder.Entity<ProductInOrder>().HasOne<Order>(cp => cp.Orders)
                 .WithMany(c => c.ProductInOrders)
                 .HasForeignKey(cp => cp.OrderRefId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ProductInOrder>().HasOne<Product>(cp => cp.Products)
                 .WithMany(p => p.ProductInOrders)
                 .HasForeignKey(cp => cp.ProductRefId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Order>().HasOne(oi => oi.OrderInfos)
                 .WithOne(o => o.Orders)
                 .HasForeignKey<OrderInfo>(oi => oi.OrderRefId)

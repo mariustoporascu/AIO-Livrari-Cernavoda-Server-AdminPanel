@@ -1,7 +1,5 @@
 import React, { useContext } from "react";
 import { DataContext } from "../../../contexts/DataContext";
-import "react-toastify/dist/ReactToastify.css";
-
 import { FormHandlerContext } from "../../../contexts/FormHandlerContext";
 
 const ProductsForm = () => {

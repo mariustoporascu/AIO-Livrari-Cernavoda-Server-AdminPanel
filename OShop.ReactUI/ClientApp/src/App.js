@@ -2,46 +2,41 @@ import React, { Component } from "react";
 import { Route } from "react-router";
 import { Layout } from "./components/Layout";
 
-import HomeRedo from "./components/HomeRedo";
+import Home from "./components/Home";
 import ManageProducts from "./components/AdminPanel/Products/ManageProducts";
 import ManageCategories from "./components/AdminPanel/Categories/ManageCategories";
-import { CartInfo } from "./components/ShoppingCart/CartInfo";
-import { Checkout } from "./components/ShoppingCart/Checkout";
+import CartInfo from "./components/ShoppingCart/CartInfo";
+import Checkout from "./components/ShoppingCart/Checkout";
 
-import DataContextProvider from "./contexts/DataContext";
 import AuthorizeRoute from "./components/api-authorization/AuthorizeRoute";
 import ApiAuthorizationRoutes from "./components/api-authorization/ApiAuthorizationRoutes";
 import { ApplicationPaths } from "./components/api-authorization/ApiAuthorizationConstants";
 
 import "./custom.css";
-import PaginationContextProvider from "./contexts/PaginationContext";
 
 export default class App extends Component {
   static displayName = App.name;
 
   render() {
     return (
-      <DataContextProvider>
-        <Layout>
-          <PaginationContextProvider>
-            <Route exact path="/" component={HomeRedo} />
-            <AuthorizeRoute
-              path="/adminpanel/manageproducts"
-              component={ManageProducts}
-            />
-            <AuthorizeRoute
-              path="/adminpanel/managecategories"
-              component={ManageCategories}
-            />
-            <Route
-              path={ApplicationPaths.ApiAuthorizationPrefix}
-              component={ApiAuthorizationRoutes}
-            />
-            <Route path="/shoppingcart" component={CartInfo} />
-            <Route path="/checkout" component={Checkout} />
-          </PaginationContextProvider>
-        </Layout>
-      </DataContextProvider>
+      <Layout>
+        <Route exact path="/" component={Home} />
+
+        <AuthorizeRoute
+          path="/adminpanel/manageproducts"
+          component={ManageProducts}
+        />
+        <AuthorizeRoute
+          path="/adminpanel/managecategories"
+          component={ManageCategories}
+        />
+        <Route
+          path={ApplicationPaths.ApiAuthorizationPrefix}
+          component={ApiAuthorizationRoutes}
+        />
+        <Route path="/shoppingcart" component={CartInfo} />
+        <Route path="/checkout" component={Checkout} />
+      </Layout>
     );
   }
 }

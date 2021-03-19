@@ -1,98 +1,58 @@
 ﻿/*eslint unicode-bom: ["error", "always"]*/
 import axios from "axios";
-import React, { Component } from "react";
-import authService from "../api-authorization/AuthorizeService";
-import Loading from "../Loading";
+import React, { useContext, useEffect, useState } from "react";
+
 import OrderInfo from "./OrderInfo";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-toast.configure();
+import { CartContext } from "../../contexts/CartContext";
+import { DataContext } from "../../contexts/DataContext";
 
-export class CartInfo extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isAuthenticated: false,
-      customerId: null,
-      cart: [],
-      cartItems: [],
-      products: [],
-      loading: true,
-    };
-  }
-  componentDidMount() {
-    this._subscription = authService.subscribe(() => this.populateState());
-    this.populateState();
-  }
+import { Link } from "react-router-dom";
 
-  async populateState() {
-    const [isAuthenticated, user] = await Promise.all([
-      authService.isAuthenticated(),
-      authService.getUser(),
-    ]);
-    this.setState({
-      isAuthenticated,
-      customerId: user && user.sub,
-    });
-    await axios
-      .get("ShoppingCart/getcart/" + this.state.customerId)
-      .then((response) => this.setState({ cart: response.data }))
-      .catch((error) => console.log(error));
-    await axios
-      .get("ShoppingCart/getproductincart/" + this.state.cart.cartId)
-      .then((response) => this.setState({ products: response.data }))
-      .catch((error) => console.log(error));
-    await axios
-      .get("ShoppingCart/getcartitems/" + this.state.cart.cartId)
-      .then((response) =>
-        this.setState({ cartItems: response.data, loading: false })
-      )
-      .catch((error) => console.log(error));
-  }
-  updateQuantity = async (event) => {
+const CartInfo = () => {
+  const { cart, cartItems, productsInCart, toggleReload } = useContext(
+    CartContext
+  );
+  const { toast } = useContext(DataContext);
+  const [quantity, setQuantity] = useState([]);
+
+  useEffect(() => {
+    let quantitySelection = [];
+    for (var i = 1; i < 21; i++) {
+      quantitySelection.push(i);
+    }
+    setQuantity(quantitySelection);
+  }, []);
+
+  const updateQuantity = async (event) => {
     var productRefId = parseInt(event.target.name);
     var newQuantity = parseInt(event.target.value);
     var price = parseFloat(event.target.id);
-    this.setState({ loading: true });
-
-    var cartIndex = this.state.cartItems.findIndex(
+    var cartIndex = cartItems.findIndex(
       (obj) => obj.productRefId === productRefId
     );
-
-    var prevCartItem = this.state.cartItems[cartIndex];
+    var prevCartItem = cartItems[cartIndex];
 
     const form = new FormData();
-    form.append("cartRefId", this.state.cart.cartId);
+    form.append("cartRefId", cart.cartId);
     form.append("productRefId", productRefId);
     form.append("quantity", newQuantity);
     form.append("price", price);
     form.append("prevQuantity", prevCartItem.quantity);
-    var newTotal =
-      this.state.cart.totalInCart +
-      (newQuantity - prevCartItem.quantity) * price;
-    this.setState((prevState) => ({
-      cartItems: prevState.cartItems.map((obj) =>
-        obj.productRefId === productRefId
-          ? Object.assign(obj, { quantity: parseInt(newQuantity) })
-          : obj
-      ),
-      cart: Object.assign(prevState.cart, { totalInCart: newTotal }),
-    }));
     await axios
       .put("ShoppingCart/updatecartitem/", form)
       .then(() => toast.success("Updated", { autoClose: 2000 }))
       .catch(() => toast.error("Error", { autoClose: 2000 }));
-    this.setState({ loading: false });
+
+    toggleReload();
   };
 
-  removeCartItem = async (event) => {
-    var cartIndex = this.state.cartItems.findIndex(
+  const removeCartItem = async (event) => {
+    var cartIndex = cartItems.findIndex(
       (obj) => obj.productRefId === parseInt(event.target.value)
     );
-    var cartItem = this.state.cartItems[cartIndex];
-    var productPrice = this.state.products[cartIndex].price;
-    this.setState({ loading: true });
+    var cartItem = cartItems[cartIndex];
+    var productPrice = productsInCart[cartIndex].price;
 
     await axios
       .delete("ShoppingCart/removecartitem", {
@@ -105,24 +65,16 @@ export class CartInfo extends Component {
       })
       .then(() => toast.success("Removed", { autoClose: 2000 }))
       .catch(() => toast.error("Error", { autoClose: 2000 }));
-    this.state.cartItems.splice(cartIndex, 1);
-    this.state.products.splice(cartIndex, 1);
-    this.setState({ loading: false });
+
+    toggleReload();
   };
 
-  componentWillUnmount() {
-    authService.unsubscribe(this._subscription);
-  }
-  render() {
-    let quantitySelection = [];
-    for (var i = 1; i < 21; i++) {
-      quantitySelection.push(i);
-    }
-    let cart = this.state.loading ? (
-      <Loading />
-    ) : (
-      <div>
-        <h1>Shopping Cart</h1>
+  return (
+    <div>
+      <h1>Shopping Cart</h1>
+      {cart.length !== 0 &&
+      cartItems.length !== 0 &&
+      productsInCart.length !== 0 ? (
         <table className="table table-striped">
           <thead>
             <tr>
@@ -134,7 +86,7 @@ export class CartInfo extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.products.map((product) => (
+            {productsInCart.map((product) => (
               <tr key={product.productId}>
                 <td>{product.name}</td>
                 <td>
@@ -142,15 +94,14 @@ export class CartInfo extends Component {
                     id={product.price}
                     name={product.productId}
                     value={
-                      this.state.cartItems.filter(
+                      cartItems.filter(
                         (item) => item.productRefId === product.productId
                       )[0].quantity
                     }
                     className="form-select"
-                    size="3"
-                    onChange={this.updateQuantity}
+                    onChange={updateQuantity}
                   >
-                    {quantitySelection.map((select) => (
+                    {quantity.map((select) => (
                       <option key={select} value={select}>
                         {select}
                       </option>
@@ -160,7 +111,7 @@ export class CartInfo extends Component {
                 <td>
                   {(
                     product.price *
-                    this.state.cartItems.filter(
+                    cartItems.filter(
                       (item) => item.productRefId === product.productId
                     )[0].quantity
                   ).toFixed(2)}
@@ -183,7 +134,7 @@ export class CartInfo extends Component {
                     type="submit"
                     value={product.productId}
                     className="btn btn-outline-danger btn-sm"
-                    onClick={this.removeCartItem}
+                    onClick={removeCartItem}
                   >
                     Remove
                   </button>
@@ -197,13 +148,27 @@ export class CartInfo extends Component {
               <th></th>
               <th></th>
               <th></th>
-              <th>Total: {this.state.cart.totalInCart.toFixed(2)}</th>
+              <th>Total: {cart.totalInCart.toFixed(2)}</th>
             </tr>
           </tfoot>
         </table>
-        <OrderInfo customer={this.state.customerId} />
-      </div>
-    );
-    return <div>{cart}</div>;
-  }
-}
+      ) : (
+        <div className="text-center">
+          <h4 style={{ marginTop: 20 + "%" }}>Your cart is empty</h4>
+
+          <Link
+            tag={Link}
+            className="btn btn-info"
+            style={{ margin: 1 + "em" }}
+            to="/"
+          >
+            Continue Shopping
+          </Link>
+        </div>
+      )}
+      {cartItems.length !== 0 ? <OrderInfo /> : null}
+    </div>
+  );
+};
+
+export default CartInfo;

@@ -14,7 +14,6 @@ const PaginationContextProvider = (props) => {
   const [itemsPerPage, setItemsPerPage] = useState(0);
   const [totalPages, setTotalPages] = useState([]);
   const [currPage, setCurrPage] = useState(1);
-  //const [currLocation, setCurrLocation] = useState("");
 
   useEffect(() => {
     switch (location.pathname) {
@@ -36,7 +35,23 @@ const PaginationContextProvider = (props) => {
   }, [products, categories, location.pathname]);
 
   useEffect(() => {
-    if (paginationItems.length !== 0 && itemsPerPage !== 0) {
+    if (contextItems.length !== 0) {
+      if (!!findString) {
+        setPaginationItems(
+          contextItems.filter((obj) =>
+            obj.name.toLowerCase().includes(findString.toLowerCase())
+          )
+        );
+
+        changePage(1);
+      } else {
+        setPaginationItems(contextItems);
+      }
+    }
+  }, [findString, contextItems]);
+
+  useEffect(() => {
+    if (itemsPerPage !== 0 && paginationItems.length !== 0) {
       let totalItems = paginationItems.length;
       let totPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -46,24 +61,7 @@ const PaginationContextProvider = (props) => {
       }
       setTotalPages(pages);
     }
-  }, [itemsPerPage, paginationItems]);
-
-  useEffect(() => {
-    if (contextItems.length !== 0) {
-      if (!!findString) {
-        setPaginationItems(
-          contextItems.filter((obj) =>
-            obj.name.toLowerCase().includes(findString.toLowerCase())
-          )
-        );
-        if (currPage !== 1) {
-          changePage(1);
-        }
-      } else {
-        setPaginationItems(contextItems);
-      }
-    }
-  }, [findString, contextItems]);
+  }, [paginationItems, itemsPerPage]);
 
   useEffect(() => {
     if (itemsPerPage !== 0 && paginationItems.length !== 0) {
@@ -76,6 +74,7 @@ const PaginationContextProvider = (props) => {
   useEffect(() => {
     setCurrPage(1);
   }, [location.pathname]);
+
   const changePage = (value) => {
     setCurrPage(value);
   };

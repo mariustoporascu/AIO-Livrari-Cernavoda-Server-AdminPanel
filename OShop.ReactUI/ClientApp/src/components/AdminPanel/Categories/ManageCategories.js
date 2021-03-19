@@ -1,5 +1,4 @@
 import React from "react";
-
 import Pagination from "../../Pagination";
 import FormHandlerContextProvider from "../../../contexts/FormHandlerContext";
 import CategoriesForm from "./CategoriesForm";

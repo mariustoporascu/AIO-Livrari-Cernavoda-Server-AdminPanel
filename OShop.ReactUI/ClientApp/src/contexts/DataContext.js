@@ -1,9 +1,9 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
-
 import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
+import { useLocation } from "react-router-dom";
+
 //import { LoginActions } from "../components/api-authorization/ApiAuthorizationConstants";
 
 export const DataContext = createContext();
@@ -34,7 +34,7 @@ const DataContextProvider = (props) => {
         })
         .catch((error) => console.log(error));
       if (isLoading) {
-        setIsLoading(false);
+        setIsLoading(!isLoading);
       }
     };
     populateData();
@@ -65,8 +65,7 @@ const DataContextProvider = (props) => {
   };
 
   const toggleReload = () => {
-    setIsLoading(true);
-    return true;
+    setIsLoading(!isLoading);
   };
 
   const findItems = (event) => {

@@ -42,7 +42,7 @@ namespace OShop.ReactUI.Controllers
             if (cookieValueFromContext != null)
             {
                 var cookieCart = new GetShoppingCart(_context).Do(cookieValueFromContext);
-                if (currUser != "null" && cookieCart != null)
+                if (currUser != "undefined" && cookieCart != null)
                 {
                     var userCart = new GetShoppingCart(_context).Do(currUser);
                     if (cookieCart.CustomerId != currUser && userCart == null)
@@ -66,7 +66,7 @@ namespace OShop.ReactUI.Controllers
                 else
                     return Ok(cookieCart);
             }
-            else if (currUser != "null")
+            else if (currUser != "undefined")
             {
                 var usercart = new GetShoppingCart(_context).Do(currUser);
                 if (usercart == null)
@@ -85,6 +85,9 @@ namespace OShop.ReactUI.Controllers
                 var userId = Guid.NewGuid().ToString();
                 var option = new CookieOptions();
                 option.Expires = DateTime.Now.AddDays(10);
+                option.SameSite = SameSiteMode.Strict;
+                option.Secure = false;
+                option.HttpOnly = true;
                 Response.Cookies.Append("anonymousUsr", userId, option);
                 await new CreateShoppingCart(_context).Do(new ShoppingCartViewModel
                 {
@@ -150,7 +153,7 @@ namespace OShop.ReactUI.Controllers
         public async Task<IActionResult> GetOrderInfo(string customerId)
         {
             var currUser = customerId;
-            if (currUser == "null")
+            if (currUser == "undefined")
             {
                 currUser = _httpContextAccessor.HttpContext.Request.Cookies["anonymousUsr"];
             }
