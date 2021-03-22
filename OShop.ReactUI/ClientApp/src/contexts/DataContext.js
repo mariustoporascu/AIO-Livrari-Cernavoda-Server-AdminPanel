@@ -11,9 +11,7 @@ export const DataContext = createContext();
 const DataContextProvider = (props) => {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-
   const [isLoading, setIsLoading] = useState(true);
-
   const [findString, setFindString] = useState("");
 
   toast.configure();

@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { NavLink } from "reactstrap";
 import { Link } from "react-router-dom";
 import Pagination from "./Pagination";
 import "./Home.css";
@@ -33,7 +32,7 @@ const Home = () => {
       .catch(() => toast.error("Already in cart", { autoClose: 2000 }));
   };
 
-  return (
+  return pageItems.length !== 0 ? (
     <div>
       <input
         className="text-center"
@@ -48,7 +47,13 @@ const Home = () => {
             id="products"
             className="col-lg-4 col-md-4 col-sm-6"
           >
-            <NavLink tag={Link} to="/">
+            <Link
+              tag={Link}
+              to={{
+                pathname: `viewproduct/${product.name}`,
+                query: { id: product.productId },
+              }}
+            >
               <img
                 style={{
                   width: 130 + "px",
@@ -58,10 +63,12 @@ const Home = () => {
                 src={`WebImage/GetImage/${product.photo}`}
                 alt="product"
               />
-            </NavLink>
-            <NavLink
-              tag={Link}
-              to="/"
+            </Link>
+            <Link
+              to={{
+                pathname: `viewproduct/${product.name}`,
+                query: { id: product.productId },
+              }}
               style={{
                 textDecoration: "none",
                 fontSize: 20 + "px",
@@ -69,25 +76,22 @@ const Home = () => {
               }}
             >
               {product.name}
-            </NavLink>
+            </Link>
             <div style={{ fontSize: 16 + "px", color: "darkblue" }}>
               {product.price} $
             </div>
             {applyStock(product.stock)}
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <NavLink
+              <Link
                 tag={Link}
-                to="/"
-                className="btn btn-outline-success btn-sm"
-                style={{
-                  paddingLeft: 8 + "px",
-                  paddingRight: 8 + "px",
-                  paddingTop: 4 + "px",
-                  paddingBottom: 4 + "px",
+                to={{
+                  pathname: `viewproduct/${product.name}`,
+                  query: { id: product.productId },
                 }}
+                className="btn btn-outline-success btn-sm"
               >
                 View Details
-              </NavLink>
+              </Link>
               <form onSubmit={(e) => addtocart(e)}>
                 <input
                   type="hidden"
@@ -101,12 +105,14 @@ const Home = () => {
                 />
                 <input type="hidden" name="Quantity" value="1" />
                 <input type="hidden" name="Price" value={product.price} />
-                <button
-                  className="btn btn-outline-primary btn-sm"
-                  type="submit"
-                >
-                  Add To Cart
-                </button>
+                {product.stock !== 0 ? (
+                  <button
+                    className="btn btn-outline-primary btn-sm"
+                    type="submit"
+                  >
+                    Add To Cart
+                  </button>
+                ) : null}
               </form>
             </div>
           </div>
@@ -114,7 +120,7 @@ const Home = () => {
       </div>
       <Pagination></Pagination>
     </div>
-  );
+  ) : null;
 };
 
 export default Home;

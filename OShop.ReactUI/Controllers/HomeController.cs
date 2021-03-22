@@ -16,6 +16,6 @@ namespace OShop.ReactUI.Controllers
 
         }
         [HttpGet("getallproducts")]
-        public IActionResult ManageProducts() => Ok(new GetAllProducts(_context).Do(0));
+        public IActionResult ManageProducts() => Ok(new GetAllProducts(_context).Do(0,0));
     }
 }

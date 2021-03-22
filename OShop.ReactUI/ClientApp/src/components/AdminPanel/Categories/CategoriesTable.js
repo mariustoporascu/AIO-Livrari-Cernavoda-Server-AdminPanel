@@ -8,7 +8,7 @@ const CategoriesTable = () => {
   const { findItems, removeItem } = useContext(DataContext);
   const { onEditCategory } = useContext(FormHandlerContext);
 
-  return (
+  return pageItems.length !== 0 ? (
     <div>
       <input
         className="text-center"
@@ -68,7 +68,7 @@ const CategoriesTable = () => {
         </tbody>
       </table>
     </div>
-  );
+  ) : null;
 };
 
 export default CategoriesTable;

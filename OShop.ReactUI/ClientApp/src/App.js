@@ -13,6 +13,8 @@ import ApiAuthorizationRoutes from "./components/api-authorization/ApiAuthorizat
 import { ApplicationPaths } from "./components/api-authorization/ApiAuthorizationConstants";
 
 import "./custom.css";
+import ViewProduct from "./components/ViewProduct";
+import ManageOrders from "./components/AdminPanel/Orders/ManageOrders";
 
 export default class App extends Component {
   static displayName = App.name;
@@ -21,7 +23,7 @@ export default class App extends Component {
     return (
       <Layout>
         <Route exact path="/" component={Home} />
-
+        <Route path="/viewproduct/:name" component={ViewProduct} />
         <AuthorizeRoute
           path="/adminpanel/manageproducts"
           component={ManageProducts}
@@ -29,6 +31,10 @@ export default class App extends Component {
         <AuthorizeRoute
           path="/adminpanel/managecategories"
           component={ManageCategories}
+        />
+        <AuthorizeRoute
+          path="/adminpanel/manageorders"
+          component={ManageOrders}
         />
         <Route
           path={ApplicationPaths.ApiAuthorizationPrefix}

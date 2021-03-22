@@ -1,4 +1,3 @@
-﻿/*eslint unicode-bom: ["error", "always"]*/
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 
@@ -14,15 +13,22 @@ const CartInfo = () => {
     CartContext
   );
   const { toast } = useContext(DataContext);
-  const [quantity, setQuantity] = useState([]);
 
-  useEffect(() => {
+  const selectQuantity = (product) => {
     let quantitySelection = [];
-    for (var i = 1; i < 21; i++) {
-      quantitySelection.push(i);
+    let max = product.stock;
+    var i;
+    if (max < 20) {
+      for (i = 1; i < max; i++) {
+        quantitySelection.push(i);
+      }
+    } else {
+      for (i = 1; i < 21; i++) {
+        quantitySelection.push(i);
+      }
     }
-    setQuantity(quantitySelection);
-  }, []);
+    return quantitySelection;
+  };
 
   const updateQuantity = async (event) => {
     var productRefId = parseInt(event.target.name);
@@ -101,7 +107,7 @@ const CartInfo = () => {
                     className="form-select"
                     onChange={updateQuantity}
                   >
-                    {quantity.map((select) => (
+                    {selectQuantity(product).map((select) => (
                       <option key={select} value={select}>
                         {select}
                       </option>

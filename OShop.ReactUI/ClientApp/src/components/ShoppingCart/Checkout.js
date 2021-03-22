@@ -1,18 +1,16 @@
 import axios from "axios";
-import React, { Component, useContext } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../../contexts/CartContext";
 import { DataContext } from "../../contexts/DataContext";
-import authService from "../api-authorization/AuthorizeService";
-import Loading from "../Loading";
 
 const Checkout = () => {
   const { toast } = useContext(DataContext);
   const {
+    userInfo,
     cart,
     cartItems,
     productsInCart,
-
     firstName,
     lastName,
     address,
@@ -36,7 +34,7 @@ const Checkout = () => {
         })
       )
       .catch((error) => console.log(error));
-    if (!!cart.customerId) {
+    if (userInfo !== "undefined") {
       setTimeout(function () {
         const redirectUrl = `${window.location.origin}/Identity/Account/Manage/Orders`;
 

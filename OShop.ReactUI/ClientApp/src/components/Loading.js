@@ -1,4 +1,3 @@
-﻿/*eslint unicode-bom: ["error", "always"]*/
 import React, { Component } from "react";
 
 export default class Loading extends Component {

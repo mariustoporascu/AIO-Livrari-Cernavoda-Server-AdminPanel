@@ -89,17 +89,18 @@ const CartContextProvider = (props) => {
           .then((response) => (orderInfo = response.data))
           .catch((error) => console.log(error));
       }
-
-      if (!!orderInfo.orderInfoId) {
-        setOrderInfoId(orderInfo.orderInfoId);
-        setFirstName(orderInfo.firstName);
-        setLastName(orderInfo.lastName);
-        setAddress(orderInfo.address);
-        setPhoneNo(orderInfo.phoneNo);
-        setOrderRefId(orderInfo.orderRefId);
-        setDisabledBtn(false);
-      } else {
-        setOrderRefId(orderInfo.orderRefId);
+      if (orderInfo.length !== 0) {
+        if (!!orderInfo.orderInfoId) {
+          setOrderInfoId(orderInfo.orderInfoId);
+          setFirstName(orderInfo.firstName);
+          setLastName(orderInfo.lastName);
+          setAddress(orderInfo.address);
+          setPhoneNo(orderInfo.phoneNo);
+          setOrderRefId(orderInfo.orderRefId);
+          setDisabledBtn(false);
+        } else {
+          setOrderRefId(orderInfo.orderRefId);
+        }
       }
     };
     if (!!userInfo) {

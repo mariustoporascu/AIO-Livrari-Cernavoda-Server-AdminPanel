@@ -14,13 +14,30 @@ namespace OShop.Application.Products
             _context = context;
         }
 
-        public IEnumerable<ProductVMUI> Do(int cartId)
+        public IEnumerable<ProductVMUI> Do(int cartId,int orderId)
         {
             if (cartId > 0)
             {
                 var cartItems = _context.CartItems.AsNoTracking().Where(cart => cart.CartRefId == cartId);
 
                 return _context.Products.AsNoTracking().Where(prod => cartItems.Select(cartItem => cartItem.ProductRefId)
+                    .Contains(prod.ProductId)).Select(prod => new ProductVMUI
+                {
+                    ProductId = prod.ProductId,
+                    Name = prod.Name,
+                    Description = prod.Description,
+                    Stock = prod.Stock,
+                    Price = prod.Price,
+                    Photo = prod.Photo,
+                    CategoryRefId = prod.CategoryRefId,
+                });
+            }
+            if(orderId>0){
+                var productsInOrder = _context.ProductInOrders.AsNoTracking()
+                    .Where(prod => prod.OrderRefId == orderId);
+
+                return _context.Products.AsNoTracking().Where(prod => productsInOrder
+                    .Select(product => product.ProductRefId)
                     .Contains(prod.ProductId)).Select(prod => new ProductVMUI
                 {
                     ProductId = prod.ProductId,

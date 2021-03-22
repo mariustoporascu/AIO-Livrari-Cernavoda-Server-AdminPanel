@@ -1,14 +1,30 @@
 ﻿#main-page-products {
-    display: flex;
-    flex-flow: row wrap;
+  display: flex;
+  flex-flow: row wrap;
 }
 #products {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 180px;
-    border: 1px solid #808080;
-    border-radius: 10px;
-    margin: 5px;
-    padding: 5px
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 180px;
+  border: 1px solid #808080;
+  border-radius: 10px;
+  margin: 5px;
+  padding: 5px;
+}
+#productviewleft {
+  position: relative;
+  float: left;
+  text-align: center;
+}
+
+#productviewleft *,
+#productviewright * {
+  margin: 5px;
+}
+
+#productviewright {
+  position: relative;
+  float: left;
+  text-align: left;
 }

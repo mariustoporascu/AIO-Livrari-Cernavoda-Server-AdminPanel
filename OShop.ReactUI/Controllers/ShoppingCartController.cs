@@ -98,7 +98,7 @@ namespace OShop.ReactUI.Controllers
         }
 
         [HttpGet("getproductincart/{cartId}")]
-        public IActionResult GetProductsInCart(int cartId) => Ok(new GetAllProducts(_context).Do(cartId));
+        public IActionResult GetProductsInCart(int cartId) => Ok(new GetAllProducts(_context).Do(cartId,0));
 
 
         [HttpGet("getcartitems/{cartId}")]
@@ -201,7 +201,7 @@ namespace OShop.ReactUI.Controllers
                 await new UpdateOrder(_context).Do(vm);
                 var ShoppingCart = new GetShoppingCart(_context).Do(vm.CustomerId);
                 var CartItems = new GetCartItems(_context).Do(ShoppingCart.CartId);
-                var Products = new GetAllProducts(_context).Do(ShoppingCart.CartId)
+                var Products = new GetAllProducts(_context).Do(ShoppingCart.CartId,0)
                     .Where(prod => CartItems.Select(cartItem => cartItem.ProductRefId)
                     .Contains(prod.ProductId));
 

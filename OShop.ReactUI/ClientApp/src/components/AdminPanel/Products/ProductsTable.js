@@ -8,7 +8,7 @@ const ProductsTable = () => {
   const { findItems, removeItem } = useContext(DataContext);
   const { onEditProduct } = useContext(FormHandlerContext);
 
-  return (
+  return pageItems.length !== 0 ? (
     <div>
       <input
         className="text-center"
@@ -70,7 +70,7 @@ const ProductsTable = () => {
         </tbody>
       </table>
     </div>
-  );
+  ) : null;
 };
 
 export default ProductsTable;

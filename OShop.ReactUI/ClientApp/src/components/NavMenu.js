@@ -68,6 +68,15 @@ const NavMenu = () => {
                       Categories
                     </NavLink>
                   </NavItem>
+                  <NavItem>
+                    <NavLink
+                      tag={Link}
+                      className="text-dark"
+                      to="/adminpanel/manageorders"
+                    >
+                      Orders
+                    </NavLink>
+                  </NavItem>
                 </div>
               ) : null}
 

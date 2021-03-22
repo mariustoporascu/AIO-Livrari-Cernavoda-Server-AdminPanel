@@ -15,7 +15,7 @@ namespace OShop.Application.Orders
         }
 
         public IEnumerable<OrderViewModel> Do() =>
-            _context.Orders.AsNoTracking().ToList().Select(order => new OrderViewModel
+            _context.Orders.AsNoTracking().ToList().Where(order => order.Status!="Pending").Select(order => new OrderViewModel
             {
                 OrderId = order.OrderId,
                 Status = order.Status,
