@@ -1,5 +1,5 @@
 # TMOnlineShop
-OnlineShop in ASP.NET Core
+OnlineShop in ASP.NET Core + React.js
 
 •	Used Visual Studio Code to develop using C#, HTML, JavaScript and CSS programming languages.
 
