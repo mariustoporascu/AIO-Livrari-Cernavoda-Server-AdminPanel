@@ -10,3 +10,5 @@ OnlineShop in ASP.NET Core
 •	Technologies used : ASP.Net Core, Entity Framework, React.js.
 
 •	Database used is MySQL.
+
+Link to website: https://onlineshopmarius.azurewebsites.net/
