@@ -20,7 +20,7 @@ namespace OShop.Database
             //Seed Default User
             var defaultUser = new ApplicationUser
             {
-                UserName = "superadmin",
+                UserName = "superadmin@gmail.com",
                 Email = "superadmin@gmail.com",
                 FirstName = "Marius",
                 LastName = "Toporascu",
@@ -32,7 +32,7 @@ namespace OShop.Database
                 var user = await userManager.FindByEmailAsync(defaultUser.Email);
                 if (user == null)
                 {
-                    await userManager.CreateAsync(defaultUser, "password");
+                    await userManager.CreateAsync(defaultUser, "BambalMara@2");
                     await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Customer.ToString());
                     await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Moderator.ToString());
                     await userManager.AddToRoleAsync(defaultUser, Enums.Roles.Admin.ToString());

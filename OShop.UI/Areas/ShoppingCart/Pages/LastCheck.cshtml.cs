@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using OShop.Application.CartItemsA;
 using OShop.Application.Categories;
+using OShop.Application.FileManager;
 using OShop.Application.OrderInfos;
 using OShop.Application.Orders;
 using OShop.Application.Products;
@@ -20,16 +21,17 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
     [Authorize(Roles = "Customer")]
     public class LastCheckModel : PageModel
     {
-
+        private readonly IFileManager _fileManager;
         private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
 
-        public LastCheckModel( OnlineShopDbContext context,
-            UserManager<ApplicationUser> userManager
-)
+        public LastCheckModel(OnlineShopDbContext context,
+            UserManager<ApplicationUser> userManager,
+            IFileManager fileManager
+            )
         {
-
+            _fileManager = fileManager;
             _context = context;
             _userManager = userManager;
 
@@ -56,10 +58,10 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
             var currUser = _userManager.GetUserId(User);
             ShoppingCart = new GetShoppingCart(_context).Do(currUser);
             CartItems = new GetCartItems(_context).Do(ShoppingCart.CartId);
-            Products = new GetAllProducts(_context).Do()
+            Products = new GetAllProducts(_context, _fileManager).Do(0, 0)
                 .Where(prod => CartItems.Select(cartItem => cartItem.ProductRefId)
                 .Contains(prod.ProductId));
-            Categ = new GetAllCategories(_context).Do();
+            Categ = new GetAllCategories(_context, _fileManager).Do();
             Order = new GetOrder(_context).Do(currUser, "Pending");
             OrderInfos = new GetOrderInfo(_context).Do(Order.OrderId);
         }

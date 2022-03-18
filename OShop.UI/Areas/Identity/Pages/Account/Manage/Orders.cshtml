@@ -1,6 +1,7 @@
 ﻿@page
 @model OrdersModel
 @{
+    Layout = "_Layout.cshtml";
     ViewData["Title"] = "Orders";
     ViewData["ActivePage"] = ManageNavPages.Orders;
     var base_path = Request.PathBase;
@@ -60,7 +61,7 @@ else
                         {
                             var image_path = $"{base_path}/Image/{product.Photo}";
 
-                            <img id="productphoto" style="width:50px;height:50px; object-fit:cover" src="@image_path">
+                            <img id="productphoto" style="width:50px;height:50px; object-fit:cover" src="@image_path" alt="productphoto">
                         }
                         else
                         {

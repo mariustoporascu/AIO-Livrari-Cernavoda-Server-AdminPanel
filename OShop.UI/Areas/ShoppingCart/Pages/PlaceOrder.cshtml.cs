@@ -58,7 +58,7 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
             var currUser = _userManager.GetUserId(User);
             ShoppingCart = new GetShoppingCart(_context).Do(currUser);
             CartItems = new GetCartItems(_context).Do(ShoppingCart.CartId);
-            Products = new GetAllProducts(_context).Do()
+            Products = new GetAllProducts(_context,_fileManager).Do(0,0)
                 .Where(prod => CartItems.Select(cartItem => cartItem.ProductRefId)
                 .Contains(prod.ProductId));
             Order = new GetOrder(_context).Do(currUser, "Pending");

@@ -77,35 +77,30 @@ body {
 }
 
 #main-page-products {
-    display:flex;
-    flex-flow:row wrap;
+    display: flex;
+    flex-flow: row wrap;
 }
 
 #products {
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     max-width: 180px;
     border: 1px solid #808080;
     border-radius: 10px;
     margin: 5px;
-    padding: 5px
+    padding: 5px;
 }
 
-#productphoto{
-    object-fit:cover;
-    height: 130px;
-    width: 130px
+#productviewleft {
+    position: relative;
+    float: left;
+    text-align: center;
 }
 
-#productviewleft{
-    position:relative;
-    float:left;
-    text-align:center;
-}
-
-    #productviewleft *, #productviewright *{
-        margin:5px;
+    #productviewleft *,
+    #productviewright * {
+        margin: 5px;
     }
 
 #productviewright {

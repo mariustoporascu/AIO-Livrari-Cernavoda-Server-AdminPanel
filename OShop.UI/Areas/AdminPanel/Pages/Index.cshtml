@@ -1,0 +1,32 @@
+﻿@page
+@model IndexModel
+
+@{ 
+	ViewData["Title"] = "Panou de Administrare";
+	Layout = "~/Pages/Shared/_Layout.cshtml";
+} 
+<div class="container">
+	<div class="row m-5">
+		<div class="col d-flex justify-content-center">
+			<h1 class="title">Panou de Administrare</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-3"></div>
+		<div class="col-3 d-flex justify-content-center">
+			<div class="col">
+				<h3 class="title">SuperMarket</h3>
+				<a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Product/Index" asp-route-canal="1">Produse</a>
+				<a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Category/Index" asp-route-canal="1">Categorii</a>
+			</div>
+		</div>
+		<div class="col-3 d-flex justify-content-center">
+			<div class="col">
+				<h3 class="title">Restaurante</h3>
+				<a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Product/Index" asp-route-canal="2">Produse</a>
+				<a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Category/Index" asp-route-canal="2">Categorii</a>
+			</div>
+		</div>
+		<div class="col-3"></div>
+	</div>
+</div>

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OShop.UI.Areas.Identity.Pages.RolesManagement
 {
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class ModifyUserRolesModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;

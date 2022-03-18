@@ -32,7 +32,12 @@ namespace OShop.Application.Products
                 Stock = vm.Stock,
                 Price = vm.Price,
                 Photo = vm.Photo,
+                Gramaj = vm.Gramaj,
+                MeasuringUnitId = vm.MeasuringUnitId,
                 CategoryRefId = vm.CategoryRefId,
+                SubCategoryRefId = vm.SubCategoryRefId,
+                SuperMarketRefId = vm.SuperMarketRefId,
+                RestaurantRefId = vm.RestaurantRefId,
             };
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
@@ -50,7 +55,7 @@ namespace OShop.Application.Products
             };
             if (vm.Photo != null)
             {
-                product.Photo = await _fileManager.SaveImage(vm.Photo, "ProductPhoto");
+                product.Photo = _fileManager.SaveImage(vm.Photo, "ProductPhoto");
             }
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
@@ -89,6 +94,8 @@ namespace OShop.Application.Products
 
         [Required]
         public string Description { get; set; }
+        [Required]
+        public string Gramaj { get; set; }
 
         [Range(0, 10000)]
         public int Stock { get; set; }
@@ -97,10 +104,17 @@ namespace OShop.Application.Products
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
+        [Required]
+        public int MeasuringUnitId { get; set; }
 
         public string Photo { get; set; }
 
+        public string Image { get; set; }
+
         public int CategoryRefId { get; set; }
+        public int? SuperMarketRefId { get; set; }
+        public int? SubCategoryRefId { get; set; }
+        public int? RestaurantRefId { get; set; }
     }
     public class AllowedExtensionsAttribute : ValidationAttribute
     {

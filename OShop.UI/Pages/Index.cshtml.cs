@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using OShop.Application.Categories;
+using OShop.Application.FileManager;
 using OShop.Application.Products;
 using OShop.Application.ShoppingCarts;
 using OShop.Database;
@@ -16,6 +17,7 @@ namespace OShop.UI.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly IFileManager _fileManager;
         private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -24,9 +26,10 @@ namespace OShop.UI.Pages
         public IndexModel(
             OnlineShopDbContext context,
             UserManager<ApplicationUser> userManager,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IFileManager fileManager)
         {
-
+            _fileManager = fileManager;
             _context = context;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
@@ -104,18 +107,18 @@ namespace OShop.UI.Pages
         public void OnGet()
         {
             ShoppingCartId = LoadCart().Result.CartId;
-            Products = new GetAllProducts(_context).Do();
-            Categ = new GetAllCategories(_context).Do();
+            Products = new GetAllProducts(_context, _fileManager).Do(0, 0);
+            Categ = new GetAllCategories(_context, _fileManager).Do();
         }
 
         public void OnPost(string ProductName)
         {
             ShoppingCartId = LoadCart().Result.CartId;
             if (ProductName != null)
-                Products = new GetAllProducts(_context).Do().Where(prod => prod.Name.ToLower().Contains(ProductName.ToLower()));
+                Products = new GetAllProducts(_context, _fileManager).Do(0, 0).Where(prod => prod.Name.ToLower().Contains(ProductName.ToLower()));
             else
-                Products = new GetAllProducts(_context).Do();
-            Categ = new GetAllCategories(_context).Do();
+                Products = new GetAllProducts(_context, _fileManager).Do(0, 0);
+            Categ = new GetAllCategories(_context, _fileManager).Do();
         }
     }
 }

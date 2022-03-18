@@ -1,22 +1,29 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = "Categorii";
     var base_path = Request.PathBase;
 }
 <div class="container">
-    <h1>Shop Categories</h1>
+    <h1>Categorii</h1>
     <h2>
-        <a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Category/CreateCategory">Add New Category</a>
-        <a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Product/Index">Go To Products</a>
+        <a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Category/CreateCategory" asp-route-canal="@Model.Canal">Adauga Categorie</a>
+        <a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Product/Index" asp-route-canal="@Model.Canal">Mergi la Produse</a>
     </h2>
 
 
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Photo</th>
+                <th>Nume</th>
+                @if(@Model.Canal == 1){
+                <th>SuperMarket</th>
+                }
+                else
+                {
+                <th>Restaurant</th>
+                }
+                <th>Poza</th>
                 <th style="text-align:right">Action</th>
             </tr>
         </thead>
@@ -25,6 +32,13 @@
             {
                 <tr>
                     <td>@category.Name</td>
+                    @if(@Model.Canal == 1){
+                    <td>@Model.SuperMarkets.FirstOrDefault(market => market.SuperMarketId == category.SuperMarketRefId).Name</td>
+                    }
+                    else
+                    {
+                    <td>@Model.Restaurante.FirstOrDefault(restaurant => restaurant.RestaurantId == category.RestaurantRefId).Name</td>
+                    }
                     <td>
                         @if (category.Photo != null)
                         {
@@ -33,12 +47,16 @@
                         }
                         else
                         {
-                            <img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="">
+                            <img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="~/content/No_image_available.svg">
                         }
                     </td>
                     <td>
-                        <a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="AdminPanel" asp-page="/Category/DeleteCategory" asp-route-categName="@category.Name">Remove</a>
-                        <a class="btn btn-primary" style="float:right" asp-area="AdminPanel" asp-page="/Category/CreateCategory" asp-route-categId="@category.CategoryId">Edit</a>
+                        <a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="AdminPanel" asp-page="/Category/DeleteCategory" asp-route-canal="@Model.Canal" asp-route-categId="@category.CategoryId">Sterge</a>
+                        <a class="btn btn-primary" style="float:right;margin-left:5px" asp-area="AdminPanel" asp-page="/Category/CreateCategory" asp-route-canal="@Model.Canal" asp-route-categId="@category.CategoryId">Editeaza</a>
+                        @if(@Model.Canal == 1)
+                        {
+                        <a class="btn btn-primary" style="float:right" asp-area="AdminPanel" asp-page="/SubCategory/Index" asp-route-canal="@Model.Canal" asp-route-category="@category.CategoryId">SubCategorii</a>
+                        }
                     </td>
                 </tr>
             }

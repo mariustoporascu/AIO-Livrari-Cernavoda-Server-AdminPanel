@@ -13,9 +13,9 @@ namespace OShop.Application.Products
             _context = context;
         }
 
-        public ProductVMUI Do(string productName)
+        public ProductVMUI Do(int? productId)
         {
-            var product = _context.Products.AsNoTracking().FirstOrDefault(prod => prod.Name.ToLower() == productName.ToLower());
+            var product = _context.Products.AsNoTracking().FirstOrDefault(prod => prod.ProductId == productId);
             return new ProductVMUI
             {
                 ProductId = product.ProductId,
@@ -24,7 +24,13 @@ namespace OShop.Application.Products
                 Stock = product.Stock,
                 Price = product.Price,
                 Photo = product.Photo,
+                Gramaj = product.Gramaj,
+                MeasuringUnitId = product.MeasuringUnitId,
                 CategoryRefId = product.CategoryRefId,
+                SubCategoryRefId = product.SubCategoryRefId,
+
+                SuperMarketRefId = product.SuperMarketRefId,
+                RestaurantRefId = product.RestaurantRefId,
             };
         }
     }

@@ -132,12 +132,12 @@ namespace OShop.UI.Areas.Identity.Pages.Account.Manage
                     {
                         _fileManager.RemoveImage(user.ProfilePicture, "ProfilePhoto");
                     }
-                    user.ProfilePicture = await _fileManager.SaveImage(file, "ProfilePhoto");
+                    user.ProfilePicture = _fileManager.SaveImage(file, "ProfilePhoto");
                     await _userManager.UpdateAsync(user);
                 }
 
             }
-            if (user.UsernameChangeLimit > 0)
+            /*if (user.UsernameChangeLimit > 0)
             {
                 if (Input.Username != user.UserName)
                 {
@@ -159,7 +159,7 @@ namespace OShop.UI.Areas.Identity.Pages.Account.Manage
                         await _userManager.UpdateAsync(user);
                     }
                 }
-            }
+            }*/
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

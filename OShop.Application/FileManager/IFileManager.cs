@@ -8,6 +8,6 @@ namespace OShop.Application.FileManager
     {
         FileStream ImageStream(string image);
         bool RemoveImage(string image, string type);
-        Task<string> SaveImage(IFormFile Image, string type);
+        string SaveImage(IFormFile Image, string type);
     }
 }

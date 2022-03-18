@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace OShop.UI.Areas.Identity.Pages.RolesManagement
 {
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class ManageRolesModel : PageModel
     {
         private readonly RoleManager<IdentityRole> _roleManager;

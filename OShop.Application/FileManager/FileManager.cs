@@ -11,12 +11,14 @@ namespace OShop.Application.FileManager
     public class FileManager : IFileManager
     {
         private readonly string _imagePathCategoryPhoto;
+        private readonly string _imagePathSubCategoryPhoto;
         private readonly string _imagePathProductPhoto;
         private readonly string _imagePathUserProfilePhoto;
 
         public FileManager(IConfiguration config)
         {
             _imagePathCategoryPhoto = config["Path:Images:CategoryPhoto"];
+            _imagePathSubCategoryPhoto = config["Path:Images:SubCategoryPhoto"];
             _imagePathProductPhoto = config["Path:Images:ProductPhoto"];
             _imagePathUserProfilePhoto = config["Path:Images:UserProfilePhoto"];
         }
@@ -25,6 +27,8 @@ namespace OShop.Application.FileManager
         {
             if (image.Contains("categoryphoto"))
                 return new FileStream(Path.Combine(_imagePathCategoryPhoto, image), FileMode.Open, FileAccess.Read);
+            else if (image.Contains("subcategoryphoto"))
+                return new FileStream(Path.Combine(_imagePathSubCategoryPhoto, image), FileMode.Open, FileAccess.Read);
             else if (image.Contains("productphoto"))
                 return new FileStream(Path.Combine(_imagePathProductPhoto, image), FileMode.Open, FileAccess.Read);
             else
@@ -40,6 +44,8 @@ namespace OShop.Application.FileManager
                     file = Path.Combine(_imagePathCategoryPhoto, image);
                 else if (type == "ProductPhoto")
                     file = Path.Combine(_imagePathProductPhoto, image);
+                else if (type == "SubCategoryPhoto")
+                    file = Path.Combine(_imagePathSubCategoryPhoto, image);
                 else
                     file = Path.Combine(_imagePathUserProfilePhoto, image);
                 if (File.Exists(file))
@@ -55,7 +61,7 @@ namespace OShop.Application.FileManager
             }
         }
 
-        public async Task<string> SaveImage(IFormFile image, string type)
+        public string SaveImage(IFormFile image, string type)
         {
             try
             {
@@ -64,6 +70,8 @@ namespace OShop.Application.FileManager
                     save_path = Path.Combine(_imagePathCategoryPhoto);
                 else if (type == "ProductPhoto")
                     save_path = Path.Combine(_imagePathProductPhoto);
+                else if (type == "SubCategoryPhoto")
+                    save_path = Path.Combine(_imagePathSubCategoryPhoto);
                 else
                     save_path = Path.Combine(_imagePathUserProfilePhoto);
 
@@ -74,15 +82,15 @@ namespace OShop.Application.FileManager
 
                 var mime = image.FileName.Substring(image.FileName.LastIndexOf('.'));
                 var pathtype = save_path.Split("/", 3)
-                    .FirstOrDefault(pathtype => pathtype == "categoryphoto" || pathtype == "productphoto" || pathtype == "userprofilephoto");
-                var fileName = $"{pathtype}_img_{DateTime.Now.ToString("dd-MM-yyyy-HH-mm-ss")}{mime}";
-                
-                using(var outputFileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
-                    await image.CopyToAsync(outputFileStream);
-                // using (var fileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
-                // {
-                //     MagicImageProcessor.ProcessImage(image.OpenReadStream(), fileStream,null);
-                // }
+                    .FirstOrDefault(pathtype => pathtype == "categoryphoto" || pathtype == "subcategoryphoto" || pathtype == "productphoto" || pathtype == "userprofilephoto");
+                var fileName = $"{pathtype}_img_{image.FileName.Substring(0, image.FileName.LastIndexOf(".")).Replace(' ', '_')}{mime}";
+
+                //using(var outputFileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
+                //    await image.CopyToAsync(outputFileStream);
+                using (var fileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
+                {
+                    MagicImageProcessor.ProcessImage(image.OpenReadStream(), fileStream, ImageOptions());
+                }
 
                 return fileName;
             }
@@ -97,14 +105,11 @@ namespace OShop.Application.FileManager
         {
 
             SaveFormat = FileFormat.Jpeg,
-            JpegQuality = 50,
-            JpegSubsampleMode = ChromaSubsampleMode.Subsample420
-            //Width = 800,
-            //Height = 500,
-            //ResizeMode = CropScaleMode.Crop,
-            //SaveFormat = FileFormat.Jpeg,
-            //JpegQuality = 100,
-            //JpegSubsampleMode = ChromaSubsampleMode.Subsample420
+            JpegQuality = 80,
+            JpegSubsampleMode = ChromaSubsampleMode.Subsample420,
+            ResizeMode = CropScaleMode.Contain,
+            Height = 360,
+            Width = 360
         };
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OShop.UI.Areas.Identity.Pages.RolesManagement
 {
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class AddRoleModel : PageModel
     {
         private readonly RoleManager<IdentityRole> _roleManager;

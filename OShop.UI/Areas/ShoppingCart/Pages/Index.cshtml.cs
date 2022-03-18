@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using OShop.Application.CartItemsA;
 using OShop.Application.Categories;
+using OShop.Application.FileManager;
 using OShop.Application.Products;
 using OShop.Application.ShoppingCarts;
 using OShop.Database;
@@ -21,17 +22,18 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
 
         private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
+        private readonly IFileManager _fileManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public IndexModel( OnlineShopDbContext context,
+        public IndexModel(OnlineShopDbContext context,
             UserManager<ApplicationUser> userManager,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IFileManager fileManager)
         {
 
             _context = context;
             _userManager = userManager;
-
+            _fileManager = fileManager;
             _httpContextAccessor = httpContextAccessor;
         }
         [BindProperty]
@@ -60,10 +62,10 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
         {
             ShoppingCart = LoadCart();
             CartItems = new GetCartItems(_context).Do(ShoppingCart.CartId);
-            Products = new GetAllProducts(_context).Do(0)
+            Products = new GetAllProducts(_context, _fileManager).Do(0, 0)
                 .Where(prod => CartItems.Select(cartItem => cartItem.ProductRefId)
                 .Contains(prod.ProductId));
-            Categ = new GetAllCategories(_context).Do();
+            Categ = new GetAllCategories(_context, _fileManager).Do();
         }
     }
 }

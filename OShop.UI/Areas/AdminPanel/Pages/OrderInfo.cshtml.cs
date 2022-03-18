@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using OShop.Application.FileManager;
 using OShop.Application.OrderInfos;
 using OShop.Application.ProductInOrders;
 using OShop.Application.Products;
@@ -11,14 +12,16 @@ using System.Linq;
 
 namespace OShop.UI.Areas.AdminPanel.Pages
 {
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class OrderInfoModel : PageModel
     {
         private readonly OnlineShopDbContext _context;
+        private readonly IFileManager _fileManager;
 
-        public OrderInfoModel(OnlineShopDbContext context)
+        public OrderInfoModel(OnlineShopDbContext context, IFileManager fileManager)
         {
             _context = context;
+            _fileManager = fileManager;
         }
         [BindProperty]
         public OrderInfosViewModel OrderInfo { get; set; }
@@ -33,7 +36,7 @@ namespace OShop.UI.Areas.AdminPanel.Pages
         {
             OrderInfo = new GetOrderInfo(_context).Do(orderId);
             ProductInOrders = new GetAllProductInOrder(_context).Do(orderId);
-            Products = new GetAllProducts(_context).Do()
+            Products = new GetAllProducts(_context,_fileManager).Do(0,0)
                 .Where(prod => ProductInOrders.Select(product => product.ProductRefId).Contains(prod.ProductId));
         }
     }

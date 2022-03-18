@@ -24,6 +24,8 @@ namespace OShop.Application.Categories
                 CategoryId = vm.CategoryId,
                 Name = vm.Name,
                 Photo = vm.Photo,
+                SuperMarketRefId = vm.SuperMarketRefId,
+                RestaurantRefId = vm.RestaurantRefId,
             };
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
@@ -39,7 +41,7 @@ namespace OShop.Application.Categories
                 {
                     _fileManager.RemoveImage(category.Photo, "CategoryPhoto");
                 }
-                category.Photo = await _fileManager.SaveImage(vm.Photo, "CategoryPhoto");
+                category.Photo = _fileManager.SaveImage(vm.Photo, "CategoryPhoto");
             }
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();

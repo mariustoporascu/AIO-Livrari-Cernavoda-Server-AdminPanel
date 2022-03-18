@@ -1,0 +1,14 @@
+﻿@page
+@model IndexModel
+
+@{ 
+    ViewData["Title"] = "Roles Management";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+} 
+<div class="container">
+    <h1>Roles Management</h1>
+    <h2>
+        <a class="btn btn-primary" asp-area="Identity" asp-page="/RolesManagement/ManageRoles">Manage Roles</a>
+        <a class="btn btn-primary" asp-area="Identity" asp-page="/RolesManagement/ManageUserRoles">Manage User Roles</a>
+    </h2>
+</div>

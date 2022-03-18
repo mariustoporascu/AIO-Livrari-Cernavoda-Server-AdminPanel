@@ -26,6 +26,8 @@ namespace OShop.Application.Categories
                 CategoryId = vm.CategoryId,
                 Name = vm.Name,
                 Photo = vm.Photo,
+                SuperMarketRefId = vm.SuperMarketRefId,
+                RestaurantRefId = vm.RestaurantRefId,
             });
             await _context.SaveChangesAsync();
         }
@@ -39,7 +41,7 @@ namespace OShop.Application.Categories
             };
             if (vm.Photo != null)
             {
-                category.Photo = await _fileManager.SaveImage(vm.Photo, "CategoryPhoto");
+                category.Photo = _fileManager.SaveImage(vm.Photo, "CategoryPhoto");
             }
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
@@ -59,5 +61,8 @@ namespace OShop.Application.Categories
         [Required]
         public string Name { get; set; }
         public string Photo { get; set; }
+        public string Image { get; set; }
+        public int? SuperMarketRefId { get; set; }
+        public int? RestaurantRefId { get; set; }
     }
 }

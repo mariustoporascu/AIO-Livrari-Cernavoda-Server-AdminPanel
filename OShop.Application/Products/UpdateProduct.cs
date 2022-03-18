@@ -27,7 +27,12 @@ namespace OShop.Application.Products
                 Stock = vm.Stock,
                 Price = vm.Price,
                 Photo = vm.Photo,
+                Gramaj = vm.Gramaj,
+                MeasuringUnitId = vm.MeasuringUnitId,
                 CategoryRefId = vm.CategoryRefId,
+                SubCategoryRefId = vm.SubCategoryRefId,
+                SuperMarketRefId = vm.SuperMarketRefId,
+                RestaurantRefId = vm.RestaurantRefId,
             };
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
@@ -46,7 +51,7 @@ namespace OShop.Application.Products
                 {
                     _fileManager.RemoveImage(product.Photo, "ProductPhoto");
                 }
-                product.Photo = await _fileManager.SaveImage(vm.Photo, "ProductPhoto");
+                product.Photo = _fileManager.SaveImage(vm.Photo, "ProductPhoto");
             }
             _context.Products.Update(product);
             await _context.SaveChangesAsync();

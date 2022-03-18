@@ -1,31 +1,57 @@
 ﻿@page
 @model CreateCategoryModel
 @{
-    ViewData["Title"] = "Edit Category";
+    ViewData["Title"] = "Editare Categorie";
     var base_path = Request.PathBase;
 }
 <div class="container">
-    <h1>Edit Shop Category</h1>
+    <h1>Editare Categorie</h1>
     <form method="post" enctype="multipart/form-data">
         <div asp-validation-summary="All" class="text-danger"></div>
         <input asp-for="@Model.Category.CategoryId" type="hidden" />
+        <input asp-for="@Model.Canal" type="hidden"/>
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Type</th>
-                    <th>Input</th>
+                    <th>Tip camp</th>
+                    <th>Valoare</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <th>Name</th>
+                    <th>Nume</th>
                     <td class="form-group">
                         <input asp-for="@Model.Category.Name" class="form-control" />
                         <span asp-validation-for="@Model.Category.Name" class="text-danger"></span>
                     </td>
                 </tr>
+                @if(Model.Canal == 1){
                 <tr>
-                    <th>Photo</th>
+                    <th>SuperMarket</th>
+                    <td>
+                        <select asp-for="@Model.Category.SuperMarketRefId" class="form-control">
+                            @foreach (var supermarket in Model.SuperMarkets)
+                            {
+                                <option value="@supermarket.SuperMarketId">@supermarket.Name</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                }else{
+                <tr>
+                    <th>Restaurant</th>
+                    <td>
+                        <select asp-for="@Model.Category.RestaurantRefId" class="form-control">
+                            @foreach (var restaurant in Model.Restaurante)
+                            {
+                                <option value="@restaurant.RestaurantId">@restaurant.Name</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                }
+                <tr>
+                    <th>Poza</th>
                     <td class="form-group">
                         <input type="hidden" asp-for="@Model.Category.Photo" />
                         @if (@Model.Category.Photo != null)
@@ -35,7 +61,7 @@
                         }
                         else
                         {
-                            <img id="categoryphoto" style="width:150px;height:150px; object-fit:cover" src="">
+                            <img id="categoryphoto" style="width:150px;height:150px; object-fit:cover" src="~/content/No_image_available.svg">
                         }
                         <input type="file"
                                accept=".png,.jpg,.jpeg,.gif,.tif"
@@ -49,19 +75,19 @@
             </tbody>
         </table>
 
-        @if (Model.Category.Name != null)
+        @if (Model.Category.CategoryId > 0)
         {
             <button type="submit" class="btn btn-primary" asp-route-categId="@Model.Category.CategoryId">
-                <text>Save Changes</text>
+                <text>Salveaza modificari</text>
             </button>;
         }
         else
         {
             <button type="submit" class="btn btn-primary">
-                <text>Add New Category</text>
+                <text>Adauga Categorie</text>
             </button>;
         }
-        <a class="btn btn-warning" asp-area="AdminPanel" asp-page="/Category/Index">Cancel</a>
+        <a class="btn btn-warning" asp-area="AdminPanel" asp-page="/Category/Index" asp-route-canal="@Model.Canal">Anuleaza</a>
     </form>
 </div>
 

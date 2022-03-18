@@ -1,0 +1,73 @@
+﻿@page
+@model CreateSubCategoryModel
+@{
+    ViewData["Title"] = "Editare SubCategorie";
+    var base_path = Request.PathBase;
+}
+<div class="container">
+    <h1>Editare SubCategorie</h1>
+    <form method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <input asp-for="@Model.SubCategory.SubCategoryId" type="hidden" />
+        <input asp-for="@Model.SubCategory.CategoryRefId" type="hidden" />
+        <input asp-for="@Model.Canal" type="hidden"/>
+        <input asp-for="@Model.Category" type="hidden"/>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Tip camp</th>
+                    <th>Valoare</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Nume</th>
+                    <td class="form-group">
+                        <input asp-for="@Model.SubCategory.Name" class="form-control" />
+                        <span asp-validation-for="@Model.SubCategory.Name" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Poza</th>
+                    <td class="form-group">
+                        <input type="hidden" asp-for="@Model.SubCategory.Photo" />
+                        @if (@Model.SubCategory.Photo != null)
+                        {
+                            var image_path = $"{base_path}/Image/{Model.SubCategory.Photo}";
+                            <img id="categoryphoto" style="width:150px;height:150px; object-fit:cover" src="@image_path">
+                        }
+                        else
+                        {
+                            <img id="categoryphoto" style="width:150px;height:150px; object-fit:cover" src="~/content/No_image_available.svg">
+                        }
+                        <input type="file"
+                               accept=".png,.jpg,.jpeg,.gif,.tif"
+                               asp-for="@Model.SubCategory.Photo"
+                               class="form-control"
+                               style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+                               onchange="document.getElementById('categoryphoto').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="@Model.SubCategory.Photo" class="text-danger"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        @if (Model.SubCategory.SubCategoryId > 0)
+        {
+            <button type="submit" class="btn btn-primary" asp-route-categId="@Model.SubCategory.SubCategoryId">
+                <text>Salveaza modificari</text>
+            </button>;
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary">
+                <text>Adauga SubCategorie</text>
+            </button>;
+        }
+        <a class="btn btn-warning" asp-area="AdminPanel" asp-page="/SubCategory/Index" asp-route-canal="@Model.Canal" asp-route-category="@Model.Category">Anuleaza</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

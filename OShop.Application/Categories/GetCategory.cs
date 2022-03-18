@@ -21,6 +21,8 @@ namespace OShop.Application.Categories
                 CategoryId = categ.CategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
+                SuperMarketRefId = categ.SuperMarketRefId,
+                RestaurantRefId = categ.RestaurantRefId,
             };
         }
     }

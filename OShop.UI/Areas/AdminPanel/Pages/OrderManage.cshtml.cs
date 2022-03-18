@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace OShop.UI.Areas.AdminPanel.Pages
 {
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class OrderManageModel : PageModel
     {
         private readonly OnlineShopDbContext _context;

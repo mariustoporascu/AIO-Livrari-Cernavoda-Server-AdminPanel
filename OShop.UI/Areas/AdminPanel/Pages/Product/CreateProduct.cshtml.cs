@@ -10,10 +10,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using OShop.Application.Restaurante;
+using OShop.Application.SuperMarkets;
+using OShop.Domain.Models;
+using OShop.Application.UnitatiMasura;
+using OShop.Application.SubCategories;
 
 namespace OShop.UI.Areas.AdminPanel.Pages.Product
 {
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class CreateProductModel : PageModel
     {
         private readonly OnlineShopDbContext _context;
@@ -30,32 +35,56 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
 
         [BindProperty]
         public IEnumerable<CategoryVMUI> Categ { get; set; }
+        [BindProperty]
+        public IEnumerable<SubCategoryVMUI> SubCateg { get; set; }
+        [BindProperty]
+        public IEnumerable<SuperMarketVMUI> SuperMarkets { get; set; }
+        [BindProperty]
+        public IEnumerable<RestaurantVMUI> Restaurante { get; set; }
+        [BindProperty]
+        public int Canal { get; set; }
+        [BindProperty]
+        public IEnumerable<UnitateMasuraVMUI> UnitatiMasura { get; set; }
 
-        public void OnGet(string productName)
+        public void OnGet(int canal, int? productId)
         {
-            Categ = new GetAllCategories(_context).Do();
-            if (productName == null)
+            Categ = new GetAllCategories(_context, _fileManager).Do(canal);
+            SuperMarkets = new GetAllSuperMarkets(_context, _fileManager).Do();
+            Restaurante = new GetAllRestaurante(_context, _fileManager).Do();
+            SubCateg = new GetAllSubCategories(_context, _fileManager).Do();
+
+            if (productId == null)
                 Product = new ProductVMUI();
             else
             {
-                var getProduct = new GetProduct(_context).Do(productName);
-                Product = new ProductVMUI
-                {
-                    ProductId = getProduct.ProductId,
-                    Name = getProduct.Name,
-                    Description = getProduct.Description,
-                    Stock = getProduct.Stock,
-                    Price = getProduct.Price,
-                    Photo = getProduct.Photo,
-                    CategoryRefId = getProduct.CategoryRefId,
-                };
+                Product = new GetProduct(_context).Do(productId);
             }
+            UnitatiMasura = new GetAllMeasuringUnits(_context).Do();
+            Canal = canal;
         }
 
         public async Task<IActionResult> OnPost()
         {
+            ModelState.Remove("Product.RestaurantRefId");
+            ModelState.Remove("Product.SuperMarketRefId");
+            ModelState.Remove("Product.SubCategoryRefId");
             if (ModelState.IsValid)
             {
+                switch (Canal)
+                {
+                    case 1:
+                        Product.RestaurantRefId = null;
+                        break;
+                    case 2:
+                        Product.SubCategoryRefId = null;
+                        Product.SuperMarketRefId = null;
+                        break;
+                    default:
+                        Product.SuperMarketRefId = null;
+                        Product.RestaurantRefId = null;
+                        Product.SubCategoryRefId = null;
+                        break;
+                }
                 if (Request.Form.Files.Count > 0)
                 {
                     var extensionAccepted = new string[] { ".jpg", ".png", ".jpeg" };
@@ -69,7 +98,7 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
                         {
                             _fileManager.RemoveImage(Product.Photo, "ProductPhoto");
                         }
-                        Product.Photo = await _fileManager.SaveImage(file, "ProductPhoto");
+                        Product.Photo = _fileManager.SaveImage(file, "ProductPhoto");
                     }
                 }
                 else if (Request.Form.Files.Count == 0)
@@ -80,21 +109,11 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
 
                 if (Product.ProductId > 0)
                 {
-                    var product = new ProductVMUI
-                    {
-                        ProductId = Product.ProductId,
-                        Name = Product.Name,
-                        Description = Product.Description,
-                        Stock = Product.Stock,
-                        Price = Product.Price,
-                        Photo = Product.Photo,
-                        CategoryRefId = Product.CategoryRefId,
-                    };
-                    await new UpdateProduct(_context, _fileManager).Do(product);
+                    await new UpdateProduct(_context, _fileManager).Do(Product);
                 }
                 else
                     await new CreateProduct(_context, _fileManager).Do(Product);
-                return RedirectToPage("./Index");
+                return RedirectToPage("./Index", new { canal = Canal });
             }
             return RedirectToPage("/Error", new { Area = "" });
         }

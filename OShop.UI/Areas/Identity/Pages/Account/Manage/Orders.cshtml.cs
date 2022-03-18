@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using OShop.Application.FileManager;
 using OShop.Application.Orders;
 using OShop.Application.ProductInOrders;
 using OShop.Application.Products;
@@ -16,12 +17,15 @@ namespace OShop.UI.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly OnlineShopDbContext _context;
+        private readonly IFileManager _fileManager;
 
         public OrdersModel(OnlineShopDbContext context,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IFileManager fileManager)
         {
             _userManager = userManager;
             _context = context;
+            _fileManager = fileManager;
         }
 
         [BindProperty]
@@ -38,7 +42,7 @@ namespace OShop.UI.Areas.Identity.Pages.Account.Manage
             if (orderId != -1)
             {
                 ProductInOrders = new GetAllProductInOrder(_context).Do(Orders.FirstOrDefault(order => order.OrderId == orderId).OrderId);
-                Products = new GetAllProducts(_context).Do()
+                Products = new GetAllProducts(_context, _fileManager).Do(0,0)
                     .Where(prod => ProductInOrders.Select(product => product.ProductRefId).Contains(prod.ProductId));
             }
         }

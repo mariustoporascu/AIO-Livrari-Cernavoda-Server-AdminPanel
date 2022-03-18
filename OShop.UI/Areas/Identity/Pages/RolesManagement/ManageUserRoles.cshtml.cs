@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace OShop.UI.Areas.Identity.Pages.RolesManagement
 {
+    [Authorize(Roles = "SuperAdmin, Admin")]
     public class ManageUserRolesModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;

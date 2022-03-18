@@ -16,6 +16,8 @@ namespace OShop.Domain.Models
 
         [Required]
         public string Description { get; set; }
+        [Required]
+        public string Gramaj { get; set; }
 
         [Range(0, 10000)]
         public int Stock { get; set; }
@@ -26,9 +28,16 @@ namespace OShop.Domain.Models
         public decimal Price { get; set; }
 
         public string Photo { get; set; } = "";
+        [Required]
+        public int MeasuringUnitId { get; set; }
 
         public int CategoryRefId { get; set; }
         public Category Categories { get; set; }
+        public int? SubCategoryRefId { get; set; }
+        public int? RestaurantRefId { get; set; }
+        public Restaurant Restaurante { get; set; }
+        public int? SuperMarketRefId { get; set; }
+        public SuperMarket SuperMarkets { get; set; }
 
         public virtual ICollection<CartItems> CartItems { get; set; }
         public virtual ICollection<ProductInOrder> ProductInOrders { get; set; }

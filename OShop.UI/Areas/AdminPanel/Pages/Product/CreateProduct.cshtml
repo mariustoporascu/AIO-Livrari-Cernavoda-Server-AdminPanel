@@ -1,31 +1,32 @@
 ﻿@page
 @model CreateProductModel
 @{
-    ViewData["Title"] = "Edit Product";
+    ViewData["Title"] = "Editare Produs";
     var base_path = Request.PathBase;
 }
 <div class="container">
-    <h1>Edit Shop Product</h1>
+    <h1>Editare Produs</h1>
     <form method="post" enctype="multipart/form-data">
         <div asp-validation-summary="All" class="text-danger"></div>
         <input asp-for="@Model.Product.ProductId" type="hidden" />
+        <input asp-for="@Model.Canal" type="hidden"/>
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Type</th>
-                    <th>Input</th>
+                    <th>Tip camp</th>
+                    <th>Valoare</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <th>Name</th>
+                    <th>Nume</th>
                     <td class="form-group">
                         <input asp-for="@Model.Product.Name" class="form-control" />
                         <span asp-validation-for="@Model.Product.Name" class="text-danger"></span>
                     </td>
                 </tr>
                 <tr>
-                    <th>Category</th>
+                    <th>Categorie</th>
                     <td>
                         <select asp-for="@Model.Product.CategoryRefId" class="form-control">
                             @foreach (var category in Model.Categ)
@@ -36,29 +37,59 @@
                         <span asp-validation-for="@Model.Product.CategoryRefId" class="text-danger"></span>
                     </td>
                 </tr>
+                @if(@Model.Canal == 1)
+                {
                 <tr>
-                    <th>Description</th>
+                    <th>SubCategorie</th>
+                    <td>
+                        <select asp-for="@Model.Product.SubCategoryRefId" class="form-control">
+                            @foreach (var category in Model.SubCateg)
+                            {
+                                if(Model.Categ.FirstOrDefault(categ => categ.CategoryId == category.CategoryRefId) != null)
+                                {
+                                    <option value="@category.SubCategoryId">@category.Name</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="@Model.Product.SubCategoryRefId" class="text-danger"></span>
+                    </td>
+                </tr>
+                }
+                <tr>
+                    <th>Descriere amanuntita</th>
                     <td>
                         <input asp-for="@Model.Product.Description" class="form-control" />
                         <span asp-validation-for="@Model.Product.Description" class="text-danger"></span>
                     </td>
                 </tr>
                 <tr>
-                    <th>Price</th>
+                    <th>Pret</th>
                     <td>
                         <input min="0.01" max="10000" asp-for="@Model.Product.Price" class="form-control" />
                         <span asp-validation-for="@Model.Product.Price" class="text-danger"></span>
                     </td>
                 </tr>
                 <tr>
-                    <th>Stock</th>
+                    <th>Gramaj</th>
                     <td>
-                        <input min="0" max="10000" asp-for="@Model.Product.Stock" class="form-control" />
-                        <span asp-validation-for="@Model.Product.Stock" class="text-danger"></span>
+                        <input asp-for="@Model.Product.Gramaj" class="form-control" />
+                        <span asp-validation-for="@Model.Product.Gramaj" class="text-danger"></span>
                     </td>
                 </tr>
                 <tr>
-                    <th>Photo</th>
+                    <th>Unitate De Masura</th>
+                    <td>
+                        <select asp-for="@Model.Product.MeasuringUnitId" class="form-control">
+                            @foreach (var unit in Model.UnitatiMasura)
+                            {
+                                <option value="@unit.UnitId">@unit.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="@Model.Product.MeasuringUnitId" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Poza</th>
                     <td class="form-group">
                         <input type="hidden" asp-for="@Model.Product.Photo" />
                         @if (@Model.Product.Photo != null)
@@ -68,7 +99,7 @@
                         }
                         else
                         {
-                            <img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="">
+                            <img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="~/content/No_image_available.svg">
                         }
                         <input type="file"
                                accept=".png,.jpg,.jpeg,.gif,.tif"
@@ -79,25 +110,49 @@
                         <span asp-validation-for="@Model.Product.Photo" class="text-danger"></span>
                     </td>
                 </tr>
+                @if(Model.Canal == 1){
+                <tr>
+                    <th>SuperMarket</th>
+                    <td>
+                        <select asp-for="@Model.Product.SuperMarketRefId" class="form-control">
+                            @foreach (var supermarket in Model.SuperMarkets)
+                            {
+                                <option value="@supermarket.SuperMarketId">@supermarket.Name</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                }else{
+                <tr>
+                    <th>Restaurant</th>
+                    <td>
+                        <select asp-for="@Model.Product.RestaurantRefId" class="form-control">
+                            @foreach (var restaurant in Model.Restaurante)
+                            {
+                                <option value="@restaurant.RestaurantId">@restaurant.Name</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                }
             </tbody>
         </table>
 
-        @if (Model.Product.Name != null)
+        @if (Model.Product.ProductId > 0)
         {
-            <button type="submit" class="btn btn-primary" asp-route-productName="@Model.Product.Name">
-                <text>Save Changes</text>
-            </button>;
+            <button type="submit" class="btn btn-primary" asp-route-productId="@Model.Product.ProductId">
+                <text>Salveaza modificari</text>
+            </button>
         }
         else
         {
             <button type="submit" class="btn btn-primary">
-                <text>Add New Product</text>
-            </button>;
+                <text>Adauga Produs</text>
+            </button>
         }
-        <a class="btn btn-warning" asp-area="AdminPanel" asp-page="/Product/Index">Cancel</a>
+        <a class="btn btn-warning" asp-area="AdminPanel" asp-page="/Product/Index" asp-route-canal="@Model.Canal">Anuleaza</a>
     </form>
 </div>
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
