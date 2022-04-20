@@ -107,8 +107,8 @@ namespace OShop.UI.Pages
         public void OnGet()
         {
             ShoppingCartId = LoadCart().Result.CartId;
-            Products = new GetAllProducts(_context, _fileManager).Do(0, 0);
-            Categ = new GetAllCategories(_context, _fileManager).Do();
+            //Products = new GetAllProducts(_context, _fileManager).Do(0, 0);
+            //Categ = new GetAllCategories(_context, _fileManager).Do();
         }
 
         public void OnPost(string ProductName)

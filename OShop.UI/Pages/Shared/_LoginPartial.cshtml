@@ -23,6 +23,9 @@
             <li class="nav-item">
                 <a class="nav-link text-dark" asp-area="AdminPanel" asp-page="/Index" title="Manage">AdminPanel</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="AdminPanel" asp-page="/OrderManage" title="Manage Orders">Manage Orders</a>
+            </li>
         }
 <li class="nav-item" style="align-self: center;">
     @if (!String.IsNullOrEmpty(UserManager.GetUserAsync(User).Result.ProfilePicture))

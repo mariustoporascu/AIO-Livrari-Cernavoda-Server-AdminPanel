@@ -25,7 +25,7 @@ namespace OShop.Application.Categories
                 CategoryId = categ.CategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
+                //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
                 SuperMarketRefId = categ.SuperMarketRefId,
                 RestaurantRefId = categ.RestaurantRefId,
             });
@@ -37,7 +37,7 @@ namespace OShop.Application.Categories
                 CategoryId = categ.CategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
+                //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
                 SuperMarketRefId = categ.SuperMarketRefId,
                 RestaurantRefId = categ.RestaurantRefId,
             });

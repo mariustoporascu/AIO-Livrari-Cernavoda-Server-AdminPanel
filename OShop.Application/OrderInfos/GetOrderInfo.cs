@@ -22,8 +22,7 @@ namespace OShop.Application.OrderInfos
                 return new OrderInfosViewModel
                 {
                     OrderInfoId = orderInfo.OrderInfoId,
-                    FirstName = orderInfo.FirstName,
-                    LastName = orderInfo.LastName,
+                    FullName = orderInfo.FullName,
                     Address = orderInfo.Address,
                     PhoneNo = orderInfo.PhoneNo,
                     OrderRefId = orderInfo.OrderRefId,

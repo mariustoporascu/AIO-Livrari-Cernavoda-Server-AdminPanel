@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.SubCategories;
+using OShop.Application.Categories;
 using OShop.Application.FileManager;
 using OShop.Application.Restaurante;
 using OShop.Application.SuperMarkets;
@@ -24,13 +25,16 @@ namespace OShop.UI.Areas.AdminPanel.Pages.SubCategory
 
         [BindProperty]
         public IEnumerable<SubCategoryVMUI> SubCategories { get; set; }
-
+        [BindProperty]
+        public string CategoryName { get; set; }
         public int Canal { get; set; }
         public int Category { get; set; }
         public void OnGet(int canal, int category)
         {
             Canal = canal;
             Category = category;
+            CategoryName = (new GetCategory(_context).Do(category)).Name;
+
             SubCategories = new GetAllSubCategories(_context, _fileManager).Do(category);
         }
     }

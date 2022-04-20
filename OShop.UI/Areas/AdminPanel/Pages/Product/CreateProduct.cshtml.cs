@@ -52,7 +52,6 @@ namespace OShop.UI.Areas.AdminPanel.Pages.Product
             SuperMarkets = new GetAllSuperMarkets(_context, _fileManager).Do();
             Restaurante = new GetAllRestaurante(_context, _fileManager).Do();
             SubCateg = new GetAllSubCategories(_context, _fileManager).Do();
-
             if (productId == null)
                 Product = new ProductVMUI();
             else

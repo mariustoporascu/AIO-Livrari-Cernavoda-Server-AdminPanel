@@ -48,8 +48,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
+                    <th>Full Name</th>
                     <th>Address</th>
                     <th>Phone No</th>
                     <th>Action</th>
@@ -58,13 +57,10 @@
             <tbody>
                 <tr>
                     <td>
-                        <input type="text" asp-for="@Model.OrderInfos.FirstName" class="form-control" />
-                        <span asp-validation-for="@Model.OrderInfos.FirstName" class="text-danger"></span>
+                        <input type="text" asp-for="@Model.OrderInfos.FullName" class="form-control" />
+                        <span asp-validation-for="@Model.OrderInfos.FullName" class="text-danger"></span>
                     </td>
-                    <td>
-                        <input type="text" asp-for="@Model.OrderInfos.LastName" class="form-control" />
-                        <span asp-validation-for="@Model.OrderInfos.LastName" class="text-danger"></span>
-                    </td>
+
                     <td>
                         <input type="text" asp-for="@Model.OrderInfos.Address" class="form-control" />
                         <span asp-validation-for="@Model.OrderInfos.Address" class="text-danger"></span>

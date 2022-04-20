@@ -5,7 +5,7 @@
     var base_path = Request.PathBase;
 }
 <div class="container">
-    <h1>Sub Categorii</h1>
+    <h1>@Model.CategoryName/Sub Categorii</h1>
     <h2>
         <a class="btn btn-primary" asp-area="AdminPanel" asp-page="/SubCategory/CreateSubCategory" asp-route-canal="@Model.Canal" asp-route-category="@Model.Category">Adauga SubCategorie</a>
         <a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Category/Index" asp-route-canal="@Model.Canal">Mergi la Categorii</a>

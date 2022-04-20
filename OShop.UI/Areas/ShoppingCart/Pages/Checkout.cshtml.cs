@@ -105,8 +105,7 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
             {
                 await new CreateOrderInfo(_context).Do(new OrderInfosViewModel
                 {
-                    FirstName = OrderInfos.FirstName,
-                    LastName = OrderInfos.LastName,
+                    FullName = OrderInfos.FullName,
                     Address = OrderInfos.Address,
                     PhoneNo = OrderInfos.PhoneNo,
                     OrderRefId = Order.OrderId,
@@ -117,8 +116,7 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
                 await new UpdateOrderInfo(_context).Do(new OrderInfosViewModel
                 {
                     OrderInfoId = orderInfo.OrderInfoId,
-                    FirstName = OrderInfos.FirstName,
-                    LastName = OrderInfos.LastName,
+                    FullName = OrderInfos.FullName,
                     Address = OrderInfos.Address,
                     PhoneNo = OrderInfos.PhoneNo,
                     OrderRefId = Order.OrderId,

@@ -58,18 +58,18 @@ namespace OShop.UI.Areas.ShoppingCart.Pages
             var currUser = _userManager.GetUserId(User);
             ShoppingCart = new GetShoppingCart(_context).Do(currUser);
             CartItems = new GetCartItems(_context).Do(ShoppingCart.CartId);
-            Products = new GetAllProducts(_context,_fileManager).Do(0,0)
+            Products = new GetAllProducts(_context, _fileManager).Do(0, 0)
                 .Where(prod => CartItems.Select(cartItem => cartItem.ProductRefId)
                 .Contains(prod.ProductId));
             Order = new GetOrder(_context).Do(currUser, "Pending");
             foreach (var cartitem in CartItems.ToList())
             {
-                await new CreateProductInOrder(_context).Do(new ProductInOrdersViewModel
+                /*await new CreateProductInOrder(_context).Do(new ProductInOrdersViewModel
                 {
                     OrderRefId = Order.OrderId,
                     ProductRefId = cartitem.ProductRefId,
                     UsedQuantity = cartitem.Quantity,
-                });
+                });*/
                 await new UpdateProduct(_context, _fileManager).UpdateStockAfterOrder(cartitem.ProductRefId, cartitem.Quantity);
             }
             Order.Status = "Ordered";

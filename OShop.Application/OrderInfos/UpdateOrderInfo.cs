@@ -18,8 +18,7 @@ namespace OShop.Application.OrderInfos
             var orderInfo = new OrderInfo
             {
                 OrderInfoId = vm.OrderInfoId,
-                FirstName = vm.FirstName,
-                LastName = vm.LastName,
+                FullName = vm.FullName,
                 Address = vm.Address,
                 PhoneNo = vm.PhoneNo,
                 OrderRefId = vm.OrderRefId,

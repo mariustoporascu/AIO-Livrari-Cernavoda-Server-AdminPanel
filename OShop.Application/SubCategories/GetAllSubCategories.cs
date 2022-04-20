@@ -25,7 +25,7 @@ namespace OShop.Application.SubCategories
                 SubCategoryId = categ.SubCategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
+                //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
                 CategoryRefId = categ.CategoryRefId,
             });
         public IEnumerable<SubCategoryVMUI> Do(int categoryId) =>
@@ -36,7 +36,7 @@ namespace OShop.Application.SubCategories
                 SubCategoryId = categ.SubCategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
+                //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
                 CategoryRefId = categ.CategoryRefId,
             });
         private byte[] getBytes(FileStream stream)

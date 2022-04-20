@@ -9,9 +9,7 @@ namespace OShop.Domain.Models
         [Column(Order = 1)]
         public int OrderInfoId { get; set; }
         [Required]
-        public string FirstName { get; set; }
-        [Required]
-        public string LastName { get; set; }
+        public string FullName { get; set; }
         [Required]
         public string Address { get; set; }
         [Required]

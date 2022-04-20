@@ -25,10 +25,10 @@ namespace OShop.Application.FileManager
 
         public FileStream ImageStream(string image)
         {
-            if (image.Contains("categoryphoto"))
-                return new FileStream(Path.Combine(_imagePathCategoryPhoto, image), FileMode.Open, FileAccess.Read);
-            else if (image.Contains("subcategoryphoto"))
+            if (image.Contains("subcategoryphoto"))
                 return new FileStream(Path.Combine(_imagePathSubCategoryPhoto, image), FileMode.Open, FileAccess.Read);
+            else if (image.Contains("categoryphoto"))
+                return new FileStream(Path.Combine(_imagePathCategoryPhoto, image), FileMode.Open, FileAccess.Read);
             else if (image.Contains("productphoto"))
                 return new FileStream(Path.Combine(_imagePathProductPhoto, image), FileMode.Open, FileAccess.Read);
             else

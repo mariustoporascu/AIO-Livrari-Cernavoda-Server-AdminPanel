@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
 using OShop.Application.OrderInfos;
@@ -6,9 +8,11 @@ using OShop.Application.Orders;
 using OShop.Application.ProductInOrders;
 using OShop.Application.Products;
 using OShop.Application.Restaurante;
+using OShop.Application.SubCategories;
 using OShop.Application.SuperMarkets;
 using OShop.Application.UnitatiMasura;
 using OShop.Database;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OShop.UI.Controllers
@@ -19,11 +23,13 @@ namespace OShop.UI.Controllers
     {
         private readonly OnlineShopDbContext _context;
         private readonly IFileManager _fileManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public FoodAppController(OnlineShopDbContext context, IFileManager fileManager)
+        public FoodAppController(OnlineShopDbContext context, IFileManager fileManager, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _fileManager = fileManager;
+            _userManager = userManager;
         }
 
         [HttpGet("getallproducts")]
@@ -64,6 +70,8 @@ namespace OShop.UI.Controllers
 
         [HttpGet("getallcategories")]
         public IActionResult ManageCategories() => Ok(new GetAllCategories(_context, _fileManager).Do());
+        [HttpGet("getallsubcategories")]
+        public IActionResult ManageSubCategories() => Ok(new GetAllSubCategories(_context, _fileManager).Do());
 
         /*        [HttpPost("createcategory")]
                 public async Task<IActionResult> AddCategoryAsync([FromForm] CategoryVMReactUI vm)
@@ -94,8 +102,9 @@ namespace OShop.UI.Controllers
                     return Ok();
                 }*/
 
-        [HttpGet("getallorders")]
-        public IActionResult GetAllOrders() => Ok(new GetAllOrders(_context).Do());
+        [HttpGet("getallorders/{customer}")]
+        public async Task<IActionResult> GetAllOrders(string customer) =>
+            Ok(new GetAllOrders(_context).Do((await _userManager.FindByEmailAsync(customer)).Id));
 
         [HttpGet("getorderinfo/{orderId}")]
         public IActionResult GetOrderInfo(int orderId)
@@ -114,5 +123,48 @@ namespace OShop.UI.Controllers
 
         [HttpGet("getallmeasuringunits")]
         public IActionResult ManageMeasuringUnits() => Ok(new GetAllMeasuringUnits(_context).Do());
+
+        [HttpPost("createorder")]
+        public async Task<IActionResult> CreateOrder([FromBody] object order)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var orderVM = JsonConvert.DeserializeObject<OrderViewModel>(order.ToString(), settings);
+            var user = await _userManager.FindByEmailAsync(orderVM.CustomerId);
+            if (user != null)
+            {
+                orderVM.CustomerId = user.Id;
+                int orderId = await new CreateOrder(_context).Do(orderVM);
+                return Ok(orderId);
+            }
+            return Ok("User not found!");
+        }
+        [HttpPost("createorderinfo")]
+        public async Task<IActionResult> CreateOrderInfo([FromBody] object orderInfo)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var orderInfoVM = JsonConvert.DeserializeObject<OrderInfosViewModel>(orderInfo.ToString(), settings);
+            await new CreateOrderInfo(_context).Do(orderInfoVM);
+            return Ok();
+        }
+        [HttpPost("createorderproducts")]
+        public async Task<IActionResult> CreateOrderProducts([FromBody] object orderproducts)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var orderProductsVM = JsonConvert.DeserializeObject<List<ProductInOrdersViewModel>>(orderproducts.ToString(), settings);
+            await new CreateProductInOrder(_context).Do(orderProductsVM);
+            return Ok();
+        }
     }
 }

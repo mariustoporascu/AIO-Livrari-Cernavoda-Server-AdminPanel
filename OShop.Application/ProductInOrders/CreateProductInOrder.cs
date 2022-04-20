@@ -1,5 +1,6 @@
 ﻿using OShop.Database;
 using OShop.Domain.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OShop.Application.ProductInOrders
@@ -13,14 +14,18 @@ namespace OShop.Application.ProductInOrders
             _context = context;
         }
 
-        public async Task Do(ProductInOrdersViewModel vm)
+        public async Task Do(List<ProductInOrdersViewModel> vm)
         {
-            _context.ProductInOrders.Add(new ProductInOrder
+            foreach (var item in vm)
             {
-                OrderRefId = vm.OrderRefId,
-                ProductRefId = vm.ProductRefId,
-                UsedQuantity = vm.UsedQuantity,
-            });
+                _context.ProductInOrders.Add(new ProductInOrder
+                {
+                    OrderRefId = item.OrderRefId,
+                    ProductRefId = item.ProductRefId,
+                    UsedQuantity = item.UsedQuantity,
+                });
+            }
+
             await _context.SaveChangesAsync();
         }
     }

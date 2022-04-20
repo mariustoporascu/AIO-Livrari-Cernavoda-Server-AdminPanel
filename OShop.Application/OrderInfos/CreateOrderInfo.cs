@@ -19,8 +19,7 @@ namespace OShop.Application.OrderInfos
             _context.OrdersInfos.Add(new OrderInfo
             {
                 OrderInfoId = vm.OrderInfoId,
-                FirstName = vm.FirstName,
-                LastName = vm.LastName,
+                FullName = vm.FullName,
                 Address = vm.Address,
                 PhoneNo = vm.PhoneNo,
                 OrderRefId = vm.OrderRefId,
@@ -32,9 +31,7 @@ namespace OShop.Application.OrderInfos
     {
         public int OrderInfoId { get; set; }
         [Required]
-        public string FirstName { get; set; }
-        [Required]
-        public string LastName { get; set; }
+        public string FullName { get; set; }
         [Required]
         public string Address { get; set; }
         [Required]

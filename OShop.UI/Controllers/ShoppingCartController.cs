@@ -98,7 +98,7 @@ namespace OShop.UI.Controllers
         }
 
         [HttpGet("getproductincart/{cartId}")]
-        public IActionResult GetProductsInCart(int cartId) => Ok(new GetAllProducts(_context,_fileManager).Do(cartId,0));
+        public IActionResult GetProductsInCart(int cartId) => Ok(new GetAllProducts(_context, _fileManager).Do(cartId, 0));
 
 
         [HttpGet("getcartitems/{cartId}")]
@@ -201,18 +201,18 @@ namespace OShop.UI.Controllers
                 await new UpdateOrder(_context).Do(vm);
                 var ShoppingCart = new GetShoppingCart(_context).Do(vm.CustomerId);
                 var CartItems = new GetCartItems(_context).Do(ShoppingCart.CartId);
-                var Products = new GetAllProducts(_context,_fileManager).Do(ShoppingCart.CartId,0)
+                var Products = new GetAllProducts(_context, _fileManager).Do(ShoppingCart.CartId, 0)
                     .Where(prod => CartItems.Select(cartItem => cartItem.ProductRefId)
                     .Contains(prod.ProductId));
 
                 foreach (var cartitem in CartItems.ToList())
                 {
-                    await new CreateProductInOrder(_context).Do(new ProductInOrdersViewModel
+                    /*await new CreateProductInOrder(_context).Do(new ProductInOrdersViewModel
                     {
                         OrderRefId = vm.OrderId,
                         ProductRefId = cartitem.ProductRefId,
                         UsedQuantity = cartitem.Quantity,
-                    });
+                    });*/
                     await new UpdateProduct(_context, _fileManager).UpdateStockAfterOrder(cartitem.ProductRefId, cartitem.Quantity);
                 }
                 ShoppingCart.Status = "Closed";

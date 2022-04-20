@@ -28,32 +28,30 @@
                 <tr>
                     <th>Categorie</th>
                     <td>
-                        <select asp-for="@Model.Product.CategoryRefId" class="form-control">
+                        <select asp-for="@Model.Product.CategoryRefId" class="form-control" onchange="populateSubCateg()" >
                             @foreach (var category in Model.Categ)
                             {
-                                <option value="@category.CategoryId">@category.Name</option>
+                                <option  value="@category.CategoryId" >@category.Name</option>
                             }
                         </select>
                         <span asp-validation-for="@Model.Product.CategoryRefId" class="text-danger"></span>
                     </td>
                 </tr>
+                
                 @if(@Model.Canal == 1)
                 {
-                <tr>
-                    <th>SubCategorie</th>
-                    <td>
-                        <select asp-for="@Model.Product.SubCategoryRefId" class="form-control">
-                            @foreach (var category in Model.SubCateg)
-                            {
-                                if(Model.Categ.FirstOrDefault(categ => categ.CategoryId == category.CategoryRefId) != null)
+                    <tr>
+                        <th>SubCategorie</th>
+                        <td >
+                            <select asp-for="@Model.Product.SubCategoryRefId" class="form-control">
+                                @foreach (var subcategory in Model.SubCateg)
                                 {
-                                    <option value="@category.SubCategoryId">@category.Name</option>
+                                   <option class="@subcategory.CategoryRefId" value="@subcategory.SubCategoryId">@subcategory.Name</option>
                                 }
-                            }
-                        </select>
-                        <span asp-validation-for="@Model.Product.SubCategoryRefId" class="text-danger"></span>
-                    </td>
-                </tr>
+                            </select>
+                            <span asp-validation-for="@Model.Product.SubCategoryRefId" class="text-danger"></span>
+                        </td>
+                    </tr>
                 }
                 <tr>
                     <th>Descriere amanuntita</th>
@@ -154,5 +152,19 @@
     </form>
 </div>
 @section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var selectedCateg = $('#Product_CategoryRefId').val();
+            $('#Product_SubCategoryRefId').children('option').hide();
+            $('.' + selectedCateg).show();
+            }
+        );
+        function populateSubCateg(){
+            var selectedCateg = $('#Product_CategoryRefId').val();
+            $('#Product_SubCategoryRefId').children('option').hide();
+            $('#Product_SubCategoryRefId').val(null).change();
+            $('.' + selectedCateg).show();
+        }
+    </script>
     <partial name="_ValidationScriptsPartial" />
 }
