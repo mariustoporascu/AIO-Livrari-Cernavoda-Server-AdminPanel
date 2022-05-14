@@ -26,6 +26,7 @@ namespace OShop.Application.Restaurante
                 RestaurantId = categ.RestaurantId,
                 Name = categ.Name,
                 Photo = categ.Photo,
+                TelefonNo = categ.TelefonNo,
                 //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
             });
         private byte[] getBytes(FileStream stream)
@@ -43,6 +44,7 @@ namespace OShop.Application.Restaurante
         [Required]
         public string Name { get; set; }
         public string Photo { get; set; }
+        public string TelefonNo { get; set; }
         public string Image { get; set; }
     }
 }

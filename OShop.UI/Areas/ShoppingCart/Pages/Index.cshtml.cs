@@ -13,6 +13,8 @@ using OShop.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OShop.Domain.Models;
+
 
 namespace OShop.UI.Areas.ShoppingCart.Pages
 {

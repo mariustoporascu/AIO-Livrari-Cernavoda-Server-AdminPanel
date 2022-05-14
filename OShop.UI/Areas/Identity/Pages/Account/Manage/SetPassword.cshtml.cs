@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Database;
+using OShop.Domain.Models;
+
 
 namespace OShop.UI.Areas.Identity.Pages.Account.Manage
 {

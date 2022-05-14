@@ -1,6 +1,8 @@
-﻿using OShop.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using OShop.Database;
 using OShop.Domain.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OShop.Application.Orders
@@ -22,10 +24,22 @@ namespace OShop.Application.Orders
                 Status = vm.Status,
                 CustomerId = vm.CustomerId,
                 TotalOrdered = vm.TotalOrdered,
+                IsRestaurant = vm.IsRestaurant,
+                RestaurantRefId = vm.RestaurantRefId,
                 Created = DateTime.Now,
             };
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();
+        }
+        public async Task<bool> Do(int orderId, string status)
+        {
+            var order = _context.Orders.AsNoTracking().FirstOrDefault(o => o.OrderId == orderId);
+            if (order == null)
+                return false;
+            order.Status = status;
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

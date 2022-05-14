@@ -8,6 +8,8 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using OShop.Domain.Models;
+
 
 namespace OShop.UI.Areas.Identity.Pages.Account.Manage
 {

@@ -16,6 +16,7 @@ namespace OShop.Domain.Models
         public string Name { get; set; }
 
         public string Photo { get; set; } = "";
+        public string TelefonNo { get; set; } = "";
 
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<Category> Categories { get; set; }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OShop.Database;
 
 namespace OShop.Database.Migrations
 {
     [DbContext(typeof(OnlineShopDbContext))]
-    partial class OnlineShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220423112803_profile field")]
+    partial class profilefield
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -150,7 +152,7 @@ namespace OShop.Database.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("OShop.Domain.Models.ApplicationUser", b =>
+            modelBuilder.Entity("OShop.Database.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -171,12 +173,6 @@ namespace OShop.Database.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("CoordX")
-                        .HasColumnType("float");
-
-                    b.Property<double>("CoordY")
-                        .HasColumnType("float");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
@@ -189,12 +185,6 @@ namespace OShop.Database.Migrations
 
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDriver")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsOwner")
-                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
@@ -224,9 +214,6 @@ namespace OShop.Database.Migrations
 
                     b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RestaurantRefId")
-                        .HasColumnType("int");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -337,15 +324,6 @@ namespace OShop.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DriverRefId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsRestaurant")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("RestaurantRefId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -354,8 +332,6 @@ namespace OShop.Database.Migrations
                         .HasColumnType("decimal(18, 2)");
 
                     b.HasKey("OrderId");
-
-                    b.HasIndex("DriverRefId");
 
                     b.ToTable("Orders");
                 });
@@ -476,9 +452,6 @@ namespace OShop.Database.Migrations
                     b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TelefonNo")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("RestaurantId");
 
                     b.ToTable("Restaurante");
@@ -564,7 +537,7 @@ namespace OShop.Database.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("OShop.Domain.Models.ApplicationUser", null)
+                    b.HasOne("OShop.Database.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -573,7 +546,7 @@ namespace OShop.Database.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("OShop.Domain.Models.ApplicationUser", null)
+                    b.HasOne("OShop.Database.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -588,7 +561,7 @@ namespace OShop.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OShop.Domain.Models.ApplicationUser", null)
+                    b.HasOne("OShop.Database.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -597,7 +570,7 @@ namespace OShop.Database.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("OShop.Domain.Models.ApplicationUser", null)
+                    b.HasOne("OShop.Database.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -630,14 +603,6 @@ namespace OShop.Database.Migrations
                         .WithMany("Categories")
                         .HasForeignKey("SuperMarketRefId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("OShop.Domain.Models.Order", b =>
-                {
-                    b.HasOne("OShop.Domain.Models.ApplicationUser", "Driver")
-                        .WithMany("DriverOrders")
-                        .HasForeignKey("DriverRefId")
-                        .OnDelete(DeleteBehavior.NoAction);
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.OrderInfo", b =>

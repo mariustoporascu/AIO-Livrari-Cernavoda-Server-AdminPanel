@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OShop.Application.OrderInfos;
+using OShop.Application.ProductInOrders;
 using OShop.Database;
 using System.Linq;
 
@@ -29,9 +31,9 @@ namespace OShop.Application.Orders
                 };
         }
 
-        public OrderViewModel Do(int orderId, string status)
+        public OrderViewModel Do(int orderId)
         {
-            var order = _context.Orders.AsNoTracking().FirstOrDefault(order => order.OrderId == orderId && order.Status == status || order.OrderId == orderId);
+            var order = _context.Orders.AsNoTracking().FirstOrDefault(order => order.OrderId == orderId);
             if (order == null)
                 return null;
             else
@@ -41,6 +43,10 @@ namespace OShop.Application.Orders
                     Status = order.Status,
                     CustomerId = order.CustomerId,
                     TotalOrdered = order.TotalOrdered,
+                    IsRestaurant = order.IsRestaurant,
+                    RestaurantRefId = order.RestaurantRefId,
+                    ProductsInOrder = new GetAllProductInOrder(_context).Do(order.OrderId),
+                    OrderInfo = new GetOrderInfo(_context).Do(order.OrderId),
                     Created = order.Created,
                 };
         }

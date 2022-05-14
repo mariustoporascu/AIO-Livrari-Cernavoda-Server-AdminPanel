@@ -77,6 +77,11 @@ namespace OShop.Database
                 .WithOne(o => o.Orders)
                 .HasForeignKey<OrderInfo>(oi => oi.OrderRefId)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ApplicationUser>()
+            .HasMany<Order>(appUser => appUser.DriverOrders)
+            .WithOne(tId => tId.Driver)
+            .HasForeignKey(tId => tId.DriverRefId)
+            .OnDelete(DeleteBehavior.NoAction);
             OnModelCreatingPartial(modelBuilder);
         }
 

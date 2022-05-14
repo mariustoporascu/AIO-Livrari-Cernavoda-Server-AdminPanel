@@ -8,7 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using OShop.Database;
+using OShop.Domain.Models;
+
 namespace OShop.UI.Areas.Identity.Pages.Account.Manage
+
 {
     public class ChangePasswordModel : PageModel
     {

@@ -1,5 +1,6 @@
 ﻿using OShop.Application.OrderInfos;
 using OShop.Application.ProductInOrders;
+using OShop.Application.Restaurante;
 using OShop.Database;
 using OShop.Domain.Models;
 using System;
@@ -27,6 +28,8 @@ namespace OShop.Application.Orders
                 Status = vm.Status,
                 CustomerId = vm.CustomerId,
                 TotalOrdered = vm.TotalOrdered,
+                RestaurantRefId = vm.RestaurantRefId,
+                IsRestaurant = vm.IsRestaurant,
                 Created = DateTime.Now,
             };
             _context.Orders.Add(order);
@@ -49,10 +52,28 @@ namespace OShop.Application.Orders
 
         [Required]
         public string CustomerId { get; set; }
+        public bool IsRestaurant { get; set; } = false;
+        public int RestaurantRefId { get; set; }
+        public UserLocation Location { get; set; }
 
         [DataType(DataType.DateTime)]
         public DateTime Created { get; set; } = DateTime.Now;
         public IEnumerable<ProductInOrdersViewModel> ProductsInOrder { get; set; }
         public OrderInfosViewModel OrderInfo { get; set; }
+        public RestaurantVMUI Restaurant { get; set; }
+        public string DriverRefId { get; set; }
+        public Driver Driver { get; set; }
+    }
+    public class Driver
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string TelefonNo { get; set; }
+
+    }
+    public class UserLocation
+    {
+        public double CoordX { get; set; }
+        public double CoordY { get; set; }
     }
 }

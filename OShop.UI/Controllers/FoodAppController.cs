@@ -11,9 +11,12 @@ using OShop.Application.Restaurante;
 using OShop.Application.SubCategories;
 using OShop.Application.SuperMarkets;
 using OShop.Application.UnitatiMasura;
+using OShop.Domain.Models;
 using OShop.Database;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace OShop.UI.Controllers
 {
@@ -31,80 +34,25 @@ namespace OShop.UI.Controllers
             _fileManager = fileManager;
             _userManager = userManager;
         }
-
+        partial class DriverLocation
+        {
+            public string Id { get; set; }
+            public int OrderId { get; set; }
+            public double CoordX { get; set; }
+            public double CoordY { get; set; }
+        }
         [HttpGet("getallproducts")]
         public IActionResult ManageProducts() => Ok(new GetAllProducts(_context, _fileManager).Do());
-
-
-        [HttpGet("getproduct/{productId}")]
-        public IActionResult GetProduct(int productId) => Ok();
-
-        /*[HttpPost("createproduct")]
-        public async Task<IActionResult> AddProductAsync([FromForm] ProductVMReactUI vm)
-        {
-            if (ModelState.IsValid)
-            {
-                await new CreateProduct(_context, _fileManager).DoReact(vm);
-                return Ok();
-            }
-            return BadRequest();
-        }
-
-        [HttpPut("updateproduct")]
-        public async Task<IActionResult> UpdateProductAsync([FromForm] ProductVMReactUI vm)
-        {
-            if (ModelState.IsValid)
-            {
-                await new UpdateProduct(_context, _fileManager).DoReact(vm);
-                return Ok();
-            }
-            return BadRequest();
-        }
-
-        [HttpDelete("deleteproduct/{productId}")]
-        public async Task<IActionResult> RemoveProductAsync(int productId)
-        {
-            await new DeleteProduct(_context, _fileManager).Do(productId);
-            return Ok();
-        }*/
 
         [HttpGet("getallcategories")]
         public IActionResult ManageCategories() => Ok(new GetAllCategories(_context, _fileManager).Do());
         [HttpGet("getallsubcategories")]
         public IActionResult ManageSubCategories() => Ok(new GetAllSubCategories(_context, _fileManager).Do());
 
-        /*        [HttpPost("createcategory")]
-                public async Task<IActionResult> AddCategoryAsync([FromForm] CategoryVMReactUI vm)
-                {
-                    if (ModelState.IsValid)
-                    {
-                        await new CreateCategory(_context, _fileManager).DoReact(vm);
-                        return Ok();
-                    }
-                    return BadRequest();
-                }
-
-                [HttpPut("updatecategory")]
-                public async Task<IActionResult> UpdateCategoryAsync([FromForm] CategoryVMReactUI vm)
-                {
-                    if (ModelState.IsValid)
-                    {
-                        await new UpdateCategory(_context, _fileManager).DoReact(vm);
-                        return Ok();
-                    }
-                    return BadRequest();
-                }
-
-                [HttpDelete("deletecategory/{categoryId}")]
-                public async Task<IActionResult> RemoveCategoryAsync(int categoryId)
-                {
-                    await new DeleteCategory(_context, _fileManager).Do(categoryId);
-                    return Ok();
-                }*/
 
         [HttpGet("getallorders/{customer}")]
         public async Task<IActionResult> GetAllOrders(string customer) =>
-            Ok(new GetAllOrders(_context).Do((await _userManager.FindByEmailAsync(customer)).Id));
+            Ok(await new GetAllOrders(_context, _userManager).Do((await _userManager.FindByEmailAsync(customer)).Id));
 
         [HttpGet("getorderinfo/{orderId}")]
         public IActionResult GetOrderInfo(int orderId)
@@ -123,6 +71,24 @@ namespace OShop.UI.Controllers
 
         [HttpGet("getallmeasuringunits")]
         public IActionResult ManageMeasuringUnits() => Ok(new GetAllMeasuringUnits(_context).Do());
+        [HttpGet("getmydriverlocation/{driverId}/{orderId}")]
+        public async Task<IActionResult> GetDriverLocation(string driverId, int orderId)
+        {
+            var driver = await _userManager.FindByIdAsync(driverId);
+            var orderStatus = _context.Orders.AsNoTracking().FirstOrDefault(o => o.OrderId == orderId).Status;
+            if (driver == null)
+                return BadRequest();
+            if (!orderStatus.Equals("In curs de livrare"))
+                return BadRequest();
+            var driverLocation = new DriverLocation
+            {
+                Id = driverId,
+                OrderId = orderId,
+                CoordX = driver.CoordX,
+                CoordY = driver.CoordY,
+            };
+            return Ok(driverLocation);
+        }
 
         [HttpPost("createorder")]
         public async Task<IActionResult> CreateOrder([FromBody] object order)
@@ -136,6 +102,7 @@ namespace OShop.UI.Controllers
             var user = await _userManager.FindByEmailAsync(orderVM.CustomerId);
             if (user != null)
             {
+                orderVM.Status = OrderStatusEnum.Plasata;
                 orderVM.CustomerId = user.Id;
                 int orderId = await new CreateOrder(_context).Do(orderVM);
                 return Ok(orderId);

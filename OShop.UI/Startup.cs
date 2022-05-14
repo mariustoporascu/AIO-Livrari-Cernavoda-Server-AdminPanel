@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 using OShop.Application.FileManager;
 using OShop.Database;
 using System;
+using OShop.Domain.Models;
+
 
 namespace OShop.UI
 {

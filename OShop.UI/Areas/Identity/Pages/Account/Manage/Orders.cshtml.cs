@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OShop.Domain.Models;
+
 
 namespace OShop.UI.Areas.Identity.Pages.Account.Manage
 {
@@ -38,11 +40,11 @@ namespace OShop.UI.Areas.Identity.Pages.Account.Manage
         private void LoadAsync(int orderId)
         {
             var userName = _userManager.GetUserId(User);
-            Orders = new GetAllOrders(_context).Do(userName, orderId);
+            Orders = new GetAllOrders(_context, _userManager).Do(userName, orderId);
             if (orderId != -1)
             {
                 ProductInOrders = new GetAllProductInOrder(_context).Do(Orders.FirstOrDefault(order => order.OrderId == orderId).OrderId);
-                Products = new GetAllProducts(_context, _fileManager).Do(0,0)
+                Products = new GetAllProducts(_context, _fileManager).Do(0, 0)
                     .Where(prod => ProductInOrders.Select(product => product.ProductRefId).Contains(prod.ProductId));
             }
         }

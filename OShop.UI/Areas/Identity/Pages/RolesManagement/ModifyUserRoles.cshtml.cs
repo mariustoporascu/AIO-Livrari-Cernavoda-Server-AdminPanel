@@ -6,6 +6,8 @@ using OShop.Database;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using OShop.Domain.Models;
+
 
 namespace OShop.UI.Areas.Identity.Pages.RolesManagement
 {

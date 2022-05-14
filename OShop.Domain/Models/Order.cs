@@ -21,11 +21,15 @@ namespace OShop.Domain.Models
 
         [Required]
         public string CustomerId { get; set; }
+        public bool IsRestaurant { get; set; }
+        public int RestaurantRefId { get; set; }
 
         [DataType(DataType.DateTime)]
         public DateTime Created { get; set; } = DateTime.Now;
 
         public OrderInfo OrderInfos { get; set; }
+        public string? DriverRefId { get; set; }
+        public ApplicationUser Driver { get; set; }
         public virtual ICollection<ProductInOrder> ProductInOrders { get; set; }
     }
 }

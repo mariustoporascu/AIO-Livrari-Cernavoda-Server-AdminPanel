@@ -9,6 +9,8 @@ using OShop.Application.Products;
 using OShop.Application.ShoppingCarts;
 using OShop.Database;
 using System.Collections.Generic;
+using OShop.Domain.Models;
+
 
 namespace OShop.UI.Pages
 {

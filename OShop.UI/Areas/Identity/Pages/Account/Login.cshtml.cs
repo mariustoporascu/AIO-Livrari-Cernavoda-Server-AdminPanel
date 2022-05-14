@@ -11,6 +11,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using OShop.Domain.Models;
+using OShop.Domain.Models;
+
+
 
 namespace OShop.UI.Areas.Identity.Pages.Account
 {

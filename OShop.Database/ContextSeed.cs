@@ -6,7 +6,7 @@ namespace OShop.Database
 {
     public static class ContextSeed
     {
-        public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
+        /*public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
         {
             //Seed Roles
             await roleManager.CreateAsync(new IdentityRole(Enums.Roles.SuperAdmin.ToString()));
@@ -39,6 +39,6 @@ namespace OShop.Database
                     await userManager.AddToRoleAsync(defaultUser, Enums.Roles.SuperAdmin.ToString());
                 }
             }
-        }
+        }*/
     }
 }

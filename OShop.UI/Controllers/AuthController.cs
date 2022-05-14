@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using OShop.Database;
+using OShop.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Mail;
@@ -25,6 +25,16 @@ namespace OShop.UI.Controllers
             public string City { get; set; }
             public string BuildingInfo { get; set; }
             public string PhoneNumber { get; set; }
+            public double CoordX { get; set; }
+            public double CoordY { get; set; }
+            public bool CompleteProfile { get; set; }
+        }
+        partial class AuthVMManage
+        {
+            public string Id { get; set; }
+            public bool IsDriver { get; set; } = false;
+            public bool IsOwner { get; set; } = false;
+            public int RestaurantRefId { get; set; }
         }
         public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
@@ -89,6 +99,10 @@ namespace OShop.UI.Controllers
             }
             else
             {
+                if (account.IsDriver || account.IsOwner)
+                {
+                    return Ok("Login data invalid.");
+                }
                 if (string.IsNullOrEmpty(account.UserIdentification))
                 {
                     MailAddress address = new MailAddress(user.Email);
@@ -103,6 +117,9 @@ namespace OShop.UI.Controllers
                             PhoneNumber = account.PhoneNumber,
                             Street = account.Street,
                             City = account.City,
+                            CompleteProfile = account.CompleteProfile,
+                            CoordX = account.CoordX,
+                            CoordY = account.CoordY,
                         });
                     }
                     else
@@ -113,11 +130,52 @@ namespace OShop.UI.Controllers
                     {
                         FullName = account.FullName,
                         BuildingInfo = account.BuildingInfo,
-                        PhoneNumber= account.PhoneNumber,
+                        PhoneNumber = account.PhoneNumber,
                         Street = account.Street,
                         City = account.City,
+                        CompleteProfile = account.CompleteProfile,
+                        CoordX = account.CoordX,
+                        CoordY = account.CoordY,
+
                     });
                 return Ok("Login data invalid.");
+            }
+        }
+        [HttpPost("loginManage")]
+        public async Task<IActionResult> LoginAccountManage([FromBody] object userInfo)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var user = JsonConvert.DeserializeObject<AuthVM>(userInfo.ToString(), settings);
+            var account = await _userManager.FindByEmailAsync(user.Email);
+            if (account == null)
+            {
+                return Ok("Email is wrong or user not existing.");
+            }
+            else
+            {
+                if (!account.IsOwner && !account.IsDriver)
+                {
+                    return Ok("Login data invalid.");
+                }
+                MailAddress address = new MailAddress(user.Email);
+                string userName = address.User;
+                var result = await _signInManager.PasswordSignInAsync(userName, user.Password, false, false);
+                if (result.Succeeded)
+                {
+                    return Ok(new AuthVMManage
+                    {
+                        Id = account.IsDriver ? account.Id : null,
+                        IsDriver = account.IsDriver,
+                        IsOwner = account.IsOwner,
+                        RestaurantRefId = account.RestaurantRefId,
+                    });
+                }
+                else
+                    return Ok("Password is wrong.");
             }
         }
         [HttpPost("profile")]
@@ -148,6 +206,9 @@ namespace OShop.UI.Controllers
                         account.PhoneNumber = user.PhoneNumber;
                         account.Street = user.Street;
                         account.City = user.City;
+                        account.CompleteProfile = user.CompleteProfile;
+                        account.CoordX = user.CoordX;
+                        account.CoordY = user.CoordY;
                         await _userManager.UpdateAsync(account);
                         return Ok("Profile updated.");
                     }
@@ -159,6 +220,10 @@ namespace OShop.UI.Controllers
                     account.PhoneNumber = user.PhoneNumber;
                     account.Street = user.Street;
                     account.City = user.City;
+                    account.CompleteProfile = user.CompleteProfile;
+                    account.CoordX = user.CoordX;
+                    account.CoordY = user.CoordY;
+
                     await _userManager.UpdateAsync(account);
                     return Ok("Profile updated.");
                 }

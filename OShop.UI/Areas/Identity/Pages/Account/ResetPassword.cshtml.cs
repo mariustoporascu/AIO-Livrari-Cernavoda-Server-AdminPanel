@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using OShop.Database;
+using OShop.Domain.Models;
+using OShop.Domain.Models;
+
 
 namespace OShop.UI.Areas.Identity.Pages.Account
 {
