@@ -1,54 +1,260 @@
 ﻿@using Microsoft.AspNetCore.Hosting
 @using Microsoft.AspNetCore.Mvc.ViewEngines
+@using Microsoft.AspNetCore.Identity
+@using OShop.Domain.Models;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @inject IWebHostEnvironment Environment
 @inject ICompositeViewEngine Engine
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - OShop.UI</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - AIO Livrari Cernavoda</title>
+	<link rel="icon" type="image/png" sizes="16x16" href="~/images/favicon.png">
+	<!-- Pignose Calender -->
+	<link href="~/plugins/pg-calendar/css/pignose.calendar.min.css" rel="stylesheet">
+	<!-- Chartist -->
+	<link rel="stylesheet" href="~/plugins/chartist/css/chartist.min.css">
+	<link rel="stylesheet" href="~/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css">
+	<!-- Custom Stylesheet -->
+	<link href="~/css/style.css" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-light navbar-toggleable-sm bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" href="~/">OShop.UI</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <partial name="_LoginPartial" />
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item" style="align-self: flex-end;">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item" style="align-self: flex-end;">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
+	<!--*******************
+		Preloader start
+	********************-->
+	<div id="preloader">
+		<div class="loader">
+			<svg class="circular" viewBox="25 25 50 50">
+				<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+			</svg>
+		</div>
+	</div>
+	<!--*******************
+		Preloader end
+	********************-->
+	<div id="main-wrapper">
+		@if (SignInManager.IsSignedIn(User))
+		{
 
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-    <footer class="footer border-top text-muted">
-        <div class="container">
-            &copy; 2021 - OShop.UI - <a asp-area="" asp-page="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
+			<!--**********************************
+				Nav header start
+			***********************************-->
+			<div class="nav-header">
+				<div class="brand-logo">
+					<a asp-page="/Index" class="d-flex align-items-center flex-column">
+						<b class="logo-abbr"><img src="~/images/logo.png" alt=""> </b>
+						<span class="logo-compact"><img src="~/images/logo-compact.png" alt=""></span>
+						<span class="brand-title">
+							<img src="~/images/logo-text.png" style="width:50px;height:50px" alt="">
+						</span>
+					</a>
+				</div>
+			</div>
+
+			<!--**********************************
+				Nav header end
+			***********************************-->
+			<!--**********************************
+				Header start
+			***********************************-->
+			<div class="header">
+				<div class="header-content clearfix">
+
+					<div class="nav-control">
+						<div class="hamburger">
+							<span class="toggle-icon"><i class="icon-menu"></i></span>
+						</div>
+					</div>
+
+					<div class="header-right">
+						<ul class="clearfix">
+
+							<li class="icons dropdown">
+
+
+								<div class="user-img c-pointer position-relative" data-toggle="dropdown">
+									<span class="activity active"></span>
+
+									@if (!String.IsNullOrEmpty(UserManager.GetUserAsync(User).Result.ProfilePicture))
+									{
+										var image_path = $"/Image/{UserManager.GetUserAsync(User).Result.ProfilePicture}";
+										<img style="width:40px;height:40px; object-fit:cover; border-radius:30px" src="@image_path">
+									}
+									else
+									{
+										<img style="width:40px;height:40px; object-fit:cover; border-radius:30px" src="~/content/No_image_available.svg">
+
+									}
+								</div>
+								<div class="drop-down dropdown-profile animated fadeIn dropdown-menu">
+									<div class="dropdown-content-body">
+										<ul>
+											<li>
+												<a class="icon-user" asp-area="" asp-page="/AdminPanel/Profile"> <span>Profilul tau</span></a>
+
+											</li>
+											<li>
+												<a class="icon-key" asp-area="" asp-page="/AdminPanel/ChangePassword"> <span>Schimba Parola</span></a>
+
+											</li>
+											@if (User.IsInRole("SuperAdmin"))
+											{
+												<li>
+													<a class="icon-lock" asp-area="" asp-page="/AdminPanel/RolesManagement/Index"> <span>Management roluri</span></a>
+												</li>
+											}
+
+											<hr class="my-2">
+
+											<li>
+												<a class="icon-lock" asp-page="/Auth/Logout"> <span>Inchide sesiunea</span></a>
+
+											</li>
+										</ul>
+									</div>
+								</div>
+
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!--**********************************
+				Header end ti-comment-alt
+			***********************************-->
+			<!--**********************************
+				Sidebar start
+			***********************************-->
+			<div class="nk-sidebar">
+				<div class="nk-nav-scroll">
+					<ul class="metismenu" id="menu">
+						<li class="nav-label">Administrare</li>
+						<li>
+							<a asp-page="/Index">
+								<i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
+							</a>
+
+						</li>
+						@*@if (User.IsInRole("SuperAdmin"))
+						{
+							<li class="nav-label">Apps</li>
+							<li>
+								<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+									<i class="icon-envelope menu-icon"></i> <span class="nav-text">Email</span>
+								</a>
+								<ul aria-expanded="false">
+									<li><a href="./email-inbox.html">Inbox</a></li>
+									<li><a href="./email-read.html">Read</a></li>
+									<li><a href="./email-compose.html">Compose</a></li>
+								</ul>
+							</li>
+							<li>
+								<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+									<i class="icon-screen-tablet menu-icon"></i><span class="nav-text">Apps</span>
+								</a>
+								<ul aria-expanded="false">
+									<li><a href="./app-profile.html">Profile</a></li>
+									<li><a href="./app-calender.html">Calender</a></li>
+								</ul>
+							</li>
+							<li>
+								<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+									<i class="icon-graph menu-icon"></i> <span class="nav-text">Charts</span>
+								</a>
+								<ul aria-expanded="false">
+									<li><a href="./chart-flot.html">Flot</a></li>
+									<li><a href="./chart-morris.html">Morris</a></li>
+									<li><a href="./chart-chartjs.html">Chartjs</a></li>
+									<li><a href="./chart-chartist.html">Chartist</a></li>
+									<li><a href="./chart-sparkline.html">Sparkline</a></li>
+									<li><a href="./chart-peity.html">Peity</a></li>
+								</ul>
+							</li>
+						}*@
+
+						<li class="nav-label">Inventar Aplicatie</li>
+						<li>
+							<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+								<i class="icon-note menu-icon"></i><span class="nav-text">Categorii</span>
+							</a>
+							<ul aria-expanded="false">
+								<li><a asp-page="/AdminPanel/Category/ListaCategorii" asp-route-canal="@UserManager.GetUserAsync(User).Result.RestaurantRefId">Lista Categorii</a></li>
+								<li><a asp-page="/AdminPanel/Category/CreateCategory" asp-route-canal="@UserManager.GetUserAsync(User).Result.RestaurantRefId">Adaugare Categorie</a></li>
+							</ul>
+						</li>
+						<li>
+							<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+								<i class="icon-note menu-icon"></i><span class="nav-text">Produse</span>
+							</a>
+							<ul aria-expanded="false">
+								<li><a asp-page="/AdminPanel/Product/ListaProduse" asp-route-canal="@UserManager.GetUserAsync(User).Result.RestaurantRefId">Lista Produse</a></li>
+								<li><a asp-page="/AdminPanel/Product/CreateProduct" asp-route-canal="@UserManager.GetUserAsync(User).Result.RestaurantRefId">Adaugare Produs</a></li>
+							</ul>
+						</li>
+						<li class="nav-label">Info Aplicatie</li>
+						<li>
+							<a  asp-page="/AdminPanel/OrderManage" >
+								<i class="icon-menu menu-icon"></i><span class="nav-text">Istoric Comenzi</span>
+							</a>
+						</li>
+
+					</ul>
+				</div>
+			</div>
+		}
+		<!--**********************************
+			Sidebar end
+		***********************************-->
+		<!--**********************************
+			Content body start
+		***********************************-->
+		@if (SignInManager.IsSignedIn(User))
+		{
+			<div class="content-body">
+
+				@RenderBody()
+			</div>
+			<div class="footer">
+				<div class="copyright">
+					<p>Copyright &copy; Designed & Developed by TMIIT 2022</p>
+				</div>
+			</div>
+		}
+		else
+		{
+			@RenderBody()
+		}
+
+
+
+		<!--**********************************
+			Content body end
+		***********************************-->
+		<!--**********************************
+			Footer start
+		***********************************-->
+		<!--**********************************
+			Footer end
+		***********************************-->
+	</div>
+	<!--**********************************
+		Main wrapper end
+	***********************************-->
+
+	<script src="~/plugins/common/common.min.js"></script>
+	<script src="~/js/custom.min.js"></script>
+	<script src="~/js/settings.js"></script>
+	<script src="~/js/gleek.js"></script>
+	<script src="~/js/styleSwitcher.js"></script>
+
+
+
+
+
+	@RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -14,6 +14,7 @@ namespace OShop.Application.FileManager
         private readonly string _imagePathSubCategoryPhoto;
         private readonly string _imagePathProductPhoto;
         private readonly string _imagePathUserProfilePhoto;
+        private readonly string _imagePathRestaurantPhoto;
 
         public FileManager(IConfiguration config)
         {
@@ -21,18 +22,29 @@ namespace OShop.Application.FileManager
             _imagePathSubCategoryPhoto = config["Path:Images:SubCategoryPhoto"];
             _imagePathProductPhoto = config["Path:Images:ProductPhoto"];
             _imagePathUserProfilePhoto = config["Path:Images:UserProfilePhoto"];
+            _imagePathRestaurantPhoto = config["Path:Images:RestaurantPhoto"];
         }
 
         public FileStream ImageStream(string image)
         {
-            if (image.Contains("subcategoryphoto"))
-                return new FileStream(Path.Combine(_imagePathSubCategoryPhoto, image), FileMode.Open, FileAccess.Read);
-            else if (image.Contains("categoryphoto"))
-                return new FileStream(Path.Combine(_imagePathCategoryPhoto, image), FileMode.Open, FileAccess.Read);
-            else if (image.Contains("productphoto"))
-                return new FileStream(Path.Combine(_imagePathProductPhoto, image), FileMode.Open, FileAccess.Read);
-            else
-                return new FileStream(Path.Combine(_imagePathUserProfilePhoto, image), FileMode.Open, FileAccess.Read);
+            try
+            {
+                if (image.Contains("subcategoryphoto"))
+                    return new FileStream(Path.Combine(_imagePathSubCategoryPhoto, image), FileMode.Open, FileAccess.Read);
+                else if (image.Contains("categoryphoto"))
+                    return new FileStream(Path.Combine(_imagePathCategoryPhoto, image), FileMode.Open, FileAccess.Read);
+                else if (image.Contains("productphoto"))
+                    return new FileStream(Path.Combine(_imagePathProductPhoto, image), FileMode.Open, FileAccess.Read);
+                else if (image.Contains("restaurantphoto"))
+                    return new FileStream(Path.Combine(_imagePathRestaurantPhoto, image), FileMode.Open, FileAccess.Read);
+                else
+                    return new FileStream(Path.Combine(_imagePathUserProfilePhoto, image), FileMode.Open, FileAccess.Read);
+            }catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+            
         }
 
         public bool RemoveImage(string image, string type)
@@ -46,6 +58,8 @@ namespace OShop.Application.FileManager
                     file = Path.Combine(_imagePathProductPhoto, image);
                 else if (type == "SubCategoryPhoto")
                     file = Path.Combine(_imagePathSubCategoryPhoto, image);
+                else if (type == "RestaurantPhoto")
+                    file = Path.Combine(_imagePathRestaurantPhoto, image);
                 else
                     file = Path.Combine(_imagePathUserProfilePhoto, image);
                 if (File.Exists(file))
@@ -72,6 +86,8 @@ namespace OShop.Application.FileManager
                     save_path = Path.Combine(_imagePathProductPhoto);
                 else if (type == "SubCategoryPhoto")
                     save_path = Path.Combine(_imagePathSubCategoryPhoto);
+                else if (type == "RestaurantPhoto")
+                    save_path = Path.Combine(_imagePathRestaurantPhoto);
                 else
                     save_path = Path.Combine(_imagePathUserProfilePhoto);
 
@@ -82,7 +98,8 @@ namespace OShop.Application.FileManager
 
                 var mime = image.FileName.Substring(image.FileName.LastIndexOf('.'));
                 var pathtype = save_path.Split("/", 3)
-                    .FirstOrDefault(pathtype => pathtype == "categoryphoto" || pathtype == "subcategoryphoto" || pathtype == "productphoto" || pathtype == "userprofilephoto");
+                    .FirstOrDefault(pathtype => pathtype == "categoryphoto" || pathtype == "subcategoryphoto" 
+                    || pathtype == "productphoto" || pathtype == "userprofilephoto" || pathtype == "restaurantphoto");
                 var fileName = $"{pathtype}_img_{image.FileName.Substring(0, image.FileName.LastIndexOf(".")).Replace(' ', '_')}{mime}";
 
                 //using(var outputFileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))

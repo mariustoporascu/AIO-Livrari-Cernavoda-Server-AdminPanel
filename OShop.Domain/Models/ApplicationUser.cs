@@ -21,5 +21,7 @@ namespace OShop.Domain.Models
         public double CoordX { get; set; }
         public double CoordY { get; set; }
         public virtual ICollection<Order> DriverOrders { get; set; }
+        public virtual ICollection<RatingClient> RatingClients { get; set; }
+        public virtual ICollection<RatingDriver> RatingDrivers { get; set; }
     }
 }

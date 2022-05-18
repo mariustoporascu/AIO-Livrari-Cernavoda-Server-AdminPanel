@@ -21,7 +21,7 @@ using System.Linq;
 namespace OShop.UI.Controllers
 {
 
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class FoodAppController : Controller
     {
         private readonly OnlineShopDbContext _context;
@@ -66,6 +66,8 @@ namespace OShop.UI.Controllers
         public IActionResult GetProductsForOrder(int orderId) => Ok(new GetAllProducts(_context, _fileManager).Do(0, orderId));
         [HttpGet("getallrestaurante")]
         public IActionResult ManageRestaurante() => Ok(new GetAllRestaurante(_context, _fileManager).Do());
+        [HttpGet("agreeesttime/{orderId}/{accept}")]
+        public async Task<IActionResult> SetEstTime(int orderId, bool accept) => Ok($"agreed : {await new UpdateOrder(_context).DoET(orderId, accept)}");
         [HttpGet("getallsupermarkets")]
         public IActionResult ManageSuperMarkets() => Ok(new GetAllSuperMarkets(_context, _fileManager).Do());
 
@@ -132,6 +134,46 @@ namespace OShop.UI.Controllers
             var orderProductsVM = JsonConvert.DeserializeObject<List<ProductInOrdersViewModel>>(orderproducts.ToString(), settings);
             await new CreateProductInOrder(_context).Do(orderProductsVM);
             return Ok();
+        }
+        [HttpGet("ratingdriver/{email}/{orderId}/{rating}")]
+        public async Task<IActionResult> GiveDriverRating(string email, int orderId, int rating)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return BadRequest();
+
+            var order = _context.Orders.AsNoTracking().FirstOrDefault(or => or.OrderId == orderId);
+            if (order == null) return BadRequest();
+            var newRating = new RatingDriver
+            {
+                Rating = rating,
+                OrderRefId = order.OrderId,
+                DriverRefId = order.DriverRefId,
+            };
+            order.ClientGaveRatingDriver = true;
+            _context.Orders.Update(order);
+            _context.RatingDrivers.Add(newRating);
+            await _context.SaveChangesAsync();
+            return Ok("Rating acordat");
+        }
+        [HttpGet("ratingrestaurant/{email}/{orderId}/{rating}")]
+        public async Task<IActionResult> GiveRestaurantRating(string email, int orderId, int rating)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return BadRequest();
+
+            var order = _context.Orders.AsNoTracking().FirstOrDefault(or => or.OrderId == orderId);
+            if (order == null) return BadRequest();
+            var newRating = new RatingRestaurant
+            {
+                Rating = rating,
+                OrderRefId = order.OrderId,
+                RestaurantRefId = order.RestaurantRefId,
+            };
+            order.ClientGaveRatingRestaurant = true;
+            _context.Orders.Update(order);
+            _context.RatingRestaurants.Add(newRating);
+            await _context.SaveChangesAsync();
+            return Ok("Rating acordat");
         }
     }
 }

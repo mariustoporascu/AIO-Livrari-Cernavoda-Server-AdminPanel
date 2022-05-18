@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OShop.UI.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

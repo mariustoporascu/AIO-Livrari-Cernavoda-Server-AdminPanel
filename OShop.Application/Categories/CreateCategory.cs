@@ -52,7 +52,7 @@ namespace OShop.Application.Categories
     public class CategoryVMReactUI
     {
         public int CategoryId { get; set; }
-        [Required]
+        [Required(ErrorMessage ="Campul este obligatoriu")]
         public string Name { get; set; }
         [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg" })]
         public IFormFile Photo { get; set; }

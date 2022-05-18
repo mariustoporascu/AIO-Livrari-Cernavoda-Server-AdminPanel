@@ -5,7 +5,7 @@ using OShop.Database;
 
 namespace OShop.UI.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class HomeController : Controller
     {
         private readonly OnlineShopDbContext _context;

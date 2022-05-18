@@ -26,6 +26,9 @@ namespace OShop.Database
         public DbSet<ProductInOrder> ProductInOrders { get; set; }
         public DbSet<OrderInfo> OrdersInfos { get; set; }
         public DbSet<MeasuringUnit> MeasuringUnits { get; set; }
+        public DbSet<RatingClient> RatingClients { get; set; }
+        public DbSet<RatingDriver> RatingDrivers { get; set; }
+        public DbSet<RatingRestaurant> RatingRestaurants { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -82,6 +85,36 @@ namespace OShop.Database
             .WithOne(tId => tId.Driver)
             .HasForeignKey(tId => tId.DriverRefId)
             .OnDelete(DeleteBehavior.NoAction);
+            //rating driver
+            modelBuilder.Entity<RatingDriver>().HasKey(cp => new { cp.OrderRefId, cp.DriverRefId });
+            modelBuilder.Entity<RatingDriver>().HasOne<Order>(cp => cp.Orderz)
+                .WithMany(c => c.RatingDrivers)
+                .HasForeignKey(cp => cp.OrderRefId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<RatingDriver>().HasOne<ApplicationUser>(cp => cp.Driver)
+                .WithMany(p => p.RatingDrivers)
+                .HasForeignKey(cp => cp.DriverRefId)
+                .OnDelete(DeleteBehavior.Cascade);
+            //rating restaurant
+            modelBuilder.Entity<RatingRestaurant>().HasKey(cp => new { cp.OrderRefId, cp.RestaurantRefId });
+            modelBuilder.Entity<RatingRestaurant>().HasOne<Order>(cp => cp.Orderz)
+                .WithMany(c => c.RatingRestaurants)
+                .HasForeignKey(cp => cp.OrderRefId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<RatingRestaurant>().HasOne<Restaurant>(cp => cp.Restaurantz)
+                .WithMany(p => p.RatingRestaurants)
+                .HasForeignKey(cp => cp.RestaurantRefId)
+                .OnDelete(DeleteBehavior.Cascade);
+            //rating client
+            modelBuilder.Entity<RatingClient>().HasKey(cp => new { cp.OrderRefId, cp.UserRefId });
+            modelBuilder.Entity<RatingClient>().HasOne<Order>(cp => cp.Orderz)
+                .WithMany(c => c.RatingClients)
+                .HasForeignKey(cp => cp.OrderRefId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<RatingClient>().HasOne<ApplicationUser>(cp => cp.Users)
+                .WithMany(p => p.RatingClients)
+                .HasForeignKey(cp => cp.UserRefId)
+                .OnDelete(DeleteBehavior.Cascade);
             OnModelCreatingPartial(modelBuilder);
         }
 

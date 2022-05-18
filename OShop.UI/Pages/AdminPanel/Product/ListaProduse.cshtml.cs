@@ -1,0 +1,56 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using OShop.Application.Categories;
+using OShop.Application.FileManager;
+using OShop.Application.Products;
+using OShop.Application.Restaurante;
+using OShop.Application.SubCategories;
+using OShop.Application.SuperMarkets;
+using OShop.Application.UnitatiMasura;
+using OShop.Database;
+using OShop.Domain.Models;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using OShop.Domain.Models;
+using System.Threading.Tasks;
+
+namespace OShop.UI.Pages.AdminPanel.Product
+{
+    [Authorize(Roles = "SuperAdmin, Admin")]
+    public class ListaProduseModel : PageModel
+    {
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly OnlineShopDbContext _context;
+        private readonly IFileManager _fileManager;
+
+        public ListaProduseModel(OnlineShopDbContext context, IFileManager fileManager, UserManager<ApplicationUser> userManager)
+        {
+            _context = context;
+            _fileManager = fileManager;
+            _userManager = userManager;
+        }
+
+
+        [BindProperty]
+        public IEnumerable<ProductVMUI> Products { get; set; }
+        [BindProperty]
+        public IEnumerable<CategoryVMUI> Categ { get; set; }
+        [BindProperty]
+        public int Canal { get; set; }
+        [BindProperty]
+        public IEnumerable<UnitateMasuraVMUI> UnitatiMasura { get; set; }
+        public async Task<IActionResult> OnGet(int canal)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (canal != user.RestaurantRefId)
+                return RedirectToPage("/Error");
+            Canal = canal;
+            Products = new GetAllProducts(_context, _fileManager).DoRest(canal);
+            Categ = new GetAllCategories(_context, _fileManager).DoRest(canal);
+            UnitatiMasura = new GetAllMeasuringUnits(_context).Do();
+            return Page();
+        }
+    }
+}

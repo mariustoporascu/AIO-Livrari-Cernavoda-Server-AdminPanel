@@ -10,7 +10,7 @@ using OShop.Application.FileManager;
 using OShop.Database;
 using System;
 using OShop.Domain.Models;
-
+using Microsoft.Net.Http.Headers;
 
 namespace OShop.UI
 {
@@ -61,8 +61,8 @@ namespace OShop.UI
             });
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = $"/Identity/Account/Login";
-                options.LogoutPath = $"/Identity/Account/Logout";
+                options.LoginPath = $"/Auth/Login";
+                options.LogoutPath = $"/Auth/Logout";
                 options.AccessDeniedPath = $"/Error";
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
                 options.SlidingExpiration = true;
@@ -91,7 +91,15 @@ namespace OShop.UI
                 app.UseHttpsRedirection();
             }
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    const int durationInSeconds = 60 * 60 * 24 * 7;
+                    ctx.Context.Response.Headers[HeaderNames.CacheControl] =
+                        "public,max-age=" + durationInSeconds;
+                }
+            });
 
             app.UseRouting();
 

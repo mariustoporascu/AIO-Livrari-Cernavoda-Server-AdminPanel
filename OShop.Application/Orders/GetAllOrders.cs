@@ -31,7 +31,11 @@ namespace OShop.Application.Orders
                 CustomerId = order.CustomerId,
                 TotalOrdered = order.TotalOrdered,
                 IsRestaurant = order.IsRestaurant,
+                EstimatedTime = order.EstimatedTime,
+                HasUserConfirmedET = order.HasUserConfirmedET,
+                DriverGaveRating = order.DriverGaveRating,
                 RestaurantRefId = order.RestaurantRefId,
+                RatingClientDeLaSofer = _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaSofer,
                 ProductsInOrder = new GetAllProductInOrder(_context).Do(order.OrderId),
                 OrderInfo = new GetOrderInfo(_context).Do(order.OrderId),
                 DriverRefId = order.DriverRefId,
@@ -54,6 +58,14 @@ namespace OShop.Application.Orders
                 CustomerId = order.CustomerId,
                 TotalOrdered = order.TotalOrdered,
                 Created = order.Created,
+                EstimatedTime = order.EstimatedTime,
+                IsRestaurant = order.IsRestaurant,
+                ClientGaveRatingDriver = order.ClientGaveRatingDriver,
+                ClientGaveRatingRestaurant = order.ClientGaveRatingRestaurant,
+                RatingDriver = _context.RatingDrivers.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating,
+                RatingRestaurant = _context.RatingRestaurants.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating,
+                RestaurantRefId = order.RestaurantRefId,
+                HasUserConfirmedET = order.HasUserConfirmedET,
                 ProductsInOrder = new GetAllProductInOrder(_context).Do(order.OrderId),
                 OrderInfo = new GetOrderInfo(_context).Do(order.OrderId),
                 DriverRefId = order.DriverRefId,
@@ -84,7 +96,11 @@ namespace OShop.Application.Orders
                 TotalOrdered = order.TotalOrdered,
                 Created = order.Created,
                 IsRestaurant = order.IsRestaurant,
+                EstimatedTime = order.EstimatedTime,
+                HasUserConfirmedET = order.HasUserConfirmedET,
+                RestaurantGaveRating = order.RestaurantGaveRating,
                 RestaurantRefId = order.RestaurantRefId,
+                RatingClientDeLaRestaurant = _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaRestaurant,
                 ProductsInOrder = new GetAllProductInOrder(_context).Do(order.OrderId),
                 OrderInfo = new GetOrderInfo(_context).Do(order.OrderId),
                 DriverRefId = order.DriverRefId,
@@ -106,26 +122,42 @@ namespace OShop.Application.Orders
             }
             return orders;
         }
-        //obsolete
-        public IEnumerable<OrderViewModel> Do(string customerId, int orderId)
+        //site management
+        public async Task<IEnumerable<OrderViewModel>> Do(string customerId, bool manager)
         {
-            if (orderId == -1)
-                return _context.Orders.AsNoTracking().Where(order => order.CustomerId == customerId && order.Status == "Ordered").ToList().Select(order => new OrderViewModel
-                {
-                    OrderId = order.OrderId,
-                    Status = order.Status,
-                    CustomerId = order.CustomerId,
-                    TotalOrdered = order.TotalOrdered,
-                    Created = order.Created,
-                });
-            return _context.Orders.AsNoTracking().Where(order => order.CustomerId == customerId && order.OrderId == orderId).ToList().Select(order => new OrderViewModel
+            var orders = _context.Orders.AsNoTracking().Where(order => order.CustomerId == customerId).Select(order => new OrderViewModel
             {
                 OrderId = order.OrderId,
                 Status = order.Status,
                 CustomerId = order.CustomerId,
                 TotalOrdered = order.TotalOrdered,
                 Created = order.Created,
-            });
+                EstimatedTime = order.EstimatedTime,
+                IsRestaurant = order.IsRestaurant,
+                RatingDriver = _context.RatingDrivers.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating,
+                RatingRestaurant = _context.RatingRestaurants.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating,
+                RatingClientDeLaRestaurant = _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaRestaurant,
+                RatingClientDeLaSofer = _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaSofer,
+                RestaurantRefId = order.RestaurantRefId,
+                HasUserConfirmedET = order.HasUserConfirmedET,
+                ProductsInOrder = new GetAllProductInOrder(_context).Do(order.OrderId),
+                OrderInfo = new GetOrderInfo(_context).Do(order.OrderId),
+                DriverRefId = order.DriverRefId,
+            }).ToList();
+            foreach (var order in orders)
+            {
+                if (!string.IsNullOrEmpty(order.DriverRefId))
+                {
+                    var driver = await _userManager.FindByIdAsync(order.DriverRefId);
+                    order.Driver = new Driver
+                    {
+                        FirstName = driver.FirstName,
+                        LastName = driver.LastName,
+                        TelefonNo = driver.PhoneNumber,
+                    };
+                }
+            }
+            return orders;
         }
         private async Task<UserLocation> GetUserLocation(string customerId)
         {

@@ -66,10 +66,10 @@ namespace OShop.Application.Products
 
         public int ProductId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Description { get; set; }
 
         [Range(0, 10000)]
@@ -89,12 +89,12 @@ namespace OShop.Application.Products
     {
         public int ProductId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Name { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Description { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Gramaj { get; set; }
 
         [Range(0, 10000)]
@@ -104,7 +104,7 @@ namespace OShop.Application.Products
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal Price { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public int MeasuringUnitId { get; set; }
 
         public string Photo { get; set; }
@@ -144,4 +144,5 @@ namespace OShop.Application.Products
             return $"This photo extension is not allowed!";
         }
     }
+
 }

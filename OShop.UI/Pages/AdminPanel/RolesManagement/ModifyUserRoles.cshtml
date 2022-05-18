@@ -1,0 +1,35 @@
+﻿@page
+@model ModifyUserRolesModel
+@{
+	ViewData["Title"] = "Modify User Roles";
+	Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+<div class="container-fluid mt-3">
+	<form method="post">
+		<div class="row card">
+			<div class="card-header">
+				<h2>Adauga sau sterge roluri pentru @Model.UserName</h2>
+
+			</div>
+			<div class="card-body">
+				@foreach (var userRole in Model.ManageUserRolesVMs)
+				{
+					<div class="form-check m-1">
+						<input type="hidden" asp-for="@Model.ManageUserRolesVMs[userRole.Index].RoleId" />
+						<input type="hidden" asp-for="@Model.ManageUserRolesVMs[userRole.Index].RoleName" />
+						<input type="checkbox" asp-for="@Model.ManageUserRolesVMs[userRole.Index].Selected" />
+						<label class="form-check-label">
+							@userRole.RoleName
+						</label>
+					</div>
+				}
+			</div>
+			<div class="card-footer">
+				<button type="submit" class="btn btn-primary"
+						style="width:auto">
+					Aplica modificari
+				</button>
+			</div>
+		</div>
+	</form>
+</div>

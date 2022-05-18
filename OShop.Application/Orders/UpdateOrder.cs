@@ -41,5 +41,27 @@ namespace OShop.Application.Orders
             await _context.SaveChangesAsync();
             return true;
         }
+        public async Task<bool> DoET(int orderId, string estimatedTime)
+        {
+            var order = _context.Orders.AsNoTracking().FirstOrDefault(o => o.OrderId == orderId);
+            if (order == null)
+                return false;
+            order.EstimatedTime = estimatedTime;
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task<bool> DoET(int orderId, bool accept)
+        {
+            var order = _context.Orders.AsNoTracking().FirstOrDefault(o => o.OrderId == orderId);
+            if (order == null)
+                return false;
+            order.HasUserConfirmedET = accept;
+            if (!accept)
+                order.Status = "Anulata";
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

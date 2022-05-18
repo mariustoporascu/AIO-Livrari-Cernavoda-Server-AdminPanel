@@ -54,7 +54,13 @@ namespace OShop.Application.Orders
         public string CustomerId { get; set; }
         public bool IsRestaurant { get; set; } = false;
         public int RestaurantRefId { get; set; }
+        public string EstimatedTime { get; set; }
+        public bool? HasUserConfirmedET { get; set; }
         public UserLocation Location { get; set; }
+        public bool RestaurantGaveRating { get; set; } = false;
+        public bool ClientGaveRatingDriver { get; set; } = false;
+        public bool ClientGaveRatingRestaurant { get; set; } = false;
+        public bool DriverGaveRating { get; set; } = false;
 
         [DataType(DataType.DateTime)]
         public DateTime Created { get; set; } = DateTime.Now;
@@ -63,6 +69,10 @@ namespace OShop.Application.Orders
         public RestaurantVMUI Restaurant { get; set; }
         public string DriverRefId { get; set; }
         public Driver Driver { get; set; }
+        public int RatingClientDeLaSofer { get; set; }
+        public int RatingClientDeLaRestaurant { get; set; }
+        public int RatingDriver { get; set; }
+        public int RatingRestaurant { get; set; }
     }
     public class Driver
     {

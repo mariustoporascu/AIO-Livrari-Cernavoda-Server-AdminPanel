@@ -1,0 +1,128 @@
+﻿@page
+@model CreateProductModel
+@{
+    ViewData["Title"] = "Editare Produs";
+    var base_path = Request.PathBase;
+}
+<div class="container-fluid mt-3">
+    @if(Model.Product.ProductId > 0){
+        <h1>Editare Produs</h1>
+    }
+    else
+    {
+        <h1>Adaugare Produs</h1>
+    }
+
+	<div class="row card mt-2">
+    <form method="post" enctype="multipart/form-data">
+        <input asp-for="@Model.Product.ProductId" type="hidden" />
+        <input asp-for="@Model.Canal" type="hidden"/>
+        <div class="table-responsive">
+			<table class="table header-border table-hover verticle-middle">
+            <thead>
+                <tr>
+                    <th>Tip camp</th>
+                    <th>Valoare</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Nume</th>
+                    <td class="form-group">
+                        <input asp-for="@Model.Product.Name" class="form-control" />
+                        <span asp-validation-for="@Model.Product.Name" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Categorie</th>
+                    <td>
+                        <select asp-for="@Model.Product.CategoryRefId" class="form-control" onchange="populateSubCateg()" >
+                            @foreach (var category in Model.Categ)
+                            {
+                                <option  value="@category.CategoryId" >@category.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="@Model.Product.CategoryRefId" class="text-danger"></span>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <th>Descriere amanuntita</th>
+                    <td>
+                        <input asp-for="@Model.Product.Description" class="form-control" />
+                        <span asp-validation-for="@Model.Product.Description" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Pret</th>
+                    <td>
+                        <input min="0.01" max="10000" asp-for="@Model.Product.Price" class="form-control" />
+                        <span asp-validation-for="@Model.Product.Price" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Gramaj</th>
+                    <td>
+                        <input asp-for="@Model.Product.Gramaj" class="form-control" />
+                        <span asp-validation-for="@Model.Product.Gramaj" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Unitate De Masura</th>
+                    <td>
+                        <select asp-for="@Model.Product.MeasuringUnitId" class="form-control">
+                            @foreach (var unit in Model.UnitatiMasura)
+                            {
+                                <option value="@unit.UnitId">@unit.Name</option>
+                            }
+                        </select>
+                        <span asp-validation-for="@Model.Product.MeasuringUnitId" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Poza</th>
+                    <td class="form-group">
+                        <input type="hidden" asp-for="@Model.Product.Photo" />
+                        @if (@Model.Product.Photo != null)
+                        {
+                            var image_path = $"{base_path}/Image/{Model.Product.Photo}";
+                            <img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="@image_path">
+                        }
+                        else
+                        {
+                            <img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="~/content/No_image_available.svg">
+                        }
+                        <input type="file"
+                               accept=".png,.jpg,.jpeg,.gif,.tif"
+                               asp-for="@Model.Product.Photo"
+                               class="form-control"
+                               style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+                               onchange="document.getElementById('productphoto').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="@Model.Product.Photo" class="text-danger"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+                </div>
+        <div class="d-flex align-items-center flex-column">
+        @if (Model.Product.ProductId > 0)
+        {
+            <button type="submit" class="btn btn-primary" asp-route-productId="@Model.Product.ProductId">
+                <text>Salveaza modificari</text>
+            </button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary">
+                <text>Adauga Produs</text>
+            </button>
+        }
+        <a class="btn btn-warning mt-5" asp-area="" asp-page="/AdminPanel/Product/ListaProduse" asp-route-canal="@Model.Canal">Anuleaza</a>
+        </div>
+    </form>
+</div>
+</div>
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+}

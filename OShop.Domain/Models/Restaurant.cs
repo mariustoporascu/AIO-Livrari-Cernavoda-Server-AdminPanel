@@ -20,5 +20,6 @@ namespace OShop.Domain.Models
 
         public virtual ICollection<Product> Products { get; set; }
         public virtual ICollection<Category> Categories { get; set; }
+        public virtual ICollection<RatingRestaurant> RatingRestaurants { get; set; }
     }
 }

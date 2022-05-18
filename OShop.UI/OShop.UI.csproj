@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -65,12 +66,6 @@
 		<Folder Include="wwwroot\content\categoryphoto\" />
 		<Folder Include="wwwroot\content\productphoto\" />
 		<Folder Include="wwwroot\content\userprofilephoto\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="Areas\Identity\Pages\RolesManagement\AddRole - Copy.cshtml.cs">
-	    <DependentUpon>AddRole.cshtml.cs</DependentUpon>
-	  </Compile>
 	</ItemGroup>
 
 </Project>

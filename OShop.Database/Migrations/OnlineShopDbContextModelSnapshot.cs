@@ -330,6 +330,12 @@ namespace OShop.Database.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("ClientGaveRatingDriver")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("ClientGaveRatingRestaurant")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
 
@@ -337,10 +343,22 @@ namespace OShop.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("DriverGaveRating")
+                        .HasColumnType("bit");
+
                     b.Property<string>("DriverRefId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("EstimatedTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("HasUserConfirmedET")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsRestaurant")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("RestaurantGaveRating")
                         .HasColumnType("bit");
 
                     b.Property<int>("RestaurantRefId")
@@ -460,6 +478,63 @@ namespace OShop.Database.Migrations
                     b.HasIndex("ProductRefId");
 
                     b.ToTable("ProductInOrders");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.RatingClient", b =>
+                {
+                    b.Property<int>("OrderRefId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserRefId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("RatingDeLaRestaurant")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RatingDeLaSofer")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderRefId", "UserRefId");
+
+                    b.HasIndex("UserRefId");
+
+                    b.ToTable("RatingClients");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.RatingDriver", b =>
+                {
+                    b.Property<int>("OrderRefId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DriverRefId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderRefId", "DriverRefId");
+
+                    b.HasIndex("DriverRefId");
+
+                    b.ToTable("RatingDrivers");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.RatingRestaurant", b =>
+                {
+                    b.Property<int>("OrderRefId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RestaurantRefId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderRefId", "RestaurantRefId");
+
+                    b.HasIndex("RestaurantRefId");
+
+                    b.ToTable("RatingRestaurants");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.Restaurant", b =>
@@ -679,6 +754,51 @@ namespace OShop.Database.Migrations
                     b.HasOne("OShop.Domain.Models.Product", "Products")
                         .WithMany("ProductInOrders")
                         .HasForeignKey("ProductRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.RatingClient", b =>
+                {
+                    b.HasOne("OShop.Domain.Models.Order", "Orderz")
+                        .WithMany("RatingClients")
+                        .HasForeignKey("OrderRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OShop.Domain.Models.ApplicationUser", "Users")
+                        .WithMany("RatingClients")
+                        .HasForeignKey("UserRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.RatingDriver", b =>
+                {
+                    b.HasOne("OShop.Domain.Models.ApplicationUser", "Driver")
+                        .WithMany("RatingDrivers")
+                        .HasForeignKey("DriverRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OShop.Domain.Models.Order", "Orderz")
+                        .WithMany("RatingDrivers")
+                        .HasForeignKey("OrderRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.RatingRestaurant", b =>
+                {
+                    b.HasOne("OShop.Domain.Models.Order", "Orderz")
+                        .WithMany("RatingRestaurants")
+                        .HasForeignKey("OrderRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OShop.Domain.Models.Restaurant", "Restaurantz")
+                        .WithMany("RatingRestaurants")
+                        .HasForeignKey("RestaurantRefId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

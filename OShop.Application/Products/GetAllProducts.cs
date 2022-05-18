@@ -129,6 +129,29 @@ namespace OShop.Application.Products
                     RestaurantRefId = prod.RestaurantRefId,
                 });
         }
+        public IEnumerable<ProductVMUI> DoRest(int canal)
+        {
+
+            return _context.Products.AsNoTracking()
+                .Where(prod => prod.RestaurantRefId == canal)
+                .Select(prod => new ProductVMUI
+                {
+                    ProductId = prod.ProductId,
+                    Name = prod.Name,
+                    Description = prod.Description,
+                    Stock = prod.Stock,
+                    Price = prod.Price,
+                    Photo = prod.Photo,
+                    //Image = (prod.Photo == null || prod.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(prod.Photo))),
+                    Gramaj = prod.Gramaj,
+                    MeasuringUnitId = prod.MeasuringUnitId,
+                    CategoryRefId = prod.CategoryRefId,
+                    SubCategoryRefId = prod.SubCategoryRefId,
+
+                    SuperMarketRefId = prod.SuperMarketRefId,
+                    RestaurantRefId = prod.RestaurantRefId,
+                }).ToList();
+        }
         private byte[] getBytes(FileStream stream)
         {
             byte[] buffer = new byte[stream.Length];

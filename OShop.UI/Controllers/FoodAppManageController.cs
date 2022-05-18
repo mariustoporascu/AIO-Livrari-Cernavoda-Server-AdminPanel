@@ -20,7 +20,7 @@ using OShop.Domain.Models;
 
 namespace OShop.UI.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class FoodAppManageController : Controller
     {
         private readonly OnlineShopDbContext _context;
@@ -100,6 +100,49 @@ namespace OShop.UI.Controllers
                 return Ok("Location updated");
             }
             return Ok("Location not updated");
+        }
+        [HttpGet("setesttime/{orderId}/{esttime}")]
+        public async Task<IActionResult> SetEstTime(int orderId, string esttime) => Ok($"estTime : {await new UpdateOrder(_context).DoET(orderId, esttime)}");
+        [HttpGet("ratingclient/{isOwner}/{orderId}/{rating}")]
+        public async Task<IActionResult> GiveRestaurantRating(bool isOwner, int orderId, int rating)
+        {
+            var order = _context.Orders.AsNoTracking().FirstOrDefault(or => or.OrderId == orderId);
+            if (order == null) return BadRequest();
+            var haveRating = _context.RatingClients.AsNoTracking().FirstOrDefault(rc => rc.OrderRefId == orderId);
+            if (haveRating != null)
+            {
+                if (isOwner)
+                    haveRating.RatingDeLaRestaurant = rating;
+                else
+                    haveRating.RatingDeLaSofer = rating;
+                _context.RatingClients.Update(haveRating);
+            }
+            else
+            {
+                haveRating = new RatingClient
+                {
+                    OrderRefId = orderId,
+                    UserRefId = order.CustomerId,
+                };
+                if (isOwner)
+                    haveRating.RatingDeLaRestaurant = rating;
+                else
+                    haveRating.RatingDeLaSofer = rating;
+                _context.RatingClients.Add(haveRating);
+
+            }
+
+            if (isOwner)
+            {
+                order.RestaurantGaveRating = true;
+            }
+            else
+            {
+                order.DriverGaveRating = true;
+            }
+            _context.Orders.Update(order);
+            await _context.SaveChangesAsync();
+            return Ok("Rating acordat");
         }
     }
 }

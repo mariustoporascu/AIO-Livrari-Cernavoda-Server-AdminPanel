@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace OShop.UI.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ShoppingCartController : Controller
     {
         private readonly OnlineShopDbContext _context;

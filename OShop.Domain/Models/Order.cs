@@ -21,6 +21,8 @@ namespace OShop.Domain.Models
 
         [Required]
         public string CustomerId { get; set; }
+        public string EstimatedTime { get; set; }
+        public bool? HasUserConfirmedET { get; set; } = null;
         public bool IsRestaurant { get; set; }
         public int RestaurantRefId { get; set; }
 
@@ -30,6 +32,13 @@ namespace OShop.Domain.Models
         public OrderInfo OrderInfos { get; set; }
         public string? DriverRefId { get; set; }
         public ApplicationUser Driver { get; set; }
+        public bool RestaurantGaveRating { get; set; } = false;
+        public bool ClientGaveRatingDriver { get; set; } = false;
+        public bool ClientGaveRatingRestaurant { get; set; } = false;
+        public bool DriverGaveRating { get; set; } = false;
         public virtual ICollection<ProductInOrder> ProductInOrders { get; set; }
+        public virtual ICollection<RatingClient> RatingClients { get; set; }
+        public virtual ICollection<RatingDriver> RatingDrivers { get; set; }
+        public virtual ICollection<RatingRestaurant> RatingRestaurants { get; set; }
     }
 }

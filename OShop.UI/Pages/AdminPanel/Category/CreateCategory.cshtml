@@ -1,0 +1,83 @@
+﻿@page
+@model CreateCategoryModel
+@{
+    ViewData["Title"] = "Editare Categorie";
+    var base_path = Request.PathBase;
+}
+<div class="container-fluid mt-3">
+    @if(Model.Category.CategoryId > 0)
+    {
+    <h1>Editare Categorie</h1>
+    }
+    else
+    {
+    <h1>Adaugare Categorie</h1>
+    }
+	<div class="row card mt-2">
+		
+    <form method="post" enctype="multipart/form-data">
+        <input asp-for="@Model.Category.CategoryId" type="hidden" />
+        <input asp-for="@Model.Canal" type="hidden"/>
+        <div class="table-responsive">
+			<table class="table header-border table-hover verticle-middle">
+            <thead>
+                <tr>
+                    <th>Tip camp</th>
+                    <th>Valoare</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Nume</th>
+                    <td class="form-group">
+                        <input asp-for="@Model.Category.Name" class="form-control" />
+                        <span asp-validation-for="@Model.Category.Name" class="text-danger"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Poza</th>
+                    <td class="form-group">
+                        <input type="hidden" asp-for="@Model.Category.Photo" />
+                        @if (@Model.Category.Photo != null)
+                        {
+                            var image_path = $"{base_path}/Image/{Model.Category.Photo}";
+                            <img id="categoryphoto" style="width:150px;height:150px; object-fit:cover" src="@image_path">
+                        }
+                        else
+                        {
+                            <img id="categoryphoto" style="width:150px;height:150px; object-fit:cover" src="~/content/No_image_available.svg">
+                        }
+                        <input type="file"
+                               accept=".png,.jpg,.jpeg,.gif,.tif"
+                               asp-for="@Model.Category.Photo"
+                               class="form-control"
+                               style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+                               onchange="document.getElementById('categoryphoto').src = window.URL.createObjectURL(this.files[0])" />
+                        <span asp-validation-for="@Model.Category.Photo" class="text-danger"></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        <div class="d-flex align-items-center flex-column">
+        @if (Model.Category.CategoryId > 0)
+        {
+            <button type="submit" class="btn btn-primary" asp-route-categId="@Model.Category.CategoryId">
+                <span>Salveaza modificari</span>
+            </button>;
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary">
+                <span>Adauga Categorie</span>
+            </button>;
+        }
+        <a class="btn btn-warning mt-5" asp-area="" asp-page="/AdminPanel/Category/ListaCategorii" asp-route-canal="@Model.Canal"><span>Anuleaza</span></a>
+        </div>
+    </form>
+</div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

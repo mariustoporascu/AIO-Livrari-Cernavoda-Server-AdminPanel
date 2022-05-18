@@ -41,6 +41,17 @@ namespace OShop.Application.Categories
                 SuperMarketRefId = categ.SuperMarketRefId,
                 RestaurantRefId = categ.RestaurantRefId,
             });
+        public IEnumerable<CategoryVMUI> DoRest(int restaurantId) =>
+            _context.Categories.AsNoTracking()
+            .Where(categ =>  categ.RestaurantRefId == restaurantId)
+            .Select(categ => new CategoryVMUI
+            {
+                CategoryId = categ.CategoryId,
+                Name = categ.Name,
+                Photo = categ.Photo,
+                //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
+                RestaurantRefId = categ.RestaurantRefId,
+            }).ToList();
         private byte[] getBytes(FileStream stream)
         {
             byte[] buffer = new byte[stream.Length];
