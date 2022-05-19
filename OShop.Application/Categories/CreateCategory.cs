@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using OShop.Application.FileManager;
 using OShop.Application.Products;
-using OShop.Application.SubCategories;
 using OShop.Database;
 using OShop.Domain.Models;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -52,7 +50,7 @@ namespace OShop.Application.Categories
     public class CategoryVMReactUI
     {
         public int CategoryId { get; set; }
-        [Required(ErrorMessage ="Campul este obligatoriu")]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Name { get; set; }
         [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg" })]
         public IFormFile Photo { get; set; }

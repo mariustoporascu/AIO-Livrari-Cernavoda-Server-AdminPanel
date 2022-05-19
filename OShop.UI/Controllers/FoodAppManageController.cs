@@ -2,26 +2,21 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using OShop.Application.Categories;
-using OShop.Application.FileManager;
-using OShop.Application.OrderInfos;
 using OShop.Application.Orders;
 using OShop.Application.ProductInOrders;
-using OShop.Application.Products;
-using OShop.Application.Restaurante;
-using OShop.Application.SubCategories;
-using OShop.Application.SuperMarkets;
-using OShop.Application.UnitatiMasura;
 using OShop.Database;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using OShop.Domain.Models;
+using OShop.UI.ApiAuthManage;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OShop.UI.Controllers
 {
+    
     [Route("api/[controller]")]
-    public class FoodAppManageController : Controller
+    [ApiController]
+    public class FoodAppManageController : ControllerBase
     {
         private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -37,12 +32,15 @@ namespace OShop.UI.Controllers
             _context = context;
             _userManager = userManager;
         }
+        [Authorize]
         [HttpGet("getalldriverorders")]
         public async Task<IActionResult> GetAllOrders() =>
             Ok(await new GetAllOrders(_context, _userManager).Do());
+        [Authorize]
         [HttpGet("getallrestaurantorders/{restaurantRefId}")]
         public async Task<IActionResult> GetAllOrders(int restaurantRefId) =>
             Ok(await new GetAllOrders(_context, _userManager).Do(restaurantRefId));
+        [Authorize]
         [HttpGet("updatestatus/{orderId}/{status}")]
         public async Task<IActionResult> OrderStatus(int orderId, string status)
         {
@@ -51,6 +49,7 @@ namespace OShop.UI.Controllers
                 return Ok("Order status updated.");
             return Ok("Order not found!");
         }
+        [Authorize]
         [HttpPost("adjustproduct")]
         public async Task<IActionResult> AdjustProducts([FromBody] object orderProducts)
         {
@@ -75,6 +74,7 @@ namespace OShop.UI.Controllers
             await new UpdateOrder(_context).Do(order);
             return Ok(order);
         }
+        [Authorize]
         [HttpGet("driverlockorder/{email}/{orderId}")]
         public async Task<IActionResult> DriverLockorder(string email, int orderId)
         {
@@ -82,6 +82,7 @@ namespace OShop.UI.Controllers
                 return Ok("Order locked.");
             return Ok("Order not locked.");
         }
+        [Authorize]
         [HttpPost("driverupdatelocation")]
         public async Task<IActionResult> DriverUpdateLocation([FromBody] object driverLocation)
         {
@@ -101,8 +102,10 @@ namespace OShop.UI.Controllers
             }
             return Ok("Location not updated");
         }
+        [Authorize]
         [HttpGet("setesttime/{orderId}/{esttime}")]
         public async Task<IActionResult> SetEstTime(int orderId, string esttime) => Ok($"estTime : {await new UpdateOrder(_context).DoET(orderId, esttime)}");
+        [Authorize]
         [HttpGet("ratingclient/{isOwner}/{orderId}/{rating}")]
         public async Task<IActionResult> GiveRestaurantRating(bool isOwner, int orderId, int rating)
         {
@@ -143,6 +146,26 @@ namespace OShop.UI.Controllers
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();
             return Ok("Rating acordat");
+        }
+        [HttpGet("getmyearnings")]
+        public async Task<IActionResult> FetchTotalComenzi()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return BadRequest();
+            var orders = await new GetAllOrders(_context, _userManager).Do(user.RestaurantRefId);
+            decimal[] valori = new decimal[12];
+            orders = orders.OrderByDescending(o => o.Created);
+
+            for (int i = 0; i < 12; i++)
+            {
+                var monthOrders = orders.Where(or => or.Created.Month == i + 1).ToList();
+                decimal totalLuna = 0.0M;
+                foreach (var order in monthOrders)
+                    totalLuna += order.TotalOrdered;
+                valori[i] = totalLuna;
+            }
+            return Ok(JsonConvert.SerializeObject(valori));
         }
     }
 }

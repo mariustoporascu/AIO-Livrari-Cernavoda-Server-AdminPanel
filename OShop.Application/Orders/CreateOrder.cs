@@ -49,8 +49,6 @@ namespace OShop.Application.Orders
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalOrdered { get; set; }
-
-        [Required]
         public string CustomerId { get; set; }
         public bool IsRestaurant { get; set; } = false;
         public int RestaurantRefId { get; set; }

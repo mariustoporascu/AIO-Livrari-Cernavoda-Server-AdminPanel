@@ -10,7 +10,7 @@ namespace OShop.Application.Categories
         private readonly OnlineShopDbContext _context;
         private readonly IFileManager _fileManager;
 
-        public DeleteCategory(OnlineShopDbContext context,IFileManager fileManager)
+        public DeleteCategory(OnlineShopDbContext context, IFileManager fileManager)
         {
             _context = context;
             _fileManager = fileManager;

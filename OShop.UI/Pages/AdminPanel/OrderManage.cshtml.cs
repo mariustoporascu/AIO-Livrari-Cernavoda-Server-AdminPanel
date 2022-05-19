@@ -35,10 +35,10 @@ namespace OShop.UI.Pages.AdminPanel
         public async Task<IActionResult> OnGet()
         {
             var user = await _userManager.GetUserAsync(User);
-            if(user.RestaurantRefId > 0)
+            if (user.RestaurantRefId > 0)
                 Orders = await new GetAllOrders(_context, _userManager).Do(user.RestaurantRefId);
             else
-                Orders = await new GetAllOrders(_context, _userManager).Do(null,true);
+                Orders = await new GetAllOrders(_context, _userManager).Do(null, true);
             UsersVM = _userManager.Users.AsNoTracking().AsEnumerable();
             return Page();
         }

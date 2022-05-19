@@ -20,6 +20,7 @@ namespace OShop.Domain.Models
         public bool IsOwner { get; set; } = false;
         public double CoordX { get; set; }
         public double CoordY { get; set; }
+        public string LoginToken { get; set; }
         public virtual ICollection<Order> DriverOrders { get; set; }
         public virtual ICollection<RatingClient> RatingClients { get; set; }
         public virtual ICollection<RatingDriver> RatingDrivers { get; set; }

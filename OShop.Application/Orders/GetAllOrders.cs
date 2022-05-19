@@ -35,7 +35,7 @@ namespace OShop.Application.Orders
                 HasUserConfirmedET = order.HasUserConfirmedET,
                 DriverGaveRating = order.DriverGaveRating,
                 RestaurantRefId = order.RestaurantRefId,
-                RatingClientDeLaSofer = _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaSofer,
+                RatingClientDeLaSofer = _context.RatingClients.Count(ra => ra.OrderRefId == order.OrderId) > 0 ? _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaSofer : 0,
                 ProductsInOrder = new GetAllProductInOrder(_context).Do(order.OrderId),
                 OrderInfo = new GetOrderInfo(_context).Do(order.OrderId),
                 DriverRefId = order.DriverRefId,
@@ -62,8 +62,8 @@ namespace OShop.Application.Orders
                 IsRestaurant = order.IsRestaurant,
                 ClientGaveRatingDriver = order.ClientGaveRatingDriver,
                 ClientGaveRatingRestaurant = order.ClientGaveRatingRestaurant,
-                RatingDriver = _context.RatingDrivers.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating,
-                RatingRestaurant = _context.RatingRestaurants.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating,
+                RatingDriver = _context.RatingDrivers.Count(ra => ra.OrderRefId == order.OrderId) > 0 ? _context.RatingDrivers.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating : 0,
+                RatingRestaurant = _context.RatingRestaurants.Count(ra => ra.OrderRefId == order.OrderId) > 0 ? _context.RatingRestaurants.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating : 0,
                 RestaurantRefId = order.RestaurantRefId,
                 HasUserConfirmedET = order.HasUserConfirmedET,
                 ProductsInOrder = new GetAllProductInOrder(_context).Do(order.OrderId),
@@ -100,7 +100,7 @@ namespace OShop.Application.Orders
                 HasUserConfirmedET = order.HasUserConfirmedET,
                 RestaurantGaveRating = order.RestaurantGaveRating,
                 RestaurantRefId = order.RestaurantRefId,
-                RatingClientDeLaRestaurant = _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaRestaurant,
+                RatingClientDeLaRestaurant = _context.RatingClients.Count(ra => ra.OrderRefId == order.OrderId) > 0 ? _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaRestaurant : 0,
                 ProductsInOrder = new GetAllProductInOrder(_context).Do(order.OrderId),
                 OrderInfo = new GetOrderInfo(_context).Do(order.OrderId),
                 DriverRefId = order.DriverRefId,
@@ -125,7 +125,7 @@ namespace OShop.Application.Orders
         //site management
         public async Task<IEnumerable<OrderViewModel>> Do(string customerId, bool manager)
         {
-            var orders = _context.Orders.AsNoTracking().Where(order => order.CustomerId == customerId).Select(order => new OrderViewModel
+            var orders = _context.Orders.AsNoTracking().AsEnumerable().Select(order => new OrderViewModel
             {
                 OrderId = order.OrderId,
                 Status = order.Status,
@@ -134,10 +134,10 @@ namespace OShop.Application.Orders
                 Created = order.Created,
                 EstimatedTime = order.EstimatedTime,
                 IsRestaurant = order.IsRestaurant,
-                RatingDriver = _context.RatingDrivers.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating,
-                RatingRestaurant = _context.RatingRestaurants.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating,
-                RatingClientDeLaRestaurant = _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaRestaurant,
-                RatingClientDeLaSofer = _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaSofer,
+                RatingDriver = _context.RatingDrivers.Count(ra=> ra.OrderRefId == order.OrderId) > 0 ? _context.RatingDrivers.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating : 0 ,
+                RatingRestaurant = _context.RatingRestaurants.Count(ra => ra.OrderRefId == order.OrderId) > 0 ? _context.RatingRestaurants.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).Rating : 0,
+                RatingClientDeLaRestaurant = _context.RatingClients.Count(ra => ra.OrderRefId == order.OrderId) > 0 ? _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaRestaurant : 0,
+                RatingClientDeLaSofer = _context.RatingClients.Count(ra => ra.OrderRefId == order.OrderId) > 0 ? _context.RatingClients.AsNoTracking().FirstOrDefault(ra => ra.OrderRefId == order.OrderId).RatingDeLaSofer : 0,
                 RestaurantRefId = order.RestaurantRefId,
                 HasUserConfirmedET = order.HasUserConfirmedET,
                 ProductsInOrder = new GetAllProductInOrder(_context).Do(order.OrderId),

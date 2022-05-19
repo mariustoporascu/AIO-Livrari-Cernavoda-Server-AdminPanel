@@ -1,27 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<TargetFramework>net6.0-windows</TargetFramework>
 		<AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.22" />
-		<PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.22" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.22" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.22" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.22" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.22" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.22" />
-		<PackageReference Include="PhotoSauce.MagicScaler" Version="0.11.2" />
-		<!-- <PackageReference Include="PayPalCheckoutSdk" Version="1.0.4"/>
-		<PackageReference Include="PayPalHttp" Version="1.0.1"/>
-		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.4"/>
-		<PackageReference Include="MySqlConnector" Version="0.69.9"/>
-		<PackageReference Include="Pomelo.JsonObject" Version="2.2.1"/> -->
-
-	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="wwwroot\js\site.js" />
@@ -66,6 +49,10 @@
 		<Folder Include="wwwroot\content\categoryphoto\" />
 		<Folder Include="wwwroot\content\productphoto\" />
 		<Folder Include="wwwroot\content\userprofilephoto\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
 
 </Project>

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using OShop.Application.SubCategories;
 using OShop.Application.FileManager;
 using OShop.Database;
 using System.Threading.Tasks;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
@@ -11,18 +12,18 @@ using OShop.Application.Restaurante;
 using OShop.Application.SubCategories;
 using OShop.Application.SuperMarkets;
 using OShop.Application.UnitatiMasura;
-using OShop.Domain.Models;
 using OShop.Database;
+using OShop.Domain.Models;
+using OShop.UI.ApiAuth;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OShop.UI.Controllers
 {
-
     [Route("api/[controller]")]
-    public class FoodAppController : Controller
+    [ApiController]
+    public class FoodAppController : ControllerBase
     {
         private readonly OnlineShopDbContext _context;
         private readonly IFileManager _fileManager;
@@ -46,33 +47,41 @@ namespace OShop.UI.Controllers
 
         [HttpGet("getallcategories")]
         public IActionResult ManageCategories() => Ok(new GetAllCategories(_context, _fileManager).Do());
+
         [HttpGet("getallsubcategories")]
         public IActionResult ManageSubCategories() => Ok(new GetAllSubCategories(_context, _fileManager).Do());
 
-
-        [HttpGet("getallorders/{customer}")]
-        public async Task<IActionResult> GetAllOrders(string customer) =>
-            Ok(await new GetAllOrders(_context, _userManager).Do((await _userManager.FindByEmailAsync(customer)).Id));
-
-        [HttpGet("getorderinfo/{orderId}")]
-        public IActionResult GetOrderInfo(int orderId)
-            => Ok(new GetOrderInfo(_context).Do(orderId));
-
-        [HttpGet("getproductsinorder/{orderId}")]
-        public IActionResult GetProductsInOrder(int orderId)
-            => Ok(new GetAllProductInOrder(_context).Do(orderId));
-
-        [HttpGet("getproductsfororder/{orderId}")]
-        public IActionResult GetProductsForOrder(int orderId) => Ok(new GetAllProducts(_context, _fileManager).Do(0, orderId));
         [HttpGet("getallrestaurante")]
         public IActionResult ManageRestaurante() => Ok(new GetAllRestaurante(_context, _fileManager).Do());
-        [HttpGet("agreeesttime/{orderId}/{accept}")]
-        public async Task<IActionResult> SetEstTime(int orderId, bool accept) => Ok($"agreed : {await new UpdateOrder(_context).DoET(orderId, accept)}");
+
         [HttpGet("getallsupermarkets")]
         public IActionResult ManageSuperMarkets() => Ok(new GetAllSuperMarkets(_context, _fileManager).Do());
 
         [HttpGet("getallmeasuringunits")]
         public IActionResult ManageMeasuringUnits() => Ok(new GetAllMeasuringUnits(_context).Do());
+
+        [Authorize]
+        [HttpGet("getallorders/{customer}")]
+        public async Task<IActionResult> GetAllOrders(string customer) =>
+            Ok(await new GetAllOrders(_context, _userManager).Do((await _userManager.FindByEmailAsync(customer)).Id));
+
+        [Authorize]
+        [HttpGet("getorderinfo/{orderId}")]
+        public IActionResult GetOrderInfo(int orderId)            => Ok(new GetOrderInfo(_context).Do(orderId));
+
+        [Authorize]
+        [HttpGet("getproductsinorder/{orderId}")]
+        public IActionResult GetProductsInOrder(int orderId)            => Ok(new GetAllProductInOrder(_context).Do(orderId));
+
+        [Authorize]
+        [HttpGet("getproductsfororder/{orderId}")]
+        public IActionResult GetProductsForOrder(int orderId) => Ok(new GetAllProducts(_context, _fileManager).Do(0, orderId));
+
+        [Authorize]
+        [HttpGet("agreeesttime/{orderId}/{accept}")]
+        public async Task<IActionResult> SetEstTime(int orderId, bool accept) => Ok($"agreed : {await new UpdateOrder(_context).DoET(orderId, accept)}");
+
+        [Authorize]
         [HttpGet("getmydriverlocation/{driverId}/{orderId}")]
         public async Task<IActionResult> GetDriverLocation(string driverId, int orderId)
         {
@@ -92,6 +101,7 @@ namespace OShop.UI.Controllers
             return Ok(driverLocation);
         }
 
+        [Authorize]
         [HttpPost("createorder")]
         public async Task<IActionResult> CreateOrder([FromBody] object order)
         {
@@ -111,6 +121,8 @@ namespace OShop.UI.Controllers
             }
             return Ok("User not found!");
         }
+
+        [Authorize]
         [HttpPost("createorderinfo")]
         public async Task<IActionResult> CreateOrderInfo([FromBody] object orderInfo)
         {
@@ -123,6 +135,8 @@ namespace OShop.UI.Controllers
             await new CreateOrderInfo(_context).Do(orderInfoVM);
             return Ok();
         }
+
+        [Authorize]
         [HttpPost("createorderproducts")]
         public async Task<IActionResult> CreateOrderProducts([FromBody] object orderproducts)
         {
@@ -135,6 +149,8 @@ namespace OShop.UI.Controllers
             await new CreateProductInOrder(_context).Do(orderProductsVM);
             return Ok();
         }
+
+        [Authorize]
         [HttpGet("ratingdriver/{email}/{orderId}/{rating}")]
         public async Task<IActionResult> GiveDriverRating(string email, int orderId, int rating)
         {
@@ -155,6 +171,8 @@ namespace OShop.UI.Controllers
             await _context.SaveChangesAsync();
             return Ok("Rating acordat");
         }
+
+        [Authorize]
         [HttpGet("ratingrestaurant/{email}/{orderId}/{rating}")]
         public async Task<IActionResult> GiveRestaurantRating(string email, int orderId, int rating)
         {

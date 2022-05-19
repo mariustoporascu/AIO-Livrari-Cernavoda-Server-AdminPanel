@@ -216,23 +216,29 @@
 
 
 //})(jQuery);
-
+async function fetchData(chart) {
+    const url = 'https://aiolivraricvd.com/api/foodappmanage/getmyearnings';
+    const response = await fetch(url);
+    const dataPoints = await response.json();
+    chart.data.datasets[0].data = dataPoints;
+    chart.update();
+    return dataPoints;
+}
 
 
 (function($) {
     "use strict"
-
     let ctx = document.getElementById("chart_widget_2");
     ctx.height = 280;
-    new Chart(ctx, {
+    const myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ["2010", "2011", "2012", "2013", "2014", "2015", "2016"],
+            labels: ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August",
+                "Septembrie", "Octombrie", "Noiembrie", "Decembrie"],
             type: 'line',
             defaultFontFamily: 'Montserrat',
             datasets: [{
-                data: [0, 15, 57, 12, 85, 10, 50],
-                label: "iPhone X",
+                data: [0,0,0,0,0,0,0,0,0,0,0,0],
                 backgroundColor: '#847DFA',
                 borderColor: '#847DFA',
                 borderWidth: 0.5,
@@ -240,16 +246,6 @@
                 pointRadius: 5,
                 pointBorderColor: 'transparent',
                 pointBackgroundColor: '#847DFA',
-            }, {
-                label: "Pixel 2",
-                data: [0, 30, 5, 53, 15, 55, 0],
-                backgroundColor: '#F196B0',
-                borderColor: '#F196B0',
-                borderWidth: 0.5,
-                pointStyle: 'circle',
-                pointRadius: 5,
-                pointBorderColor: 'transparent',
-                pointBackgroundColor: '#F196B0',
             }]
         },
         options: {
@@ -278,7 +274,7 @@
             },
             scales: {
                 xAxes: [{
-                    display: false,
+                    display: true,
                     gridLines: {
                         display: false,
                         drawBorder: false
@@ -289,13 +285,13 @@
                     }
                 }],
                 yAxes: [{
-                    display: false,
+                    display: true,
                     gridLines: {
                         display: false,
                         drawBorder: false
                     },
                     scaleLabel: {
-                        display: true,
+                        display: false,
                         labelString: 'Value'
                     }
                 }]
@@ -305,6 +301,8 @@
             }
         }
     });
+    fetchData(myChart);
+
 
 
     

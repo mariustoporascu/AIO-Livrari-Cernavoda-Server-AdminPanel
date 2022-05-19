@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
 using OShop.Application.Restaurante;
-using OShop.Application.SuperMarkets;
 using OShop.Database;
 using OShop.Domain.Models;
 using System.Collections.Generic;

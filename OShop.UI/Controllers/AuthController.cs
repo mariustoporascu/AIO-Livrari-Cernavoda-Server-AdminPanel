@@ -2,16 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using OShop.Domain.Models;
+using OShop.UI.ApiAuth;
 using System;
-using System.Collections.Generic;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace OShop.UI.Controllers
 {
+    [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : Controller
+    public class AuthController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -28,6 +29,7 @@ namespace OShop.UI.Controllers
             public double CoordX { get; set; }
             public double CoordY { get; set; }
             public bool CompleteProfile { get; set; }
+            public string LoginToken { get; set; }
         }
         partial class AuthVMManage
         {
@@ -35,12 +37,14 @@ namespace OShop.UI.Controllers
             public bool IsDriver { get; set; } = false;
             public bool IsOwner { get; set; } = false;
             public int RestaurantRefId { get; set; }
+            public string LoginToken { get; set; }
         }
         public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
         }
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateAccount([FromBody] object userInfo)
         {
@@ -83,6 +87,7 @@ namespace OShop.UI.Controllers
                 return Ok("User already exists.");
             }
         }
+
         [HttpPost("login")]
         public async Task<IActionResult> LoginAccount([FromBody] object userInfo)
         {
@@ -97,6 +102,10 @@ namespace OShop.UI.Controllers
             {
                 return Ok("Email is wrong or user not existing.");
             }
+            else if (account.AccessFailedCount > 0)
+            {
+                return BadRequest();
+            }
             else
             {
                 if (account.IsDriver || account.IsOwner)
@@ -110,6 +119,8 @@ namespace OShop.UI.Controllers
                     var result = await _signInManager.PasswordSignInAsync(userName, user.Password, false, false);
                     if (result.Succeeded)
                     {
+                        account.LoginToken = Password.Generate(20, 0);
+                        await _userManager.UpdateAsync(account);
                         return Ok(new AuthVM
                         {
                             FullName = account.FullName,
@@ -120,12 +131,16 @@ namespace OShop.UI.Controllers
                             CompleteProfile = account.CompleteProfile,
                             CoordX = account.CoordX,
                             CoordY = account.CoordY,
+                            LoginToken = account.LoginToken
                         });
                     }
                     else
                         return Ok("Password is wrong.");
                 }
                 else if (account.UserIdentification == user.UserIdentification)
+                {
+                    account.LoginToken = Password.Generate(20, 0);
+                    await _userManager.UpdateAsync(account);
                     return Ok(new AuthVM
                     {
                         FullName = account.FullName,
@@ -136,11 +151,15 @@ namespace OShop.UI.Controllers
                         CompleteProfile = account.CompleteProfile,
                         CoordX = account.CoordX,
                         CoordY = account.CoordY,
+                        LoginToken = account.LoginToken
 
                     });
+                }
+                    
                 return Ok("Login data invalid.");
             }
         }
+
         [HttpPost("loginManage")]
         public async Task<IActionResult> LoginAccountManage([FromBody] object userInfo)
         {
@@ -166,18 +185,23 @@ namespace OShop.UI.Controllers
                 var result = await _signInManager.PasswordSignInAsync(userName, user.Password, false, false);
                 if (result.Succeeded)
                 {
+                    account.LoginToken = Password.Generate(20, 0);
+                    await _userManager.UpdateAsync(account);
                     return Ok(new AuthVMManage
                     {
                         Id = account.IsDriver ? account.Id : null,
                         IsDriver = account.IsDriver,
                         IsOwner = account.IsOwner,
                         RestaurantRefId = account.RestaurantRefId,
+                        LoginToken = account.LoginToken
                     });
                 }
                 else
                     return Ok("Password is wrong.");
             }
         }
+
+        [Authorize]
         [HttpPost("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] object userInfo)
         {
@@ -228,6 +252,40 @@ namespace OShop.UI.Controllers
                     return Ok("Profile updated.");
                 }
                 return Ok("Data invalid.");
+            }
+        }
+
+        [Authorize]
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteAcc([FromBody] object userInfo)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var user = JsonConvert.DeserializeObject<AuthVM>(userInfo.ToString(), settings);
+            var account = await _userManager.FindByEmailAsync(user.Email);
+            if (account == null)
+            {
+                return Ok("Email is wrong or user not existing.");
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(account.UserIdentification))
+                {
+                    var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, false, false);
+                    if (result.Succeeded)
+                        await _userManager.DeleteAsync(account);
+                    return Ok(result.Succeeded);
+                }
+                else
+                {
+                    if(account.UserIdentification == user.UserIdentification)
+                        await _userManager.DeleteAsync(account);
+                    return Ok(account.UserIdentification == user.UserIdentification);
+                }
+
             }
         }
         public static class Password

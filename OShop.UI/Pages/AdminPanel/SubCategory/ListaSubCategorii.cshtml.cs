@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using OShop.Application.SubCategories;
-using OShop.Application.Categories;
 using OShop.Application.FileManager;
-using OShop.Application.Restaurante;
-using OShop.Application.SuperMarkets;
+using OShop.Application.SubCategories;
 using OShop.Database;
 using System.Collections.Generic;
 

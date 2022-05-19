@@ -1,22 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
+using OShop.Application.Orders;
+using OShop.Application.ProductInOrders;
 using OShop.Application.Products;
-using OShop.Application.ShoppingCarts;
 using OShop.Database;
+using OShop.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OShop.Domain.Models;
-using OShop.Application.Orders;
-using OShop.Application.ProductInOrders;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 
 namespace OShop.UI.Pages
 {

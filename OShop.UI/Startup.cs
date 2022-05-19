@@ -1,16 +1,17 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Net.Http.Headers;
 using OShop.Application.FileManager;
 using OShop.Database;
-using System;
 using OShop.Domain.Models;
-using Microsoft.Net.Http.Headers;
+using OShop.UI.ApiAuth;
+using OShop.UI.ApiAuthManage;
+using System;
 
 namespace OShop.UI
 {
@@ -46,7 +47,6 @@ namespace OShop.UI
             })
                     .AddEntityFrameworkStores<OnlineShopDbContext>()
                     .AddDefaultTokenProviders();
-
             /* services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
@@ -73,6 +73,9 @@ namespace OShop.UI
 
             services.AddRazorPages();
             services.AddMvc();
+            services.AddTransient<ValidateBearerToken>();
+            services.AddTransient<ValidateBearerTokenManage>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace OShop.UI.Pages.AdminPanel
 {
     [Authorize(Roles = "SuperAdmin, Admin")]
-    public  class ProfileModel : PageModel
+    public class ProfileModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -61,7 +61,7 @@ namespace OShop.UI.Pages.AdminPanel
             try
             {
                 var restaurant = _context.Restaurante.AsNoTracking().FirstOrDefault(rest => rest.RestaurantId == user.RestaurantRefId);
-                if(restaurant != null)
+                if (restaurant != null)
                     Input = new InputModel
                     {
                         PhoneNumber = restaurant.TelefonNo,
@@ -76,9 +76,9 @@ namespace OShop.UI.Pages.AdminPanel
                         ProfilePicture = user.ProfilePicture
                     };
                 }
-                    
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -112,7 +112,7 @@ namespace OShop.UI.Pages.AdminPanel
             }
 
             var restaurant = _context.Restaurante.AsNoTracking().FirstOrDefault(rest => rest.RestaurantId == user.RestaurantRefId);
-            
+
             if (Request.Form.Files.Count > 0)
             {
                 var extensionAccepted = new string[] { ".jpg", ".png", ".jpeg" };
@@ -128,7 +128,7 @@ namespace OShop.UI.Pages.AdminPanel
                     }
                     user.ProfilePicture = _fileManager.SaveImage(file, "ProfilePhoto");
                     await _userManager.UpdateAsync(user);
-                    if(restaurant != null)
+                    if (restaurant != null)
                     {
                         if (!string.IsNullOrEmpty(restaurant.Photo))
                         {
@@ -141,7 +141,7 @@ namespace OShop.UI.Pages.AdminPanel
                 }
 
             }
-            
+
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Profil actualizat";
             return RedirectToPage();

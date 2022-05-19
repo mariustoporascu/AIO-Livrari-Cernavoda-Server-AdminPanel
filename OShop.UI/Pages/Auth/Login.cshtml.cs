@@ -4,14 +4,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using OShop.Database;
+using OShop.Domain.Models;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
-using OShop.Domain.Models;
 
 
 
@@ -90,12 +87,13 @@ namespace OShop.UI.Pages.Auth
 
             if (ModelState.IsValid)
             {
+                ApplicationUser user;
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var userName = Input.Email;
                 if (IsValidEmail(Input.Email))
                 {
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                     user = await _userManager.FindByEmailAsync(Input.Email);
                     if (user != null)
                     {
                         userName = user.UserName;

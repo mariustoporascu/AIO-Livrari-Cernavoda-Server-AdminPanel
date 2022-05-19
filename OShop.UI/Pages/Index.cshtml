@@ -62,29 +62,12 @@
 						<div class="card-body pb-0 d-flex justify-content-between">
 							<div>
 								<h4 class="mb-1">Total vanzari</h4>
-								<p>Luna aceasta</p>
 								<h3 class="m-0">@Model.TotalVanzari RON</h3>
 							</div>
 
 						</div>
 						<div class="chart-wrapper">
 							<canvas id="chart_widget_2"></canvas>
-						</div>
-						<div class="card-body">
-							<div class="d-flex justify-content-between">
-								<div class="w-100 mr-2">
-									<h6>Pixel 2</h6>
-									<div class="progress" style="height: 6px">
-										<div class="progress-bar bg-danger" style="width: 40%"></div>
-									</div>
-								</div>
-								<div class="ml-2 w-100">
-									<h6>iPhone X</h6>
-									<div class="progress" style="height: 6px">
-										<div class="progress-bar bg-primary" style="width: 80%"></div>
-									</div>
-								</div>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -95,21 +78,21 @@
 <!-- #/ container -->
 @section Scripts {
 <!-- Chartjs -->
-<script src="~/plugins/chart.js/Chart.bundle.min.js"></script>
+<script src="~/plugins/chart.js/Chart.bundle.min.js" asp-append-version="true"></script>
 <!-- Circle progress -->
-<script src="~/plugins/circle-progress/circle-progress.min.js"></script>
+<script src="~/plugins/circle-progress/circle-progress.min.js" asp-append-version="true"></script>
 <!-- Datamap -->
-<script src="~/plugins/d3v3/index.js"></script>
-<script src="~/plugins/topojson/topojson.min.js"></script>
+<script src="~/plugins/d3v3/index.js" asp-append-version="true"></script>
+<script src="~/plugins/topojson/topojson.min.js" asp-append-version="true"></script>
 	@*<script src="~/plugins/datamaps/datamaps.world.min.js"></script>*@
 <!-- Morrisjs -->
-<script src="~/plugins/raphael/raphael.min.js"></script>
-<script src="~/plugins/morris/morris.min.js"></script>
+<script src="~/plugins/raphael/raphael.min.js" asp-append-version="true"></script>
+<script src="~/plugins/morris/morris.min.js" asp-append-version="true"></script>
 <!-- Pignose Calender -->
-<script src="~/plugins/moment/moment.min.js"></script>
-<script src="~/plugins/pg-calendar/js/pignose.calendar.min.js"></script>
+<script src="~/plugins/moment/moment.min.js" asp-append-version="true"></script>
+<script src="~/plugins/pg-calendar/js/pignose.calendar.min.js" asp-append-version="true"></script>
 <!-- ChartistJS -->
-<script src="~/plugins/chartist/js/chartist.min.js"></script>
-<script src="~/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js"></script>
-<script src="~/js/dashboard/dashboard-1.js"></script>
+<script src="~/plugins/chartist/js/chartist.min.js" asp-append-version="true"></script>
+<script src="~/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js" asp-append-version="true"></script>
+<script src="~/js/dashboard/dashboard-1.js" asp-append-version="true"></script>
 }

@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.FileManager;
-using OShop.Application.OrderInfos;
 using OShop.Application.Orders;
-using OShop.Application.ProductInOrders;
 using OShop.Application.Products;
 using OShop.Database;
 using OShop.Domain.Models;
@@ -29,7 +27,7 @@ namespace OShop.UI.Pages.AdminPanel
             _fileManager = fileManager;
             _userManager = userManager;
         }
-        
+
         [BindProperty]
         public OrderViewModel Order { get; set; }
         [BindProperty]

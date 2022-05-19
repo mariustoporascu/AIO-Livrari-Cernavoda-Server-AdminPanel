@@ -4,7 +4,8 @@ using OShop.Application.FileManager;
 namespace OShop.UI.Controllers
 {
     [Route("api/[controller]")]
-    public class WebImageController : Controller
+    [ApiController]
+    public class WebImageController : ControllerBase
     {
         private readonly IFileManager _fileManager;
 

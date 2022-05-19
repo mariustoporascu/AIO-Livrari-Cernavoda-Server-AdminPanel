@@ -7,7 +7,7 @@
 	<link rel="icon" type="image/png" sizes="16x16" href="~/images/favicon.png">
 	<!-- Pignose Calender -->
 	<!-- Custom Stylesheet -->
-	<link href="~/css/style.css" rel="stylesheet">
+	<link href="~/css/style.css" asp-append-version="true" rel="stylesheet">
 </head>
 <body class="h-100">
 	<!--*******************
@@ -30,11 +30,11 @@
 		Main wrapper end
 	***********************************-->
 
-	<script src="~/plugins/common/common.min.js"></script>
-	<script src="~/js/custom.min.js"></script>
-	<script src="~/js/settings.js"></script>
-	<script src="~/js/gleek.js"></script>
-	<script src="~/js/styleSwitcher.js"></script>
+	<script src="~/plugins/common/common.min.js" asp-append-version="true"></script>
+	<script src="~/js/custom.min.js" asp-append-version="true"></script>
+	<script src="~/js/settings.js" asp-append-version="true"></script>
+	<script src="~/js/gleek.js" asp-append-version="true"></script>
+	<script src="~/js/styleSwitcher.js" asp-append-version="true"></script>
 
 	@RenderSection("Scripts", required: false)
 </body>

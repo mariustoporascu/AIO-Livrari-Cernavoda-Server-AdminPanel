@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace OShop.Database
+﻿namespace OShop.Database
 {
     public static class ContextSeed
     {

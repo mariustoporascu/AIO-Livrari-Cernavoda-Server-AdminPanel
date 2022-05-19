@@ -1,18 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
-using OShop.Application.Restaurante;
-using OShop.Application.SuperMarkets;
 using OShop.Database;
-using System.Collections.Generic;
+using OShop.Domain.Models;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using OShop.Domain.Models;
 
 namespace OShop.UI.Pages.AdminPanel.Category
 {

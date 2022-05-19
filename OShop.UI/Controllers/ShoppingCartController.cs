@@ -1,24 +1,21 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OShop.Application.CartItemsA;
 using OShop.Application.FileManager;
 using OShop.Application.OrderInfos;
 using OShop.Application.Orders;
-using OShop.Application.ProductInOrders;
 using OShop.Application.Products;
 using OShop.Application.ShoppingCarts;
 using OShop.Database;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OShop.UI.Controllers
 {
     [Route("api/[controller]")]
-    public class ShoppingCartController : Controller
+    [ApiController]
+    public class ShoppingCartController : ControllerBase
     {
         private readonly OnlineShopDbContext _context;
         private readonly IFileManager _fileManager;

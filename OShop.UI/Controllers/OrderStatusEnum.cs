@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OShop.UI
+﻿namespace OShop.UI
 {
     public static class OrderStatusEnum
     {

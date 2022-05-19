@@ -18,8 +18,6 @@ namespace OShop.Domain.Models
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalOrdered { get; set; }
-
-        [Required]
         public string CustomerId { get; set; }
         public string EstimatedTime { get; set; }
         public bool? HasUserConfirmedET { get; set; } = null;

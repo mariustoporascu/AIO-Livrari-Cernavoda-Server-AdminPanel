@@ -1,22 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
 using OShop.Application.Products;
+using OShop.Application.UnitatiMasura;
 using OShop.Database;
+using OShop.Domain.Models;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using OShop.Application.Restaurante;
-using OShop.Application.SuperMarkets;
-using OShop.Domain.Models;
-using OShop.Application.UnitatiMasura;
-using OShop.Application.SubCategories;
-using Microsoft.AspNetCore.Identity;
-using OShop.Domain.Models;
 
 namespace OShop.UI.Pages.AdminPanel.Product
 {
@@ -33,7 +29,7 @@ namespace OShop.UI.Pages.AdminPanel.Product
             _fileManager = fileManager;
             _userManager = userManager;
         }
-        
+
 
         [BindProperty]
         public ProductVMUI Product { get; set; }

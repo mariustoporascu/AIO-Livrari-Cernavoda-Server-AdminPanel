@@ -4,7 +4,6 @@ using PhotoSauce.MagicScaler;
 using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace OShop.Application.FileManager
 {
@@ -39,12 +38,13 @@ namespace OShop.Application.FileManager
                     return new FileStream(Path.Combine(_imagePathRestaurantPhoto, image), FileMode.Open, FileAccess.Read);
                 else
                     return new FileStream(Path.Combine(_imagePathUserProfilePhoto, image), FileMode.Open, FileAccess.Read);
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return null;
             }
-            
+
         }
 
         public bool RemoveImage(string image, string type)
@@ -98,7 +98,7 @@ namespace OShop.Application.FileManager
 
                 var mime = image.FileName.Substring(image.FileName.LastIndexOf('.'));
                 var pathtype = save_path.Split("/", 3)
-                    .FirstOrDefault(pathtype => pathtype == "categoryphoto" || pathtype == "subcategoryphoto" 
+                    .FirstOrDefault(pathtype => pathtype == "categoryphoto" || pathtype == "subcategoryphoto"
                     || pathtype == "productphoto" || pathtype == "userprofilephoto" || pathtype == "restaurantphoto");
                 var fileName = $"{pathtype}_img_{image.FileName.Substring(0, image.FileName.LastIndexOf(".")).Replace(' ', '_')}{mime}";
 
