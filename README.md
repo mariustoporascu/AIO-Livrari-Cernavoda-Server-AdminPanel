@@ -18,3 +18,6 @@ Management website for Delivery App in ASP.NET Core
 •	Website domain from GoDaddy.
 
 Link to website: https://aiolivraricvd.com/
+Credentials:
+User : testaccowner@test.com
+Password : testacc
