@@ -1,14 +1,20 @@
-# TMOnlineShop
-OnlineShop in ASP.NET Core + React.js
+# AIO Livrari Cernavoda
+Management website for Delivery App in ASP.NET Core
 
 •	Used Visual Studio Code to develop using C#, HTML, JavaScript and CSS programming languages.
 
-•	Developed and tested code for a fully functional e-commerce shop.
+•	Developed fully functional e-commerce management website for a delivery mobile application(Android/iOS).
 
-•	Implemented possibility to manage and purchase products and categories of products.
+•	Implemented possibility to manage products and categories / check statistics and view orders for individual merchants.
 
-•	Technologies used : ASP.Net Core, Entity Framework, React.js.
+•	Implemented REST Apis for communication between mobile app and server(some of them with token authorization).
 
-•	Database used is MySQL.
+•	Technologies used : ASP.Net Core, Entity Framework, MVC, Razor pages, API Controllers.
 
-Link to website: https://onlineshopmarius.azurewebsites.net/
+•	Database used is MSSQL.
+
+•	Hosted with full SSL communication on SmarterASP.net
+
+•	Website domain from GoDaddy.
+
+Link to website: https://aiolivraricvd.com/
