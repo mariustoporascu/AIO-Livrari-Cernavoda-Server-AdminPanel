@@ -162,6 +162,8 @@ namespace OShop.Application.Orders
         private async Task<UserLocation> GetUserLocation(string customerId)
         {
             var user = await _userManager.FindByIdAsync(customerId);
+            if (user == null)
+                return new UserLocation();
             return new UserLocation
             {
                 CoordX = user.CoordX,

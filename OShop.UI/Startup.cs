@@ -11,6 +11,7 @@ using OShop.Database;
 using OShop.Domain.Models;
 using OShop.UI.ApiAuth;
 using OShop.UI.ApiAuthManage;
+using OShop.UI.Extras;
 using System;
 
 namespace OShop.UI
@@ -75,6 +76,7 @@ namespace OShop.UI
             services.AddMvc();
             services.AddTransient<ValidateBearerToken>();
             services.AddTransient<ValidateBearerTokenManage>();
+            services.AddTransient<IGoogleApiDirections, GoogleApiClient>();
 
         }
 

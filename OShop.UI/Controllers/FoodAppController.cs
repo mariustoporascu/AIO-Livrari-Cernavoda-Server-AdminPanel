@@ -15,6 +15,7 @@ using OShop.Application.UnitatiMasura;
 using OShop.Database;
 using OShop.Domain.Models;
 using OShop.UI.ApiAuth;
+using OShop.UI.Extras;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -67,11 +68,11 @@ namespace OShop.UI.Controllers
 
         [Authorize]
         [HttpGet("getorderinfo/{orderId}")]
-        public IActionResult GetOrderInfo(int orderId)            => Ok(new GetOrderInfo(_context).Do(orderId));
+        public IActionResult GetOrderInfo(int orderId) => Ok(new GetOrderInfo(_context).Do(orderId));
 
         [Authorize]
         [HttpGet("getproductsinorder/{orderId}")]
-        public IActionResult GetProductsInOrder(int orderId)            => Ok(new GetAllProductInOrder(_context).Do(orderId));
+        public IActionResult GetProductsInOrder(int orderId) => Ok(new GetAllProductInOrder(_context).Do(orderId));
 
         [Authorize]
         [HttpGet("getproductsfororder/{orderId}")]

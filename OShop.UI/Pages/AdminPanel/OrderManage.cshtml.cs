@@ -28,10 +28,6 @@ namespace OShop.UI.Pages.AdminPanel
         [BindProperty]
         public IEnumerable<OrderViewModel> Orders { get; set; }
 
-
-        [BindProperty]
-        public IEnumerable<ApplicationUser> UsersVM { get; set; }
-
         public async Task<IActionResult> OnGet()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -39,7 +35,6 @@ namespace OShop.UI.Pages.AdminPanel
                 Orders = await new GetAllOrders(_context, _userManager).Do(user.RestaurantRefId);
             else
                 Orders = await new GetAllOrders(_context, _userManager).Do(null, true);
-            UsersVM = _userManager.Users.AsNoTracking().AsEnumerable();
             return Page();
         }
     }

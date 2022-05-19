@@ -28,7 +28,7 @@
                     {
                         <tr>
                             <td>@order.OrderId</td>
-                            <td><span>@Model.UsersVM.FirstOrDefault(usr => usr.Id == order.CustomerId).FullName</span></td>
+                            <td><span>@order.OrderInfo.FullName</span></td>
                             <td>@order.Status</td>
                             <td>@order.TotalOrdered</td>
                             <td>@order.Created</td>
