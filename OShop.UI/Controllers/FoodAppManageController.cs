@@ -42,7 +42,7 @@ namespace OShop.UI.Controllers
         public async Task<IActionResult> GetAllOrders(int restaurantRefId) =>
             Ok(await new GetAllOrders(_context, _userManager).Do(restaurantRefId));
         [Authorize]
-        [HttpGet("updatestatus/{orderId}/{status}")]
+        [HttpGet("updatestatus/{orderId}&{status}")]
         public async Task<IActionResult> OrderStatus(int orderId, string status)
         {
 
@@ -76,7 +76,7 @@ namespace OShop.UI.Controllers
             return Ok(order);
         }
         [Authorize]
-        [HttpGet("driverlockorder/{email}/{orderId}")]
+        [HttpGet("driverlockorder/{email}&{orderId}")]
         public async Task<IActionResult> DriverLockorder(string email, int orderId)
         {
             if (await new LockOrder(_context).Do((await _userManager.FindByEmailAsync(email)).Id, orderId))
@@ -104,10 +104,10 @@ namespace OShop.UI.Controllers
             return Ok("Location not updated");
         }
         [Authorize]
-        [HttpGet("setesttime/{orderId}/{esttime}")]
+        [HttpGet("setesttime/{orderId}&{esttime}")]
         public async Task<IActionResult> SetEstTime(int orderId, string esttime) => Ok($"estTime : {await new UpdateOrder(_context).DoET(orderId, esttime)}");
         [Authorize]
-        [HttpGet("ratingclient/{isOwner}/{orderId}/{rating}")]
+        [HttpGet("ratingclient/{isOwner}&{orderId}&{rating}")]
         public async Task<IActionResult> GiveRestaurantRating(bool isOwner, int orderId, int rating)
         {
             var order = _context.Orders.AsNoTracking().FirstOrDefault(or => or.OrderId == orderId);

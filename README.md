@@ -1,7 +1,7 @@
 # AIO Livrari Cernavoda
 Management website for Delivery App in ASP.NET Core
 
-•	Used Visual Studio Code to develop using C#, HTML, JavaScript and CSS programming languages.
+•	Used Visual Studio to develop using C#, HTML, JavaScript and CSS programming languages.
 
 •	Developed fully functional e-commerce management website for a delivery mobile application(Android/iOS).
 

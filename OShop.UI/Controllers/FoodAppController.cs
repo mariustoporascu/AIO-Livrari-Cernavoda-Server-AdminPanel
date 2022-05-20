@@ -79,11 +79,11 @@ namespace OShop.UI.Controllers
         public IActionResult GetProductsForOrder(int orderId) => Ok(new GetAllProducts(_context, _fileManager).Do(0, orderId));
 
         [Authorize]
-        [HttpGet("agreeesttime/{orderId}/{accept}")]
+        [HttpGet("agreeesttime/{orderId}&{accept}")]
         public async Task<IActionResult> SetEstTime(int orderId, bool accept) => Ok($"agreed : {await new UpdateOrder(_context).DoET(orderId, accept)}");
 
         [Authorize]
-        [HttpGet("getmydriverlocation/{driverId}/{orderId}")]
+        [HttpGet("getmydriverlocation/{driverId}&{orderId}")]
         public async Task<IActionResult> GetDriverLocation(string driverId, int orderId)
         {
             var driver = await _userManager.FindByIdAsync(driverId);
@@ -152,7 +152,7 @@ namespace OShop.UI.Controllers
         }
 
         [Authorize]
-        [HttpGet("ratingdriver/{email}/{orderId}/{rating}")]
+        [HttpGet("ratingdriver/{email}&{orderId}&{rating}")]
         public async Task<IActionResult> GiveDriverRating(string email, int orderId, int rating)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -174,7 +174,7 @@ namespace OShop.UI.Controllers
         }
 
         [Authorize]
-        [HttpGet("ratingrestaurant/{email}/{orderId}/{rating}")]
+        [HttpGet("ratingrestaurant/{email}&{orderId}&{rating}")]
         public async Task<IActionResult> GiveRestaurantRating(string email, int orderId, int rating)
         {
             var user = await _userManager.FindByEmailAsync(email);
