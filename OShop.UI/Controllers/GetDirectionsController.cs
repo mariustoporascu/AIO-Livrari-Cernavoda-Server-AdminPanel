@@ -19,8 +19,8 @@ namespace OShop.UI.Controllers
         {
             _googleApiDirections = googleApiDirections;
         }
-        [HttpGet("getroute/{latHome}&{longHome}&{latCourier}&{longCourier}")]
-        public async Task<IActionResult> GetRoutes(double latHome, double longHome, double latCourier, double longCourier)
-            => Ok(await _googleApiDirections.GetDirections(latHome, longHome, latCourier, longCourier));
+        [HttpGet("getroute/{latCourier}&{longCourier}&{latHome}&{longHome}")]
+        public async Task<IActionResult> GetRoutes(double latCourier, double longCourier,double latHome, double longHome )
+            => Ok(await _googleApiDirections.GetDirections( latCourier, longCourier,latHome, longHome));
     }
 }

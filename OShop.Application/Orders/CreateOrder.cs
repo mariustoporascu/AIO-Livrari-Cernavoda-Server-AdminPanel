@@ -29,8 +29,9 @@ namespace OShop.Application.Orders
                 CustomerId = vm.CustomerId,
                 TotalOrdered = vm.TotalOrdered,
                 RestaurantRefId = vm.RestaurantRefId,
+                TransportFee = vm.TransportFee,
                 IsRestaurant = vm.IsRestaurant,
-                Created = DateTime.Now,
+                Created = vm.Created,
             };
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
@@ -49,6 +50,7 @@ namespace OShop.Application.Orders
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalOrdered { get; set; }
+        public decimal TransportFee { get; set; }
         public string CustomerId { get; set; }
         public bool IsRestaurant { get; set; } = false;
         public int RestaurantRefId { get; set; }
@@ -61,7 +63,7 @@ namespace OShop.Application.Orders
         public bool DriverGaveRating { get; set; } = false;
 
         [DataType(DataType.DateTime)]
-        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime Created { get; set; } 
         public IEnumerable<ProductInOrdersViewModel> ProductsInOrder { get; set; }
         public OrderInfosViewModel OrderInfo { get; set; }
         public RestaurantVMUI Restaurant { get; set; }

@@ -11,12 +11,10 @@ namespace OShop.Application.SuperMarkets
     public class GetAllSuperMarkets
     {
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public GetAllSuperMarkets(OnlineShopDbContext context, IFileManager fileManager)
+        public GetAllSuperMarkets(OnlineShopDbContext context)
         {
             _context = context;
-            _fileManager = fileManager;
         }
 
         public IEnumerable<SuperMarketVMUI> Do() =>
@@ -25,7 +23,6 @@ namespace OShop.Application.SuperMarkets
                 SuperMarketId = categ.SuperMarketId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
             });
         private byte[] getBytes(FileStream stream)
         {

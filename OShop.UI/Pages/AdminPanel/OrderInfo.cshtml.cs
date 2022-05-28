@@ -19,12 +19,10 @@ namespace OShop.UI.Pages.AdminPanel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public OrderInfoModel(OnlineShopDbContext context, IFileManager fileManager, UserManager<ApplicationUser> userManager)
+        public OrderInfoModel(OnlineShopDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _fileManager = fileManager;
             _userManager = userManager;
         }
 
@@ -38,9 +36,9 @@ namespace OShop.UI.Pages.AdminPanel
         {
             Order = new GetOrder(_context).Do(vm);
             var user = await _userManager.GetUserAsync(User);
-            if (Order.RestaurantRefId != user.RestaurantRefId)
+            if (!(await _userManager.IsInRoleAsync(user, "SuperAdmin")) && Order.RestaurantRefId != user.RestaurantRefId)
                 return RedirectToPage("/Error");
-            Products = new GetAllProducts(_context, _fileManager).Do(0, 0)
+            Products = new GetAllProducts(_context).Do(0, 0)
                 .Where(prod => Order.ProductsInOrder.Select(product => product.ProductRefId).Contains(prod.ProductId));
             return Page();
         }

@@ -11,12 +11,10 @@ namespace OShop.Application.Products
     public class GetAllProducts
     {
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public GetAllProducts(OnlineShopDbContext context, IFileManager fileManager)
+        public GetAllProducts(OnlineShopDbContext context)
         {
             _context = context;
-            _fileManager = fileManager;
         }
 
         public IEnumerable<ProductVMUI> Do(int cartId, int orderId)
@@ -96,7 +94,6 @@ namespace OShop.Application.Products
                     Stock = prod.Stock,
                     Price = prod.Price,
                     Photo = prod.Photo,
-                    //Image = (prod.Photo == null || prod.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(prod.Photo))),
                     Gramaj = prod.Gramaj,
                     MeasuringUnitId = prod.MeasuringUnitId,
                     CategoryRefId = prod.CategoryRefId,
@@ -119,7 +116,6 @@ namespace OShop.Application.Products
                     Stock = prod.Stock,
                     Price = prod.Price,
                     Photo = prod.Photo,
-                    //Image = (prod.Photo == null || prod.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(prod.Photo))),
                     Gramaj = prod.Gramaj,
                     MeasuringUnitId = prod.MeasuringUnitId,
                     CategoryRefId = prod.CategoryRefId,
@@ -142,7 +138,6 @@ namespace OShop.Application.Products
                     Stock = prod.Stock,
                     Price = prod.Price,
                     Photo = prod.Photo,
-                    //Image = (prod.Photo == null || prod.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(prod.Photo))),
                     Gramaj = prod.Gramaj,
                     MeasuringUnitId = prod.MeasuringUnitId,
                     CategoryRefId = prod.CategoryRefId,
@@ -152,12 +147,7 @@ namespace OShop.Application.Products
                     RestaurantRefId = prod.RestaurantRefId,
                 }).ToList();
         }
-        private byte[] getBytes(FileStream stream)
-        {
-            byte[] buffer = new byte[stream.Length];
-            stream.Read(buffer, 0, (int)stream.Length);
-            return buffer;
-        }
+
 
     }
 

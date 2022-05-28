@@ -126,6 +126,7 @@ namespace OShop.UI.Pages.AdminPanel
                     {
                         _fileManager.RemoveImage(user.ProfilePicture, "ProfilePhoto");
                     }
+                    user.PhoneNumber = Input.PhoneNumber;
                     user.ProfilePicture = _fileManager.SaveImage(file, "ProfilePhoto");
                     await _userManager.UpdateAsync(user);
                     if (restaurant != null)
@@ -134,6 +135,7 @@ namespace OShop.UI.Pages.AdminPanel
                         {
                             _fileManager.RemoveImage(restaurant.Photo, "RestaurantPhoto");
                         }
+                        restaurant.TelefonNo = user.PhoneNumber;
                         restaurant.Photo = _fileManager.SaveImage(file, "RestaurantPhoto");
                         _context.Restaurante.Update(restaurant);
                         await _context.SaveChangesAsync();

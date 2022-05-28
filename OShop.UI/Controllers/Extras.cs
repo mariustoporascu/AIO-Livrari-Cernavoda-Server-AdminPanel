@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.Net.Http;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace OShop.UI.Extras
@@ -18,7 +19,7 @@ namespace OShop.UI.Extras
     }
     public interface IGoogleApiDirections
     {
-        Task<string> GetDirections(double latHome, double longHome, double latCourier, double longCourier);
+        Task<string> GetDirections(double latCourier, double longCourier, double latHome, double longHome);
     }
     public class GoogleApiClient : IGoogleApiDirections
     {
@@ -30,7 +31,7 @@ namespace OShop.UI.Extras
             _client.BaseAddress = new Uri("https://maps.googleapis.com/maps/");
             apiKey = config["ConnectionStrings:GoogleApiKey"];
         }
-        public async Task<string> GetDirections(double latHome, double longHome, double latCourier, double longCourier)
+        public async Task<string> GetDirections(double latCourier, double longCourier, double latHome, double longHome)
         {
             var response = await _client.GetAsync("api/directions/json?mode=driving&transit_routing_preference=less_driving&origin=" +
                  latCourier.ToString("N7", CultureInfo.InvariantCulture) + "," +
@@ -48,6 +49,46 @@ namespace OShop.UI.Extras
             }
             return string.Empty;
 
+        }
+    }
+    public class EmailSender
+    {
+        private string emailUser;
+        private string emailPass;
+
+        public EmailSender(IConfiguration config)
+        {
+            emailUser = config["ConnectionStrings:EmailUser"];
+            emailPass = config["ConnectionStrings:EmailPass"];
+        }
+        public bool SendEmail(string userEmail, string subject, string bodyText)
+        {
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.From = new MailAddress(emailUser);
+            mailMessage.To.Add(new MailAddress(userEmail));
+
+            mailMessage.Subject = subject;
+            mailMessage.IsBodyHtml = true;
+            mailMessage.Body = bodyText;
+
+            SmtpClient client = new SmtpClient();
+            client.Credentials = new System.Net.NetworkCredential(emailUser, emailPass);
+            client.Host = "mail5015.site4now.net";
+            client.Port = 587;
+            client.EnableSsl = true;
+            client.Timeout = 30000;
+            client.UseDefaultCredentials = false;
+
+            try
+            {
+                client.Send(mailMessage);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
         }
     }
 }

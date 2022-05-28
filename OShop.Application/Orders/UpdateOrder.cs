@@ -26,7 +26,7 @@ namespace OShop.Application.Orders
                 TotalOrdered = vm.TotalOrdered,
                 IsRestaurant = vm.IsRestaurant,
                 RestaurantRefId = vm.RestaurantRefId,
-                Created = DateTime.Now,
+                Created = vm.Created,
             };
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();

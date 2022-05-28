@@ -40,7 +40,7 @@
                         <input type="hidden" asp-for="@Model.Category.Photo" />
                         @if (@Model.Category.Photo != null)
                         {
-                            var image_path = $"{base_path}/Image/{Model.Category.Photo}";
+                            var image_path = $"{base_path}/api/webimage/GetImage/{Model.Category.Photo}";
                             <img id="categoryphoto" style="width:150px;height:150px; object-fit:cover" src="@image_path">
                         }
                         else

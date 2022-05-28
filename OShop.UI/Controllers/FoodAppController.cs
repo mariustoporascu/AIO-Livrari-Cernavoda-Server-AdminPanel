@@ -27,13 +27,11 @@ namespace OShop.UI.Controllers
     public class FoodAppController : ControllerBase
     {
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public FoodAppController(OnlineShopDbContext context, IFileManager fileManager, UserManager<ApplicationUser> userManager)
+        public FoodAppController(OnlineShopDbContext context,  UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _fileManager = fileManager;
             _userManager = userManager;
         }
         partial class DriverLocation
@@ -44,19 +42,19 @@ namespace OShop.UI.Controllers
             public double CoordY { get; set; }
         }
         [HttpGet("getallproducts")]
-        public IActionResult ManageProducts() => Ok(new GetAllProducts(_context, _fileManager).Do());
+        public IActionResult ManageProducts() => Ok(new GetAllProducts(_context).Do());
 
         [HttpGet("getallcategories")]
-        public IActionResult ManageCategories() => Ok(new GetAllCategories(_context, _fileManager).Do());
+        public IActionResult ManageCategories() => Ok(new GetAllCategories(_context).Do());
 
         [HttpGet("getallsubcategories")]
-        public IActionResult ManageSubCategories() => Ok(new GetAllSubCategories(_context, _fileManager).Do());
+        public IActionResult ManageSubCategories() => Ok(new GetAllSubCategories(_context).Do());
 
         [HttpGet("getallrestaurante")]
-        public IActionResult ManageRestaurante() => Ok(new GetAllRestaurante(_context, _fileManager).Do());
+        public IActionResult ManageRestaurante() => Ok(new GetAllRestaurante(_context).Do());
 
         [HttpGet("getallsupermarkets")]
-        public IActionResult ManageSuperMarkets() => Ok(new GetAllSuperMarkets(_context, _fileManager).Do());
+        public IActionResult ManageSuperMarkets() => Ok(new GetAllSuperMarkets(_context).Do());
 
         [HttpGet("getallmeasuringunits")]
         public IActionResult ManageMeasuringUnits() => Ok(new GetAllMeasuringUnits(_context).Do());
@@ -76,7 +74,7 @@ namespace OShop.UI.Controllers
 
         [Authorize]
         [HttpGet("getproductsfororder/{orderId}")]
-        public IActionResult GetProductsForOrder(int orderId) => Ok(new GetAllProducts(_context, _fileManager).Do(0, orderId));
+        public IActionResult GetProductsForOrder(int orderId) => Ok(new GetAllProducts(_context).Do(0, orderId));
 
         [Authorize]
         [HttpGet("agreeesttime/{orderId}&{accept}")]

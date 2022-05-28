@@ -11,12 +11,10 @@ namespace OShop.Application.Categories
     public class CreateCategory
     {
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public CreateCategory(OnlineShopDbContext context, IFileManager fileManager)
+        public CreateCategory(OnlineShopDbContext context)
         {
             _context = context;
-            _fileManager = fileManager;
         }
 
         public async Task Do(CategoryVMUI vm)
@@ -32,28 +30,6 @@ namespace OShop.Application.Categories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DoReact(CategoryVMReactUI vm)
-        {
-            var category = new Category
-            {
-                CategoryId = vm.CategoryId,
-                Name = vm.Name,
-            };
-            if (vm.Photo != null)
-            {
-                category.Photo = _fileManager.SaveImage(vm.Photo, "CategoryPhoto");
-            }
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-        }
-    }
-    public class CategoryVMReactUI
-    {
-        public int CategoryId { get; set; }
-        [Required(ErrorMessage = "Campul este obligatoriu")]
-        public string Name { get; set; }
-        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg" })]
-        public IFormFile Photo { get; set; }
     }
     public class CategoryVMUI
     {

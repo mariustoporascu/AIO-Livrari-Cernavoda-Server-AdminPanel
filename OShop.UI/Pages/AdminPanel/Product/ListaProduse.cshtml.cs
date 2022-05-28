@@ -18,12 +18,10 @@ namespace OShop.UI.Pages.AdminPanel.Product
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public ListaProduseModel(OnlineShopDbContext context, IFileManager fileManager, UserManager<ApplicationUser> userManager)
+        public ListaProduseModel(OnlineShopDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _fileManager = fileManager;
             _userManager = userManager;
         }
 
@@ -42,8 +40,8 @@ namespace OShop.UI.Pages.AdminPanel.Product
             if (canal != user.RestaurantRefId)
                 return RedirectToPage("/Error");
             Canal = canal;
-            Products = new GetAllProducts(_context, _fileManager).DoRest(canal);
-            Categ = new GetAllCategories(_context, _fileManager).DoRest(canal);
+            Products = new GetAllProducts(_context).DoRest(canal);
+            Categ = new GetAllCategories(_context).DoRest(canal);
             UnitatiMasura = new GetAllMeasuringUnits(_context).Do();
             return Page();
         }

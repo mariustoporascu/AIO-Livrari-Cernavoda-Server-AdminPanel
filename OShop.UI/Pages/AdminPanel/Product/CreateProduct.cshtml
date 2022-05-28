@@ -85,7 +85,7 @@
                         <input type="hidden" asp-for="@Model.Product.Photo" />
                         @if (@Model.Product.Photo != null)
                         {
-                            var image_path = $"{base_path}/Image/{Model.Product.Photo}";
+                            var image_path = $"{base_path}/api/webimage/GetImage/{Model.Product.Photo}";
                             <img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="@image_path">
                         }
                         else

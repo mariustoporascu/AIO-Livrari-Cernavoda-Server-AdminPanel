@@ -10,12 +10,10 @@ namespace OShop.Application.Categories
     public class GetAllCategories
     {
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public GetAllCategories(OnlineShopDbContext context, IFileManager fileManager)
+        public GetAllCategories(OnlineShopDbContext context)
         {
             _context = context;
-            _fileManager = fileManager;
         }
 
         public IEnumerable<CategoryVMUI> Do() =>
@@ -24,7 +22,6 @@ namespace OShop.Application.Categories
                 CategoryId = categ.CategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
                 SuperMarketRefId = categ.SuperMarketRefId,
                 RestaurantRefId = categ.RestaurantRefId,
             });
@@ -36,7 +33,6 @@ namespace OShop.Application.Categories
                 CategoryId = categ.CategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
                 SuperMarketRefId = categ.SuperMarketRefId,
                 RestaurantRefId = categ.RestaurantRefId,
             });
@@ -48,14 +44,8 @@ namespace OShop.Application.Categories
                 CategoryId = categ.CategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
                 RestaurantRefId = categ.RestaurantRefId,
             }).ToList();
-        private byte[] getBytes(FileStream stream)
-        {
-            byte[] buffer = new byte[stream.Length];
-            stream.Read(buffer, 0, (int)stream.Length);
-            return buffer;
-        }
+
     }
 }

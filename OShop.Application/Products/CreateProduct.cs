@@ -14,12 +14,10 @@ namespace OShop.Application.Products
     public class CreateProduct
     {
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public CreateProduct(OnlineShopDbContext context, IFileManager fileManager)
+        public CreateProduct(OnlineShopDbContext context)
         {
             _context = context;
-            _fileManager = fileManager;
         }
 
         public async Task Do(ProductVMUI vm)
@@ -42,48 +40,6 @@ namespace OShop.Application.Products
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
         }
-        public async Task DoReact(ProductVMReactUI vm)
-        {
-            var product = new Product
-            {
-                ProductId = vm.ProductId,
-                Name = vm.Name,
-                Description = vm.Description,
-                Stock = vm.Stock,
-                Price = vm.Price,
-                CategoryRefId = vm.CategoryRefId,
-            };
-            if (vm.Photo != null)
-            {
-                product.Photo = _fileManager.SaveImage(vm.Photo, "ProductPhoto");
-            }
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-        }
-    }
-    public class ProductVMReactUI
-    {
-
-        public int ProductId { get; set; }
-
-        [Required(ErrorMessage = "Campul este obligatoriu")]
-        public string Name { get; set; }
-
-        [Required(ErrorMessage = "Campul este obligatoriu")]
-        public string Description { get; set; }
-
-        [Range(0, 10000)]
-        public int Stock { get; set; }
-
-        [Range(0.01, 10000.0)]
-        [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal Price { get; set; }
-
-        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg" })]
-        public IFormFile Photo { get; set; }
-
-        public int CategoryRefId { get; set; }
     }
     public class ProductVMUI
     {

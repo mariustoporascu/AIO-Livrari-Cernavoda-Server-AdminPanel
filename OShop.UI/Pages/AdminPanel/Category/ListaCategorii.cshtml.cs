@@ -17,12 +17,10 @@ namespace OShop.UI.Pages.AdminPanel.Category
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public ListaCategoriiModel(OnlineShopDbContext context, IFileManager fileManager, UserManager<ApplicationUser> userManager)
+        public ListaCategoriiModel(OnlineShopDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _fileManager = fileManager;
             _userManager = userManager;
         }
 
@@ -38,7 +36,7 @@ namespace OShop.UI.Pages.AdminPanel.Category
             if (canal != user.RestaurantRefId)
                 return RedirectToPage("/Error");
             Canal = canal;
-            Categories = new GetAllCategories(_context, _fileManager).DoRest(canal);
+            Categories = new GetAllCategories(_context).DoRest(canal);
             return Page();
         }
     }

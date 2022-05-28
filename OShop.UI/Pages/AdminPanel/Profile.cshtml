@@ -19,7 +19,7 @@
                     <label asp-for="Input.ProfilePicture" style="width: 100%;"></label>
                     @if (Model.Input.ProfilePicture != null)
                     {
-                        var image_path = $"{base_path}/Image/{Model.Input.ProfilePicture}";
+                        var image_path = $"{base_path}/api/webimage/GetImage/{Model.Input.ProfilePicture}";
                         <img id="profilePicture" style="width:350px;height:350px; object-fit:contain" src="@image_path" alt="profilePicture">
                     }
                     else

@@ -11,12 +11,10 @@ namespace OShop.Application.SubCategories
     public class CreateSubCategory
     {
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public CreateSubCategory(OnlineShopDbContext context, IFileManager fileManager)
+        public CreateSubCategory(OnlineShopDbContext context)
         {
             _context = context;
-            _fileManager = fileManager;
         }
 
         public async Task Do(SubCategoryVMUI vm)
@@ -31,29 +29,9 @@ namespace OShop.Application.SubCategories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DoReact(SubCategoryVMReactUI vm)
-        {
-            var category = new Category
-            {
-                CategoryId = vm.CategoryId,
-                Name = vm.Name,
-            };
-            if (vm.Photo != null)
-            {
-                category.Photo = _fileManager.SaveImage(vm.Photo, "CategoryPhoto");
-            }
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-        }
+
     }
-    public class SubCategoryVMReactUI
-    {
-        public int CategoryId { get; set; }
-        [Required]
-        public string Name { get; set; }
-        [AllowedExtensions(new string[] { ".jpg", ".png", ".jpeg" })]
-        public IFormFile Photo { get; set; }
-    }
+
     public class SubCategoryVMUI
     {
         public int SubCategoryId { get; set; }

@@ -9,12 +9,10 @@ namespace OShop.Application.Products
     public class UpdateProduct
     {
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public UpdateProduct(OnlineShopDbContext context, IFileManager fileManager)
+        public UpdateProduct(OnlineShopDbContext context)
         {
             _context = context;
-            _fileManager = fileManager;
         }
 
         public async Task Do(ProductVMUI vm)
@@ -34,25 +32,6 @@ namespace OShop.Application.Products
                 SuperMarketRefId = vm.SuperMarketRefId,
                 RestaurantRefId = vm.RestaurantRefId,
             };
-            _context.Products.Update(product);
-            await _context.SaveChangesAsync();
-        }
-        public async Task DoReact(ProductVMReactUI vm)
-        {
-            var product = _context.Products.FirstOrDefault(prod => prod.ProductId == vm.ProductId);
-            product.Name = vm.Name;
-            product.Description = vm.Description;
-            product.Stock = vm.Stock;
-            product.Price = vm.Price;
-            product.CategoryRefId = vm.CategoryRefId;
-            if (vm.Photo != null)
-            {
-                if (!string.IsNullOrEmpty(product.Photo))
-                {
-                    _fileManager.RemoveImage(product.Photo, "ProductPhoto");
-                }
-                product.Photo = _fileManager.SaveImage(vm.Photo, "ProductPhoto");
-            }
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
         }

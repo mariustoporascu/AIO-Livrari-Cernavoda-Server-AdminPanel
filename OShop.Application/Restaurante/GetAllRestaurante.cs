@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OShop.Application.FileManager;
 using OShop.Database;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -11,12 +12,10 @@ namespace OShop.Application.Restaurante
     public class GetAllRestaurante
     {
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public GetAllRestaurante(OnlineShopDbContext context, IFileManager fileManager)
+        public GetAllRestaurante(OnlineShopDbContext context)
         {
             _context = context;
-            _fileManager = fileManager;
         }
 
         public IEnumerable<RestaurantVMUI> Do() =>
@@ -26,6 +25,10 @@ namespace OShop.Application.Restaurante
                 Name = categ.Name,
                 Photo = categ.Photo,
                 TelefonNo = categ.TelefonNo,
+                Opening = categ.Opening,
+                MinimumOrderValue = categ.MinimumOrderValue,
+                TransporFee = categ.TransporFee,
+                IsActive = categ.IsActive,
                 //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
             });
         private byte[] getBytes(FileStream stream)
@@ -45,5 +48,10 @@ namespace OShop.Application.Restaurante
         public string Photo { get; set; }
         public string TelefonNo { get; set; }
         public string Image { get; set; }
+        public DateTime Opening { get; set; }
+        public decimal TransporFee { get; set; }
+        public decimal MinimumOrderValue { get; set; }
+        public bool IsActive { get; set; }
+
     }
 }

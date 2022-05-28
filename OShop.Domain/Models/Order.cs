@@ -18,6 +18,9 @@ namespace OShop.Domain.Models
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalOrdered { get; set; }
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal TransportFee { get; set; }
         public string CustomerId { get; set; }
         public string EstimatedTime { get; set; }
         public bool? HasUserConfirmedET { get; set; } = null;
@@ -25,7 +28,7 @@ namespace OShop.Domain.Models
         public int RestaurantRefId { get; set; }
 
         [DataType(DataType.DateTime)]
-        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime Created { get; set; } 
 
         public OrderInfo OrderInfos { get; set; }
         public string? DriverRefId { get; set; }

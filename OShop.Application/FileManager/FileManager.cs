@@ -104,10 +104,16 @@ namespace OShop.Application.FileManager
 
                 //using(var outputFileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
                 //    await image.CopyToAsync(outputFileStream);
-                using (var fileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
-                {
-                    MagicImageProcessor.ProcessImage(image.OpenReadStream(), fileStream, ImageOptions());
-                }
+                if(pathtype == "restaurantphoto")
+                    using (var fileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
+                    {
+                        MagicImageProcessor.ProcessImage(image.OpenReadStream(), fileStream, ImageOptions(280, 800));
+                    }
+                else
+                    using (var fileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
+                    {
+                        MagicImageProcessor.ProcessImage(image.OpenReadStream(), fileStream, ImageOptions(360,360));
+                    }
 
                 return fileName;
             }
@@ -118,15 +124,15 @@ namespace OShop.Application.FileManager
             }
         }
 
-        private ProcessImageSettings ImageOptions() => new ProcessImageSettings
+        private ProcessImageSettings ImageOptions(int height,int width) => new ProcessImageSettings
         {
 
             SaveFormat = FileFormat.Jpeg,
             JpegQuality = 80,
             JpegSubsampleMode = ChromaSubsampleMode.Subsample420,
-            ResizeMode = CropScaleMode.Contain,
-            Height = 360,
-            Width = 360
+            ResizeMode = CropScaleMode.Stretch,
+            Height = height,
+            Width = width
         };
     }
 }

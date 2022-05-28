@@ -47,7 +47,7 @@ namespace OShop.UI.Pages.AdminPanel.Product
             var user = await _userManager.GetUserAsync(User);
             if (canal != user.RestaurantRefId)
                 return RedirectToPage("/Error");
-            Categ = new GetAllCategories(_context, _fileManager).DoRest(canal);
+            Categ = new GetAllCategories(_context).DoRest(canal);
             if (productId == null)
                 Product = new ProductVMUI();
             else
@@ -91,10 +91,10 @@ namespace OShop.UI.Pages.AdminPanel.Product
 
                 if (Product.ProductId > 0)
                 {
-                    await new UpdateProduct(_context, _fileManager).Do(Product);
+                    await new UpdateProduct(_context).Do(Product);
                 }
                 else
-                    await new CreateProduct(_context, _fileManager).Do(Product);
+                    await new CreateProduct(_context).Do(Product);
                 return RedirectToPage("./ListaProduse", new { canal = Canal });
             }
             return RedirectToPage("/Error", new { Area = "" });

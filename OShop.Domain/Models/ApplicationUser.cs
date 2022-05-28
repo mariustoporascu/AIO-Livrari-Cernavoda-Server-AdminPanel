@@ -15,6 +15,10 @@ namespace OShop.Domain.Models
         public string City { get; set; }
         public string BuildingInfo { get; set; }
         public bool CompleteProfile { get; set; } = false;
+        public bool CompleteLocation { get; set; } = false;
+        public bool HasSetPassword { get; set; } = false;
+        public string ResetTokenPass { get; set; } = "";
+        public string ResetTokenPassIdentity { get; set; } = "";
         public int RestaurantRefId { get; set; }
         public bool IsDriver { get; set; } = false;
         public bool IsOwner { get; set; } = false;

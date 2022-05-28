@@ -169,6 +169,9 @@ namespace OShop.Database.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("CompleteLocation")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("CompleteProfile")
                         .HasColumnType("bit");
 
@@ -194,6 +197,9 @@ namespace OShop.Database.Migrations
 
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("HasSetPassword")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDriver")
                         .HasColumnType("bit");
@@ -231,6 +237,12 @@ namespace OShop.Database.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ProfilePicture")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResetTokenPass")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResetTokenPassIdentity")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RestaurantRefId")
@@ -382,6 +394,9 @@ namespace OShop.Database.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalOrdered")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TransportFee")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("OrderId");
@@ -563,15 +578,27 @@ namespace OShop.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RestaurantId"), 1L, 1);
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("MinimumOrderValue")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Opening")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TelefonNo")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TransporFee")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("RestaurantId");
 

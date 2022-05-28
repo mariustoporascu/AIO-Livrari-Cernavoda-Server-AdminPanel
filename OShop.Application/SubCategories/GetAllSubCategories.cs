@@ -10,12 +10,10 @@ namespace OShop.Application.SubCategories
     public class GetAllSubCategories
     {
         private readonly OnlineShopDbContext _context;
-        private readonly IFileManager _fileManager;
 
-        public GetAllSubCategories(OnlineShopDbContext context, IFileManager fileManager)
+        public GetAllSubCategories(OnlineShopDbContext context)
         {
             _context = context;
-            _fileManager = fileManager;
         }
 
         public IEnumerable<SubCategoryVMUI> Do() =>
@@ -24,7 +22,6 @@ namespace OShop.Application.SubCategories
                 SubCategoryId = categ.SubCategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
                 CategoryRefId = categ.CategoryRefId,
             });
         public IEnumerable<SubCategoryVMUI> Do(int categoryId) =>
@@ -35,14 +32,7 @@ namespace OShop.Application.SubCategories
                 SubCategoryId = categ.SubCategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
                 CategoryRefId = categ.CategoryRefId,
             });
-        private byte[] getBytes(FileStream stream)
-        {
-            byte[] buffer = new byte[stream.Length];
-            stream.Read(buffer, 0, (int)stream.Length);
-            return buffer;
-        }
     }
 }

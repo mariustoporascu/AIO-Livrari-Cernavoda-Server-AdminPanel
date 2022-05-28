@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using OShop.Database;
 using OShop.Domain.Models;
 using OShop.UI.ApiAuth;
+using OShop.UI.Extras;
 using System;
 using System.Net.Mail;
 using System.Security.Cryptography;
@@ -16,11 +19,13 @@ namespace OShop.UI.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IConfiguration _config;
         partial class AuthVM
         {
             public string Email { get; set; }
             public string FullName { get; set; }
             public string Password { get; set; }
+            public string NewPassword { get; set; }
             public string UserIdentification { get; set; }
             public string Street { get; set; }
             public string City { get; set; }
@@ -28,7 +33,10 @@ namespace OShop.UI.Controllers
             public string PhoneNumber { get; set; }
             public double CoordX { get; set; }
             public double CoordY { get; set; }
+            public string ResetTokenPass { get; set; }
             public bool CompleteProfile { get; set; }
+            public bool CompleteLocation { get; set; }
+            public bool HasSetPassword { get; set; }
             public string LoginToken { get; set; }
         }
         partial class AuthVMManage
@@ -39,10 +47,11 @@ namespace OShop.UI.Controllers
             public int RestaurantRefId { get; set; }
             public string LoginToken { get; set; }
         }
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _config = config;
         }
 
         [HttpPost("create")]
@@ -65,25 +74,38 @@ namespace OShop.UI.Controllers
                     Email = user.Email,
                     UserName = userName,
                     FullName = user.FullName,
+                    HasSetPassword = string.IsNullOrWhiteSpace(user.Password) ? false : true,
                     UserIdentification = user.UserIdentification,
                 };
+                IdentityResult result;
                 if (!string.IsNullOrEmpty(user.UserIdentification))
                 {
-                    Pass = Password.Generate(10, 0);
+                    newAcc.EmailConfirmed = true;
+                    result = await _userManager.CreateAsync(newAcc);
                 }
                 else
                 {
-                    Pass = user.Password;
+                    newAcc.ResetTokenPass = CodeGen.Generate();
+                    result = await _userManager.CreateAsync(newAcc, user.Password);
                 }
-                var result = await _userManager.CreateAsync(newAcc, Pass);
                 if (result.Succeeded)
+                {
+                    if (string.IsNullOrWhiteSpace(user.UserIdentification))
+                    {
+                        EmailSender sender = new EmailSender(_config);
+                        sender.SendEmail(newAcc.Email, "Confirmare email - Livro", $"Codul tau pentru confirmarea emailului este : {newAcc.ResetTokenPass}");
+                    }
+                    await _userManager.AddToRoleAsync(newAcc, Enums.Roles.Customer.ToString());
                     return Ok("Account created, you can now login.");
+                }
                 else
                     return Ok("Something went wrong during account creation");
 
             }
             else
             {
+                if (!string.IsNullOrEmpty(account.UserIdentification) && account.UserIdentification == user.UserIdentification)
+                    return Ok("Reused previous loginwithothers.");
                 return Ok("User already exists.");
             }
         }
@@ -106,6 +128,10 @@ namespace OShop.UI.Controllers
             {
                 return BadRequest();
             }
+            else if (!account.EmailConfirmed)
+            {
+                return Ok("Email not confirmed");
+            }
             else
             {
                 if (account.IsDriver || account.IsOwner)
@@ -126,6 +152,8 @@ namespace OShop.UI.Controllers
                             FullName = account.FullName,
                             BuildingInfo = account.BuildingInfo,
                             PhoneNumber = account.PhoneNumber,
+                            HasSetPassword = account.HasSetPassword,
+                            CompleteLocation = account.CompleteLocation,
                             Street = account.Street,
                             City = account.City,
                             CompleteProfile = account.CompleteProfile,
@@ -149,13 +177,15 @@ namespace OShop.UI.Controllers
                         Street = account.Street,
                         City = account.City,
                         CompleteProfile = account.CompleteProfile,
+                        HasSetPassword = account.HasSetPassword,
+                        CompleteLocation = account.CompleteLocation,
                         CoordX = account.CoordX,
                         CoordY = account.CoordY,
                         LoginToken = account.LoginToken
 
                     });
                 }
-                    
+
                 return Ok("Login data invalid.");
             }
         }
@@ -200,7 +230,146 @@ namespace OShop.UI.Controllers
                     return Ok("Password is wrong.");
             }
         }
+        [Authorize]
+        [HttpPost("setpassword")]
+        public async Task<IActionResult> SetPassword([FromBody] object userInfo)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var user = JsonConvert.DeserializeObject<AuthVM>(userInfo.ToString(), settings);
+            var account = await _userManager.FindByEmailAsync(user.Email);
+            if (account == null)
+            {
+                return Ok("Email is wrong or user not existing.");
+            }
+            else
+            {
+                if (account.UserIdentification == user.UserIdentification)
+                {
 
+                    var result = await _userManager.AddPasswordAsync(account, user.Password);
+                    if (result.Succeeded)
+                        account.HasSetPassword = true;
+                    await _userManager.UpdateAsync(account);
+                    return Ok("Password set.");
+                }
+                return Ok("Data invalid.");
+            }
+        }
+        [Authorize]
+        [HttpPost("changepassword")]
+        public async Task<IActionResult> ChangePassword([FromBody] object userInfo)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var user = JsonConvert.DeserializeObject<AuthVM>(userInfo.ToString(), settings);
+            var account = await _userManager.FindByEmailAsync(user.Email);
+            if (account == null)
+            {
+                return Ok("Email is wrong or user not existing.");
+            }
+            else
+            {
+                MailAddress address = new MailAddress(user.Email);
+                string userName = address.User;
+                var result = await _signInManager.PasswordSignInAsync(userName, user.Password, false, false);
+                if (result.Succeeded)
+                {
+                    var passChanged = await _userManager.ChangePasswordAsync(account, user.Password, user.NewPassword);
+                    if (passChanged.Succeeded)
+                        return Ok("Password changed.");
+                }
+                return Ok("Data invalid.");
+            }
+        }
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] object userInfo)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var user = JsonConvert.DeserializeObject<AuthVM>(userInfo.ToString(), settings);
+            var account = await _userManager.FindByEmailAsync(user.Email);
+            if (account == null)
+            {
+                return Ok("Email is wrong or user not existing.");
+            }
+            else
+            {
+                if (user.ResetTokenPass == account.ResetTokenPass)
+                {
+                    var result = await _userManager.ResetPasswordAsync(account, account.ResetTokenPassIdentity, user.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        account.ResetTokenPass = "";
+                        account.ResetTokenPassIdentity = "";
+                        await _userManager.UpdateAsync(account);
+                        return Ok("Password changed");
+                    }
+                }
+
+                return Ok("Data invalid.");
+            }
+        }
+        [HttpPost("confirmemail")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] object userInfo)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var user = JsonConvert.DeserializeObject<AuthVM>(userInfo.ToString(), settings);
+            var account = await _userManager.FindByEmailAsync(user.Email);
+            if (account == null)
+            {
+                return Ok("Email is wrong or user not existing.");
+            }
+            else
+            {
+                if (user.ResetTokenPass == account.ResetTokenPass)
+                {
+                    account.ResetTokenPass = "";
+                    account.EmailConfirmed = true;
+                    await _userManager.UpdateAsync(account);
+                    return Ok("Email Confirmed.");
+                }
+
+                return Ok("Data invalid.");
+            }
+        }
+        [HttpPost("sendtokenpassword")]
+        public async Task<IActionResult> SendTokenPassword([FromBody] object userInfo)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var user = JsonConvert.DeserializeObject<AuthVM>(userInfo.ToString(), settings);
+            var account = await _userManager.FindByEmailAsync(user.Email);
+            if (account == null)
+            {
+                return Ok("Email is wrong or user not existing.");
+            }
+            else
+            {
+                account.ResetTokenPass = CodeGen.Generate();
+                account.ResetTokenPassIdentity = await _userManager.GeneratePasswordResetTokenAsync(account);
+                await _userManager.UpdateAsync(account);
+                EmailSender sender = new EmailSender(_config);
+                sender.SendEmail(account.Email, "Resetare Parola - Livro", $"Codul tau pentru resetarea parolei este : {account.ResetTokenPass}");
+                return Ok("Token sent.");
+            }
+        }
         [Authorize]
         [HttpPost("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] object userInfo)
@@ -226,13 +395,8 @@ namespace OShop.UI.Controllers
                     if (result.Succeeded)
                     {
                         account.FullName = user.FullName;
-                        account.BuildingInfo = user.BuildingInfo;
                         account.PhoneNumber = user.PhoneNumber;
-                        account.Street = user.Street;
-                        account.City = user.City;
                         account.CompleteProfile = user.CompleteProfile;
-                        account.CoordX = user.CoordX;
-                        account.CoordY = user.CoordY;
                         await _userManager.UpdateAsync(account);
                         return Ok("Profile updated.");
                     }
@@ -240,16 +404,60 @@ namespace OShop.UI.Controllers
                 else if (account.UserIdentification == user.UserIdentification)
                 {
                     account.FullName = user.FullName;
-                    account.BuildingInfo = user.BuildingInfo;
                     account.PhoneNumber = user.PhoneNumber;
+                    account.CompleteProfile = user.CompleteProfile;
+
+                    await _userManager.UpdateAsync(account);
+                    return Ok("Profile updated.");
+                }
+                return Ok("Data invalid.");
+            }
+        }
+        [Authorize]
+        [HttpPost("userlocation")]
+        public async Task<IActionResult> UpdateLocation([FromBody] object userInfo)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var user = JsonConvert.DeserializeObject<AuthVM>(userInfo.ToString(), settings);
+            var account = await _userManager.FindByEmailAsync(user.Email);
+            if (account == null)
+            {
+                return Ok("Email is wrong or user not existing.");
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(account.UserIdentification))
+                {
+                    MailAddress address = new MailAddress(user.Email);
+                    string userName = address.User;
+                    var result = await _signInManager.PasswordSignInAsync(userName, user.Password, false, false);
+                    if (result.Succeeded)
+                    {
+                        account.BuildingInfo = user.BuildingInfo;
+                        account.Street = user.Street;
+                        account.City = user.City;
+                        account.CompleteLocation = user.CompleteLocation;
+                        account.CoordX = user.CoordX;
+                        account.CoordY = user.CoordY;
+                        await _userManager.UpdateAsync(account);
+                        return Ok("Location updated.");
+                    }
+                }
+                else if (account.UserIdentification == user.UserIdentification)
+                {
+                    account.BuildingInfo = user.BuildingInfo;
                     account.Street = user.Street;
                     account.City = user.City;
-                    account.CompleteProfile = user.CompleteProfile;
+                    account.CompleteLocation = user.CompleteLocation;
                     account.CoordX = user.CoordX;
                     account.CoordY = user.CoordY;
 
                     await _userManager.UpdateAsync(account);
-                    return Ok("Profile updated.");
+                    return Ok("Location updated.");
                 }
                 return Ok("Data invalid.");
             }
@@ -274,18 +482,29 @@ namespace OShop.UI.Controllers
             {
                 if (string.IsNullOrWhiteSpace(account.UserIdentification))
                 {
-                    var result = await _signInManager.PasswordSignInAsync(user.Email, user.Password, false, false);
+                    MailAddress address = new MailAddress(user.Email);
+                    string userName = address.User;
+                    var result = await _signInManager.PasswordSignInAsync(userName, user.Password, false, false);
                     if (result.Succeeded)
                         await _userManager.DeleteAsync(account);
-                    return Ok(result.Succeeded);
+                    return Ok($"result : {result.Succeeded.ToString()}");
                 }
                 else
                 {
-                    if(account.UserIdentification == user.UserIdentification)
+                    if (account.UserIdentification == user.UserIdentification)
                         await _userManager.DeleteAsync(account);
-                    return Ok(account.UserIdentification == user.UserIdentification);
+                    return Ok($"result : {(account.UserIdentification == user.UserIdentification).ToString()}");
                 }
 
+            }
+        }
+        public static class CodeGen
+        {
+            public static string Generate()
+            {
+                Random generator = new Random();
+                String r = generator.Next(0, 1000000).ToString("D6");
+                return r;
             }
         }
         public static class Password

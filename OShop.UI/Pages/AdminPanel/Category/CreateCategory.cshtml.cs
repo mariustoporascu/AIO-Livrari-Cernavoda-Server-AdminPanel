@@ -78,10 +78,10 @@ namespace OShop.UI.Pages.AdminPanel.Category
                 }
                 if (Category.CategoryId > 0)
                 {
-                    await new UpdateCategory(_context, _fileManager).Do(Category);
+                    await new UpdateCategory(_context).Do(Category);
                 }
                 else
-                    await new CreateCategory(_context, _fileManager).Do(Category);
+                    await new CreateCategory(_context).Do(Category);
                 return RedirectToPage("./ListaCategorii", new { canal = Canal });
             }
             return RedirectToPage("Error", new { Area = "" });

@@ -39,6 +39,7 @@ namespace OShop.Application.Orders
                 Status = order.Status,
                 CustomerId = order.CustomerId,
                 TotalOrdered = order.TotalOrdered,
+                TransportFee = order.TransportFee,
                 Created = order.Created,
                 EstimatedTime = order.EstimatedTime,
                 IsRestaurant = order.IsRestaurant,
