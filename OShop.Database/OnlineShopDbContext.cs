@@ -28,6 +28,7 @@ namespace OShop.Database
         public DbSet<RatingClient> RatingClients { get; set; }
         public DbSet<RatingDriver> RatingDrivers { get; set; }
         public DbSet<RatingRestaurant> RatingRestaurants { get; set; }
+        public DbSet<UserLocations> UserLocations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

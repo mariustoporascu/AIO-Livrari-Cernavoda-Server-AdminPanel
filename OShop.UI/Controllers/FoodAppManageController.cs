@@ -22,12 +22,6 @@ namespace OShop.UI.Controllers
         private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        partial class DriverLocation
-        {
-            public string Id { get; set; }
-            public double CoordX { get; set; }
-            public double CoordY { get; set; }
-        }
         public FoodAppManageController(OnlineShopDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -92,13 +86,24 @@ namespace OShop.UI.Controllers
                 NullValueHandling = NullValueHandling.Ignore,
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
-            var driver = JsonConvert.DeserializeObject<DriverLocation>(driverLocation.ToString(), settings);
-            var user = await _userManager.FindByIdAsync(driver.Id);
+            var location = JsonConvert.DeserializeObject<UserLocations>(driverLocation.ToString(), settings);
+            var user = await _userManager.FindByIdAsync(location.UserId);
             if (user != null)
             {
-                user.CoordX = driver.CoordX;
-                user.CoordY = driver.CoordY;
-                await _userManager.UpdateAsync(user);
+                var locationDb = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == user.Id);
+                if (locationDb == null || locationDb.LocationId == 0)
+                {
+                    location.UserId = user.Id;
+                    _context.UserLocations.Add(location);
+                }
+
+                else
+                {
+                    location.LocationId = locationDb.LocationId;
+                    location.UserId = user.Id;
+                    _context.UserLocations.Update(location);
+                }
+                await _context.SaveChangesAsync();
                 return Ok("Location updated");
             }
             return Ok("Location not updated");

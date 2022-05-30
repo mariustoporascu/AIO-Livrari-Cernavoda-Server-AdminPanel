@@ -217,7 +217,7 @@
 
 //})(jQuery);
 async function fetchData(chart) {
-    const url = 'https://manage.aiolivraricvd.com/api/foodappmanage/getmyearnings';
+    const url = 'https://manage.livro.ro/api/foodappmanage/getmyearnings';
     const response = await fetch(url);
     const dataPoints = await response.json();
     chart.data.datasets[0].data = dataPoints;

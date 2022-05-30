@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using OShop.Database;
@@ -7,6 +8,8 @@ using OShop.Domain.Models;
 using OShop.UI.ApiAuth;
 using OShop.UI.Extras;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -20,6 +23,8 @@ namespace OShop.UI.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _config;
+        private readonly OnlineShopDbContext _context;
+
         partial class AuthVM
         {
             public string Email { get; set; }
@@ -27,17 +32,12 @@ namespace OShop.UI.Controllers
             public string Password { get; set; }
             public string NewPassword { get; set; }
             public string UserIdentification { get; set; }
-            public string Street { get; set; }
-            public string City { get; set; }
-            public string BuildingInfo { get; set; }
             public string PhoneNumber { get; set; }
-            public double CoordX { get; set; }
-            public double CoordY { get; set; }
             public string ResetTokenPass { get; set; }
             public bool CompleteProfile { get; set; }
-            public bool CompleteLocation { get; set; }
             public bool HasSetPassword { get; set; }
             public string LoginToken { get; set; }
+            public UserLocations Location { get; set; }
         }
         partial class AuthVMManage
         {
@@ -47,11 +47,15 @@ namespace OShop.UI.Controllers
             public int RestaurantRefId { get; set; }
             public string LoginToken { get; set; }
         }
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration config)
+        public AuthController(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IConfiguration config,
+            OnlineShopDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _config = config;
+            _context = context;
         }
 
         [HttpPost("create")]
@@ -138,7 +142,7 @@ namespace OShop.UI.Controllers
                 {
                     return Ok("Login data invalid.");
                 }
-                if (string.IsNullOrEmpty(account.UserIdentification))
+                if (!string.IsNullOrEmpty(user.Password))
                 {
                     MailAddress address = new MailAddress(user.Email);
                     string userName = address.User;
@@ -150,15 +154,10 @@ namespace OShop.UI.Controllers
                         return Ok(new AuthVM
                         {
                             FullName = account.FullName,
-                            BuildingInfo = account.BuildingInfo,
                             PhoneNumber = account.PhoneNumber,
                             HasSetPassword = account.HasSetPassword,
-                            CompleteLocation = account.CompleteLocation,
-                            Street = account.Street,
-                            City = account.City,
                             CompleteProfile = account.CompleteProfile,
-                            CoordX = account.CoordX,
-                            CoordY = account.CoordY,
+                            Location = _context.UserLocations.AsNoTracking().AsEnumerable().FirstOrDefault(loc => loc.UserId == account.Id),
                             LoginToken = account.LoginToken
                         });
                     }
@@ -172,15 +171,10 @@ namespace OShop.UI.Controllers
                     return Ok(new AuthVM
                     {
                         FullName = account.FullName,
-                        BuildingInfo = account.BuildingInfo,
                         PhoneNumber = account.PhoneNumber,
-                        Street = account.Street,
-                        City = account.City,
                         CompleteProfile = account.CompleteProfile,
                         HasSetPassword = account.HasSetPassword,
-                        CompleteLocation = account.CompleteLocation,
-                        CoordX = account.CoordX,
-                        CoordY = account.CoordY,
+                        Location = _context.UserLocations.AsNoTracking().AsEnumerable().FirstOrDefault(loc => loc.UserId == account.Id),
                         LoginToken = account.LoginToken
 
                     });
@@ -310,6 +304,7 @@ namespace OShop.UI.Controllers
                     if (result.Succeeded)
                     {
                         account.ResetTokenPass = "";
+                        account.HasSetPassword = true;
                         account.ResetTokenPassIdentity = "";
                         await _userManager.UpdateAsync(account);
                         return Ok("Password changed");
@@ -387,7 +382,7 @@ namespace OShop.UI.Controllers
             }
             else
             {
-                if (string.IsNullOrEmpty(account.UserIdentification))
+                if (!string.IsNullOrEmpty(user.Password))
                 {
                     MailAddress address = new MailAddress(user.Email);
                     string userName = address.User;
@@ -430,33 +425,52 @@ namespace OShop.UI.Controllers
             }
             else
             {
-                if (string.IsNullOrEmpty(account.UserIdentification))
+                if (!string.IsNullOrEmpty(user.Password))
                 {
                     MailAddress address = new MailAddress(user.Email);
                     string userName = address.User;
                     var result = await _signInManager.PasswordSignInAsync(userName, user.Password, false, false);
                     if (result.Succeeded)
                     {
-                        account.BuildingInfo = user.BuildingInfo;
-                        account.Street = user.Street;
-                        account.City = user.City;
-                        account.CompleteLocation = user.CompleteLocation;
-                        account.CoordX = user.CoordX;
-                        account.CoordY = user.CoordY;
-                        await _userManager.UpdateAsync(account);
+                        var locationDb = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == account.Id);
+                        if (locationDb == null || locationDb.LocationId == 0)
+                        {
+                            user.Location.UserId = account.Id;
+                            _context.UserLocations.Add(user.Location);
+                        }
+
+                        else
+                        {
+                            user.Location.LocationId = locationDb.LocationId;
+                            user.Location.UserId = account.Id;
+
+                            _context.UserLocations.Update(user.Location);
+
+                        }
+                        await _context.SaveChangesAsync();
+
                         return Ok("Location updated.");
                     }
                 }
                 else if (account.UserIdentification == user.UserIdentification)
                 {
-                    account.BuildingInfo = user.BuildingInfo;
-                    account.Street = user.Street;
-                    account.City = user.City;
-                    account.CompleteLocation = user.CompleteLocation;
-                    account.CoordX = user.CoordX;
-                    account.CoordY = user.CoordY;
+                    var locationDb = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == account.Id);
+                    if (locationDb == null || locationDb.LocationId == 0)
+                    {
+                        user.Location.UserId = account.Id;
+                        _context.UserLocations.Add(user.Location);
+                    }
 
-                    await _userManager.UpdateAsync(account);
+                    else
+                    {
+                        user.Location.LocationId = locationDb.LocationId;
+                        user.Location.UserId = account.Id;
+
+                        _context.UserLocations.Update(user.Location);
+
+                    }
+                    await _context.SaveChangesAsync();
+
                     return Ok("Location updated.");
                 }
                 return Ok("Data invalid.");
@@ -480,7 +494,7 @@ namespace OShop.UI.Controllers
             }
             else
             {
-                if (string.IsNullOrWhiteSpace(account.UserIdentification))
+                if (!string.IsNullOrWhiteSpace(user.Password))
                 {
                     MailAddress address = new MailAddress(user.Email);
                     string userName = address.User;

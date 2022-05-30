@@ -168,10 +168,11 @@ namespace OShop.Application.Orders
             var user = await _userManager.FindByIdAsync(customerId);
             if (user == null)
                 return new UserLocation();
+            var userLocation = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == customerId);
             return new UserLocation
             {
-                CoordX = user.CoordX,
-                CoordY = user.CoordY,
+                CoordX = userLocation.CoordX,
+                CoordY = userLocation.CoordY,
             };
         }
     }

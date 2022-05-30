@@ -73,7 +73,7 @@ namespace OShop.UI.Extras
 
             SmtpClient client = new SmtpClient();
             client.Credentials = new System.Net.NetworkCredential(emailUser, emailPass);
-            client.Host = "mail5015.site4now.net";
+            client.Host = "mail5002.smarterasp.net";
             client.Port = 587;
             client.EnableSsl = true;
             client.Timeout = 30000;

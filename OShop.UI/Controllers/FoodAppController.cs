@@ -16,6 +16,7 @@ using OShop.Database;
 using OShop.Domain.Models;
 using OShop.UI.ApiAuth;
 using OShop.UI.Extras;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,18 +30,12 @@ namespace OShop.UI.Controllers
         private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public FoodAppController(OnlineShopDbContext context,  UserManager<ApplicationUser> userManager)
+        public FoodAppController(OnlineShopDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
-        partial class DriverLocation
-        {
-            public string Id { get; set; }
-            public int OrderId { get; set; }
-            public double CoordX { get; set; }
-            public double CoordY { get; set; }
-        }
+
         [HttpGet("getallproducts")]
         public IActionResult ManageProducts() => Ok(new GetAllProducts(_context).Do());
 
@@ -90,16 +85,34 @@ namespace OShop.UI.Controllers
                 return BadRequest();
             if (!orderStatus.Equals("In curs de livrare"))
                 return BadRequest();
-            var driverLocation = new DriverLocation
-            {
-                Id = driverId,
-                OrderId = orderId,
-                CoordX = driver.CoordX,
-                CoordY = driver.CoordY,
-            };
+            var driverLocation = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == driverId);
             return Ok(driverLocation);
         }
+        partial class ServerOrder
+        {
+            public int OrderId { get; set; }
+            public string Status { get; set; }
+            public decimal TotalOrdered { get; set; }
+            public decimal TransportFee { get; set; }
 
+            public string CustomerId { get; set; }
+            public string DriverRefId { get; set; }
+            public bool IsRestaurant { get; set; } = false;
+            public int RestaurantRefId { get; set; }
+            public string EstimatedTime { get; set; }
+            public bool ClientGaveRatingDriver { get; set; } = false;
+            public bool ClientGaveRatingRestaurant { get; set; } = false;
+            public bool? HasUserConfirmedET { get; set; }
+            //public int RatingClient { get; set; }
+            public int RatingDriver { get; set; }
+            public int RatingRestaurant { get; set; }
+            public DateTime Created { get; set; }
+            [JsonProperty("productsInOrder")]
+            public List<ProductInOrdersViewModel> ProductsInOrder { get; set; }
+            [JsonProperty("orderInfo")]
+            public OrderInfosViewModel OrderInfos { get; set; }
+
+        }
         [Authorize]
         [HttpPost("createorder")]
         public async Task<IActionResult> CreateOrder([FromBody] object order)
@@ -109,14 +122,28 @@ namespace OShop.UI.Controllers
                 NullValueHandling = NullValueHandling.Ignore,
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
-            var orderVM = JsonConvert.DeserializeObject<OrderViewModel>(order.ToString(), settings);
-            var user = await _userManager.FindByEmailAsync(orderVM.CustomerId);
+            var clientOrder = JsonConvert.DeserializeObject<ServerOrder>(order.ToString(), settings);
+            var orderVM = new OrderViewModel
+            {
+                OrderId = 0,
+                TotalOrdered = clientOrder.TotalOrdered,
+                TransportFee = clientOrder.TransportFee,
+                IsRestaurant = clientOrder.IsRestaurant,
+                RestaurantRefId = clientOrder.RestaurantRefId,
+                Created = clientOrder.Created,
+            };
+            var user = await _userManager.FindByEmailAsync(clientOrder.CustomerId);
             if (user != null)
             {
                 orderVM.Status = OrderStatusEnum.Plasata;
                 orderVM.CustomerId = user.Id;
                 int orderId = await new CreateOrder(_context).Do(orderVM);
-                return Ok(orderId);
+                clientOrder.OrderInfos.OrderRefId = orderId;
+                await new CreateOrderInfo(_context).Do(clientOrder.OrderInfos);
+                foreach (var product in clientOrder.ProductsInOrder)
+                    product.OrderRefId = orderId;
+                await new CreateProductInOrder(_context).Do(clientOrder.ProductsInOrder);
+                return Ok("Order placed.");
             }
             return Ok("User not found!");
         }
