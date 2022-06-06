@@ -27,7 +27,7 @@ namespace OShop.UI.Pages.AdminPanel.Category
         public async Task<IActionResult> OnGet(int canal, int categId)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (canal != user.RestaurantRefId)
+            if (canal != user.CompanieRefId)
                 return RedirectToPage("/Error");
             await new DeleteCategory(_context, _fileManager).Do(categId);
             return RedirectToPage("./ListaCategorii", new { canal = canal });

@@ -31,8 +31,8 @@ namespace OShop.UI.Pages.AdminPanel
         public async Task<IActionResult> OnGet()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user.RestaurantRefId > 0)
-                Orders = await new GetAllOrders(_context, _userManager).Do(user.RestaurantRefId);
+            if (user.CompanieRefId > 0)
+                Orders = await new GetAllOrders(_context, _userManager).Do(user.CompanieRefId);
             else
                 Orders = await new GetAllOrders(_context, _userManager).Do(null, true);
             return Page();

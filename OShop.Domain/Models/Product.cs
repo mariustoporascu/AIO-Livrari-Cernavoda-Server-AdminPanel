@@ -31,15 +31,10 @@ namespace OShop.Domain.Models
         [Required]
         public int MeasuringUnitId { get; set; }
 
-        public int CategoryRefId { get; set; }
-        public Category Categories { get; set; }
-        public int? SubCategoryRefId { get; set; }
-        public int? RestaurantRefId { get; set; }
-        public Restaurant Restaurante { get; set; }
-        public int? SuperMarketRefId { get; set; }
-        public SuperMarket SuperMarkets { get; set; }
+        public int SubCategoryRefId { get; set; }
+        public SubCategory SubCategory { get; set; }
 
-        public virtual ICollection<CartItems> CartItems { get; set; }
         public virtual ICollection<ProductInOrder> ProductInOrders { get; set; }
+        public virtual ICollection<ExtraProdus> ExtraProduse { get; set; }
     }
 }

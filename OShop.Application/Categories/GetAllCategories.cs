@@ -17,35 +17,23 @@ namespace OShop.Application.Categories
         }
 
         public IEnumerable<CategoryVMUI> Do() =>
-            _context.Categories.AsNoTracking().ToList().Select(categ => new CategoryVMUI
+            _context.Categories.AsNoTracking().AsEnumerable().Select(categ => new CategoryVMUI
             {
                 CategoryId = categ.CategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                SuperMarketRefId = categ.SuperMarketRefId,
-                RestaurantRefId = categ.RestaurantRefId,
+                CompanieRefId = categ.CompanieRefId,
             });
         public IEnumerable<CategoryVMUI> Do(int canal) =>
-            _context.Categories.AsNoTracking()
-            .Where(categ => canal == 1 ? categ.SuperMarketRefId != null : categ.RestaurantRefId != null)
-            .ToList().Select(categ => new CategoryVMUI
-            {
-                CategoryId = categ.CategoryId,
-                Name = categ.Name,
-                Photo = categ.Photo,
-                SuperMarketRefId = categ.SuperMarketRefId,
-                RestaurantRefId = categ.RestaurantRefId,
-            });
-        public IEnumerable<CategoryVMUI> DoRest(int restaurantId) =>
-            _context.Categories.AsNoTracking()
-            .Where(categ => categ.RestaurantRefId == restaurantId)
+            _context.Categories.AsNoTracking().AsEnumerable()
+            .Where(categ => categ.CompanieRefId == canal)
             .Select(categ => new CategoryVMUI
             {
                 CategoryId = categ.CategoryId,
                 Name = categ.Name,
                 Photo = categ.Photo,
-                RestaurantRefId = categ.RestaurantRefId,
-            }).ToList();
+                CompanieRefId = categ.CompanieRefId,
+            });
 
     }
 }

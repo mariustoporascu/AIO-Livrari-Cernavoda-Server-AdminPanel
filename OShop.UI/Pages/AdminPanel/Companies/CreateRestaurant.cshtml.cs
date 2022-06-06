@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using OShop.Application.Categories;
+using OShop.Application.Companii;
 using OShop.Application.FileManager;
 using OShop.Application.Products;
-using OShop.Application.Restaurante;
 using OShop.Application.UnitatiMasura;
 using OShop.Database;
 using OShop.Domain.Models;
@@ -31,16 +32,18 @@ namespace OShop.UI.Pages.AdminPanel.Companies
 
 
         [BindProperty]
-        public RestaurantVMUI Restaurant { get; set; }
+        public CompanieVMUI Companie { get; set; }
+        [BindProperty]
+        public IEnumerable<TipCompanie> TipCompanie { get; set; }
 
-        public IActionResult OnGet( int? restId)
+        public IActionResult OnGet(int? restId)
         {
-
+            TipCompanie = _context.TipCompanies.AsNoTracking().AsEnumerable().ToList();
             if (restId == null)
-                Restaurant = new RestaurantVMUI();
+                Companie = new CompanieVMUI();
             else
             {
-                Restaurant = new GetRestaurant(_context).Do(restId);
+                Companie = new GetCompanie(_context).Do(restId);
             }
 
             return Page();
@@ -59,25 +62,25 @@ namespace OShop.UI.Pages.AdminPanel.Companies
                         return RedirectToPage("/Error", new { Area = "" });
                     else
                     {
-                        if (!string.IsNullOrEmpty(Restaurant.Photo))
+                        if (!string.IsNullOrEmpty(Companie.Photo))
                         {
-                            _fileManager.RemoveImage(Restaurant.Photo, "RestaurantPhoto");
+                            _fileManager.RemoveImage(Companie.Photo, "CompaniePhoto");
                         }
-                        Restaurant.Photo = _fileManager.SaveImage(file, "RestaurantPhoto");
+                        Companie.Photo = _fileManager.SaveImage(file, "CompaniePhoto");
                     }
                 }
                 else if (Request.Form.Files.Count == 0)
                 {
-                    Restaurant.Photo = Restaurant.Photo;
+                    Companie.Photo = Companie.Photo;
                 }
 
 
-                if (Restaurant.RestaurantId > 0)
+                if (Companie.CompanieId > 0)
                 {
-                    await new UpdateRestaurant(_context).Do(Restaurant);
+                    await new UpdateCompanie(_context).Do(Companie);
                 }
                 else
-                    await new CreateRestaurant(_context).Do(Restaurant);
+                    await new CreateCompanie(_context).Do(Companie);
                 return RedirectToPage("./ListaRestaurante");
             }
             return RedirectToPage("/Error", new { Area = "" });

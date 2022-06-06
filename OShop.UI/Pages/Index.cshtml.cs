@@ -58,9 +58,9 @@ namespace OShop.UI.Pages
             {
                 var startTime = DateTime.UtcNow;
                 var user = await _userManager.GetUserAsync(User);
-                if (user.RestaurantRefId > 0)
+                if (user.CompanieRefId > 0)
                 {
-                    var orders = await new GetAllOrders(_context, _userManager).Do(user.RestaurantRefId);
+                    var orders = await new GetAllOrders(_context, _userManager).Do(user.CompanieRefId);
                     Comenzi = orders.Count();
                     if (Comenzi > 0)
                     {
@@ -72,7 +72,7 @@ namespace OShop.UI.Pages
                             TotalVanzari += order.TotalOrdered;
                         }
                         TotalCLienti = orders.Select(or => or.CustomerId).Distinct().Count();
-                        var ratings = _context.RatingRestaurants.AsNoTracking().AsEnumerable().Where(rat => rat.RestaurantRefId == user.RestaurantRefId).Select(ra => ra.Rating);
+                        var ratings = _context.RatingCompanies.AsNoTracking().AsEnumerable().Where(rat => rat.CompanieRefId == user.CompanieRefId).Select(ra => ra.Rating);
                         decimal sumRating = ratings.Count() * 5.0M;
                         decimal totalRating = 0.0M;
                         foreach (var rat in ratings)

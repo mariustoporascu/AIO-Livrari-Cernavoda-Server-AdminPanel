@@ -8,9 +8,8 @@ using OShop.Application.OrderInfos;
 using OShop.Application.Orders;
 using OShop.Application.ProductInOrders;
 using OShop.Application.Products;
-using OShop.Application.Restaurante;
+using OShop.Application.Companii;
 using OShop.Application.SubCategories;
-using OShop.Application.SuperMarkets;
 using OShop.Application.UnitatiMasura;
 using OShop.Database;
 using OShop.Domain.Models;
@@ -20,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace OShop.UI.Controllers
 {
@@ -29,11 +29,15 @@ namespace OShop.UI.Controllers
     {
         private readonly OnlineShopDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
-        public FoodAppController(OnlineShopDbContext context, UserManager<ApplicationUser> userManager)
+        private readonly string OneSignalApiKey;
+        private readonly string OneSignalAppId;
+        public FoodAppController(IConfiguration config, OnlineShopDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+            OneSignalApiKey = config["ConnectionStrings:SignalApiKey"];
+            OneSignalAppId = config["ConnectionStrings:SignalAppId"];
+
         }
 
         [HttpGet("getallproducts")]
@@ -41,15 +45,16 @@ namespace OShop.UI.Controllers
 
         [HttpGet("getallcategories")]
         public IActionResult ManageCategories() => Ok(new GetAllCategories(_context).Do());
+        [HttpGet("getallcities")]
+        public IActionResult ManageCities() => Ok(_context.AvailableCities.AsNoTracking().AsEnumerable());
 
         [HttpGet("getallsubcategories")]
         public IActionResult ManageSubCategories() => Ok(new GetAllSubCategories(_context).Do());
 
-        [HttpGet("getallrestaurante")]
-        public IActionResult ManageRestaurante() => Ok(new GetAllRestaurante(_context).Do());
-
-        [HttpGet("getallsupermarkets")]
-        public IActionResult ManageSuperMarkets() => Ok(new GetAllSuperMarkets(_context).Do());
+        [HttpGet("getallcompanii")]
+        public IActionResult ManageRestaurante() => Ok(new GetAllCompanii(_context).Do());
+        [HttpGet("getalltipcompanii")]
+        public IActionResult ManageTipCompanii() => Ok(_context.TipCompanies.AsNoTracking().AsEnumerable());
 
         [HttpGet("getallmeasuringunits")]
         public IActionResult ManageMeasuringUnits() => Ok(new GetAllMeasuringUnits(_context).Do());
@@ -68,12 +73,29 @@ namespace OShop.UI.Controllers
         public IActionResult GetProductsInOrder(int orderId) => Ok(new GetAllProductInOrder(_context).Do(orderId));
 
         [Authorize]
-        [HttpGet("getproductsfororder/{orderId}")]
-        public IActionResult GetProductsForOrder(int orderId) => Ok(new GetAllProducts(_context).Do(0, orderId));
-
-        [Authorize]
         [HttpGet("agreeesttime/{orderId}&{accept}")]
-        public async Task<IActionResult> SetEstTime(int orderId, bool accept) => Ok($"agreed : {await new UpdateOrder(_context).DoET(orderId, accept)}");
+        public async Task<IActionResult> SetEstTime(int orderId, bool accept)
+        {
+            var orderVM = _context.Orders.AsNoTracking().FirstOrDefault(or => or.OrderId == orderId);
+            if (!orderVM.TelephoneOrdered)
+            {
+                var restaurant = _userManager.Users.FirstOrDefault(us => us.CompanieRefId == orderVM.CompanieRefId);
+                if (restaurant != null)
+                {
+                    var restaurantToken = _context.FBTokens.AsNoTracking().Where(tkn => tkn.UserId == restaurant.Id)
+                        .Select(tkn => tkn.FBToken).Distinct().ToList();
+                    if (restaurantToken != null)
+                    {
+                        foreach (var token in restaurantToken)
+                            NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, accept ? "Timpul estimat a fost acceptat!" : "Timpul estimat nu a fost acceptat. Poti anula comanda!");
+                    }
+
+                }
+            }
+
+
+            return Ok($"agreed : {await new UpdateOrder(_context).DoET(orderId, accept)}");
+        }
 
         [Authorize]
         [HttpGet("getmydriverlocation/{driverId}&{orderId}")]
@@ -94,18 +116,22 @@ namespace OShop.UI.Controllers
             public string Status { get; set; }
             public decimal TotalOrdered { get; set; }
             public decimal TransportFee { get; set; }
-
+            public string PaymentMethod { get; set; }
+            public bool IsOrderPayed { get; set; }
             public string CustomerId { get; set; }
+            public bool TelephoneOrdered { get; set; }
             public string DriverRefId { get; set; }
-            public bool IsRestaurant { get; set; } = false;
-            public int RestaurantRefId { get; set; }
+            public int CompanieRefId { get; set; }
             public string EstimatedTime { get; set; }
             public bool ClientGaveRatingDriver { get; set; } = false;
-            public bool ClientGaveRatingRestaurant { get; set; } = false;
+            public bool ClientGaveRatingCompanie { get; set; } = false;
             public bool? HasUserConfirmedET { get; set; }
             //public int RatingClient { get; set; }
             public int RatingDriver { get; set; }
-            public int RatingRestaurant { get; set; }
+            public int RatingCompanie { get; set; }
+            public int UserLocationId { get; set; }
+            [JsonProperty("orderLocation")]
+            public UserLocations UserLocation { get; set; }
             public DateTime Created { get; set; }
             [JsonProperty("productsInOrder")]
             public List<ProductInOrdersViewModel> ProductsInOrder { get; set; }
@@ -115,35 +141,72 @@ namespace OShop.UI.Controllers
         }
         [Authorize]
         [HttpPost("createorder")]
-        public async Task<IActionResult> CreateOrder([FromBody] object order)
+        public async Task<IActionResult> CreateOrder([FromBody] object orders)
         {
             var settings = new JsonSerializerSettings
             {
                 NullValueHandling = NullValueHandling.Ignore,
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
-            var clientOrder = JsonConvert.DeserializeObject<ServerOrder>(order.ToString(), settings);
-            var orderVM = new OrderViewModel
-            {
-                OrderId = 0,
-                TotalOrdered = clientOrder.TotalOrdered,
-                TransportFee = clientOrder.TransportFee,
-                IsRestaurant = clientOrder.IsRestaurant,
-                RestaurantRefId = clientOrder.RestaurantRefId,
-                Created = clientOrder.Created,
-            };
-            var user = await _userManager.FindByEmailAsync(clientOrder.CustomerId);
+            var order = JsonConvert.DeserializeObject< ServerOrder>(orders.ToString(), settings);
+            var user = await _userManager.FindByEmailAsync(order.CustomerId);
             if (user != null)
             {
-                orderVM.Status = OrderStatusEnum.Plasata;
-                orderVM.CustomerId = user.Id;
+
+                var orderVM = new OrderViewModel
+                {
+                    OrderId = 0,
+                    TotalOrdered = order.TotalOrdered,
+                    TransportFee = order.TransportFee,
+                    CompanieRefId = order.CompanieRefId,
+                    PaymentMethod = order.PaymentMethod,
+                    IsOrderPayed = order.IsOrderPayed,
+                    UserLocationId = order.UserLocationId,
+                    TelephoneOrdered = order.TelephoneOrdered,
+                    Created = order.Created,
+                };
+
+                if (!orderVM.TelephoneOrdered)
+                {
+                    orderVM.CustomerId = user.Id;
+                    orderVM.Status = OrderStatusEnum.Plasata;
+                }
+                else
+                    orderVM.Status = OrderStatusEnum.Preluata;
                 int orderId = await new CreateOrder(_context).Do(orderVM);
-                clientOrder.OrderInfos.OrderRefId = orderId;
-                await new CreateOrderInfo(_context).Do(clientOrder.OrderInfos);
-                foreach (var product in clientOrder.ProductsInOrder)
+                if (orderVM.TelephoneOrdered)
+                {
+                    var location = new UserLocations
+                    {
+                        UserId = $"{orderId}",
+                        BuildingInfo = order.UserLocation.BuildingInfo,
+                        Street = order.UserLocation.Street,
+                        City = order.UserLocation.City,
+                        CoordX = order.UserLocation.CoordX,
+                        CoordY = order.UserLocation.CoordY,
+                    };
+                    _context.UserLocations.Add(location);
+                    await _context.SaveChangesAsync();
+                }
+                order.OrderInfos.OrderRefId = orderId;
+                await new CreateOrderInfo(_context).Do(order.OrderInfos);
+                foreach (var product in order.ProductsInOrder)
                     product.OrderRefId = orderId;
-                await new CreateProductInOrder(_context).Do(clientOrder.ProductsInOrder);
+                await new CreateProductInOrder(_context).Do(order.ProductsInOrder);
+                var restaurant = _userManager.Users.FirstOrDefault(us => us.CompanieRefId == orderVM.CompanieRefId);
+                if (restaurant != null)
+                {
+                    var restaurantToken = _context.FBTokens.AsNoTracking().Where(tkn => tkn.UserId == restaurant.Id)
+                        .Select(tkn => tkn.FBToken).Distinct().ToList();
+                    if (restaurantToken != null)
+                    {
+                        foreach (var token in restaurantToken)
+                            NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Ai primit o noua comanda in sistem cu numarul {orderId}!");
+                    }
+                }
                 return Ok("Order placed.");
+
+
             }
             return Ok("User not found!");
         }
@@ -207,15 +270,15 @@ namespace OShop.UI.Controllers
 
             var order = _context.Orders.AsNoTracking().FirstOrDefault(or => or.OrderId == orderId);
             if (order == null) return BadRequest();
-            var newRating = new RatingRestaurant
+            var newRating = new RatingCompanie
             {
                 Rating = rating,
                 OrderRefId = order.OrderId,
-                RestaurantRefId = order.RestaurantRefId,
+                CompanieRefId = order.CompanieRefId,
             };
-            order.ClientGaveRatingRestaurant = true;
+            order.ClientGaveRatingCompanie = true;
             _context.Orders.Update(order);
-            _context.RatingRestaurants.Add(newRating);
+            _context.RatingCompanies.Add(newRating);
             await _context.SaveChangesAsync();
             return Ok("Rating acordat");
         }

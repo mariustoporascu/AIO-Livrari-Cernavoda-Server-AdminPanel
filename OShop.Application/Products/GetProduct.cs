@@ -26,11 +26,7 @@ namespace OShop.Application.Products
                 Photo = product.Photo,
                 Gramaj = product.Gramaj,
                 MeasuringUnitId = product.MeasuringUnitId,
-                CategoryRefId = product.CategoryRefId,
                 SubCategoryRefId = product.SubCategoryRefId,
-
-                SuperMarketRefId = product.SuperMarketRefId,
-                RestaurantRefId = product.RestaurantRefId,
             };
         }
     }

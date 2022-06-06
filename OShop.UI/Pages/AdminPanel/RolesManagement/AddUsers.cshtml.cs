@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using OShop.Application.Restaurante;
+using OShop.Application.Companii;
 using OShop.Database;
 using OShop.Domain.Models;
 using System.Collections.Generic;
@@ -31,7 +31,7 @@ namespace OShop.UI.Pages.AdminPanel.RolesManagement
 
         public string ReturnUrl { get; set; }
         [BindProperty]
-        public List<RestaurantVMUI> Restaurante { get; set; }
+        public List<CompanieVMUI> Companies { get; set; }
 
         public class InputModel
         {
@@ -46,10 +46,10 @@ namespace OShop.UI.Pages.AdminPanel.RolesManagement
             [Required]
             [Display(Name = "Nume")]
             public string LastName { get; set; }
-            [Display(Name = "Este Restaurant?")]
+            [Display(Name = "Este Companie?")]
             public bool IsOwner { get; set; }
             [Display(Name = "Daca da care?")]
-            public int RestaurantRefId { get; set; }
+            public int CompanieRefId { get; set; }
 
             [Display(Name = "Este sofer?")]
             public bool IsDriver { get; set; }
@@ -68,7 +68,7 @@ namespace OShop.UI.Pages.AdminPanel.RolesManagement
 
         public void OnGet()
         {
-            Restaurante = new GetAllRestaurante(_context).Do().ToList();
+            Companies = new GetAllCompanii(_context).Do().ToList();
         }
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
@@ -85,12 +85,16 @@ namespace OShop.UI.Pages.AdminPanel.RolesManagement
                     IsDriver = Input.IsDriver,
                     EmailConfirmed = true,
                     IsOwner = Input.IsOwner,
-                    RestaurantRefId = Input.RestaurantRefId,
+                    CompanieRefId = !Input.IsOwner ? -1 : Input.CompanieRefId,
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, Enums.Roles.Admin.ToString());
+                    if (!Input.IsDriver)
+                        await _userManager.AddToRoleAsync(user, Enums.Roles.Admin.ToString());
+                    else
+                        await _userManager.AddToRoleAsync(user, Enums.Roles.Moderator.ToString());
+
                     return RedirectToPage("./Index");
                 }
                 foreach (var error in result.Errors)

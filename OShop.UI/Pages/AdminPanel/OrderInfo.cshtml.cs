@@ -36,9 +36,9 @@ namespace OShop.UI.Pages.AdminPanel
         {
             Order = new GetOrder(_context).Do(vm);
             var user = await _userManager.GetUserAsync(User);
-            if (!(await _userManager.IsInRoleAsync(user, "SuperAdmin")) && Order.RestaurantRefId != user.RestaurantRefId)
+            if (!(await _userManager.IsInRoleAsync(user, "SuperAdmin")) && Order.CompanieRefId != user.CompanieRefId)
                 return RedirectToPage("/Error");
-            Products = new GetAllProducts(_context).Do(0, 0)
+            Products = new GetAllProducts(_context).Do()
                 .Where(prod => Order.ProductsInOrder.Select(product => product.ProductRefId).Contains(prod.ProductId));
             return Page();
         }

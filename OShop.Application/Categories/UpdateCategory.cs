@@ -22,8 +22,7 @@ namespace OShop.Application.Categories
                 CategoryId = vm.CategoryId,
                 Name = vm.Name,
                 Photo = vm.Photo,
-                SuperMarketRefId = vm.SuperMarketRefId,
-                RestaurantRefId = vm.RestaurantRefId,
+                CompanieRefId = vm.CompanieRefId,
             };
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();

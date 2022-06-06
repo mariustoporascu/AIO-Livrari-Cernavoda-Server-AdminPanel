@@ -27,7 +27,7 @@ namespace OShop.UI.Pages.AdminPanel.Product
         public async Task<IActionResult> OnGet(int canal, int productId)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (canal != user.RestaurantRefId)
+            if (canal != user.CompanieRefId)
                 return RedirectToPage("/Error");
             await new DeleteProduct(_context, _fileManager).Do(productId);
             return RedirectToPage("./ListaProduse", new { canal = canal });

@@ -13,7 +13,8 @@ namespace OShop.Application.FileManager
         private readonly string _imagePathSubCategoryPhoto;
         private readonly string _imagePathProductPhoto;
         private readonly string _imagePathUserProfilePhoto;
-        private readonly string _imagePathRestaurantPhoto;
+        private readonly string _imagePathCompaniePhoto;
+        private readonly string _imagePathTipCompaniePhoto;
 
         public FileManager(IConfiguration config)
         {
@@ -21,7 +22,8 @@ namespace OShop.Application.FileManager
             _imagePathSubCategoryPhoto = config["Path:Images:SubCategoryPhoto"];
             _imagePathProductPhoto = config["Path:Images:ProductPhoto"];
             _imagePathUserProfilePhoto = config["Path:Images:UserProfilePhoto"];
-            _imagePathRestaurantPhoto = config["Path:Images:RestaurantPhoto"];
+            _imagePathCompaniePhoto = config["Path:Images:CompaniePhoto"];
+            _imagePathTipCompaniePhoto = config["Path:Images:TipCompaniePhoto"];
         }
 
         public FileStream ImageStream(string image)
@@ -34,8 +36,10 @@ namespace OShop.Application.FileManager
                     return new FileStream(Path.Combine(_imagePathCategoryPhoto, image), FileMode.Open, FileAccess.Read);
                 else if (image.Contains("productphoto"))
                     return new FileStream(Path.Combine(_imagePathProductPhoto, image), FileMode.Open, FileAccess.Read);
-                else if (image.Contains("restaurantphoto"))
-                    return new FileStream(Path.Combine(_imagePathRestaurantPhoto, image), FileMode.Open, FileAccess.Read);
+                else if (image.Contains("tipcompaniephoto"))
+                    return new FileStream(Path.Combine(_imagePathTipCompaniePhoto, image), FileMode.Open, FileAccess.Read);
+                else if (image.Contains("companiephoto"))
+                    return new FileStream(Path.Combine(_imagePathCompaniePhoto, image), FileMode.Open, FileAccess.Read);
                 else
                     return new FileStream(Path.Combine(_imagePathUserProfilePhoto, image), FileMode.Open, FileAccess.Read);
             }
@@ -58,8 +62,10 @@ namespace OShop.Application.FileManager
                     file = Path.Combine(_imagePathProductPhoto, image);
                 else if (type == "SubCategoryPhoto")
                     file = Path.Combine(_imagePathSubCategoryPhoto, image);
-                else if (type == "RestaurantPhoto")
-                    file = Path.Combine(_imagePathRestaurantPhoto, image);
+                else if (type == "CompaniePhoto")
+                    file = Path.Combine(_imagePathCompaniePhoto, image);
+                else if (type == "TipCompaniePhoto")
+                    file = Path.Combine(_imagePathTipCompaniePhoto, image);
                 else
                     file = Path.Combine(_imagePathUserProfilePhoto, image);
                 if (File.Exists(file))
@@ -86,8 +92,10 @@ namespace OShop.Application.FileManager
                     save_path = Path.Combine(_imagePathProductPhoto);
                 else if (type == "SubCategoryPhoto")
                     save_path = Path.Combine(_imagePathSubCategoryPhoto);
-                else if (type == "RestaurantPhoto")
-                    save_path = Path.Combine(_imagePathRestaurantPhoto);
+                else if (type == "CompaniePhoto")
+                    save_path = Path.Combine(_imagePathCompaniePhoto);
+                else if (type == "TipCompaniePhoto")
+                    save_path = Path.Combine(_imagePathTipCompaniePhoto);
                 else
                     save_path = Path.Combine(_imagePathUserProfilePhoto);
 
@@ -99,20 +107,25 @@ namespace OShop.Application.FileManager
                 var mime = image.FileName.Substring(image.FileName.LastIndexOf('.'));
                 var pathtype = save_path.Split("/", 3)
                     .FirstOrDefault(pathtype => pathtype == "categoryphoto" || pathtype == "subcategoryphoto"
-                    || pathtype == "productphoto" || pathtype == "userprofilephoto" || pathtype == "restaurantphoto");
-                var fileName = $"{pathtype}_img_{image.FileName.Substring(0, image.FileName.LastIndexOf(".")).Replace(' ', '_')}{mime}";
+                    || pathtype == "productphoto" || pathtype == "userprofilephoto" || pathtype == "companiephoto" || pathtype == "tipcompaniephoto");
+                var fileName = $"{pathtype}_img_{Guid.NewGuid().ToString()}{mime}";
 
                 //using(var outputFileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
                 //    await image.CopyToAsync(outputFileStream);
-                if(pathtype == "restaurantphoto")
+                if (pathtype == "companiephoto")
                     using (var fileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
                     {
                         MagicImageProcessor.ProcessImage(image.OpenReadStream(), fileStream, ImageOptions(280, 800));
                     }
+                else if (pathtype == "tipcompaniephoto")
+                    using (var fileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
+                    {
+                        MagicImageProcessor.ProcessImage(image.OpenReadStream(), fileStream, ImageOptions(600, 600));
+                    }
                 else
                     using (var fileStream = new FileStream(Path.Combine(save_path, fileName), FileMode.Create))
                     {
-                        MagicImageProcessor.ProcessImage(image.OpenReadStream(), fileStream, ImageOptions(360,360));
+                        MagicImageProcessor.ProcessImage(image.OpenReadStream(), fileStream, ImageOptions(360, 360));
                     }
 
                 return fileName;
@@ -124,7 +137,7 @@ namespace OShop.Application.FileManager
             }
         }
 
-        private ProcessImageSettings ImageOptions(int height,int width) => new ProcessImageSettings
+        private ProcessImageSettings ImageOptions(int height, int width) => new ProcessImageSettings
         {
 
             SaveFormat = FileFormat.Jpeg,

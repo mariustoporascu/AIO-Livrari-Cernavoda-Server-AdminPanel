@@ -3,6 +3,7 @@ using OShop.Application.FileManager;
 using OShop.Database;
 using OShop.Domain.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
@@ -32,10 +33,7 @@ namespace OShop.Application.Products
                 Photo = vm.Photo,
                 Gramaj = vm.Gramaj,
                 MeasuringUnitId = vm.MeasuringUnitId,
-                CategoryRefId = vm.CategoryRefId,
                 SubCategoryRefId = vm.SubCategoryRefId,
-                SuperMarketRefId = vm.SuperMarketRefId,
-                RestaurantRefId = vm.RestaurantRefId,
             };
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
@@ -66,11 +64,9 @@ namespace OShop.Application.Products
         public string Photo { get; set; }
 
         public string Image { get; set; }
+        public IEnumerable<ExtraProdus> ExtraProduse { get; set; }
 
-        public int CategoryRefId { get; set; }
-        public int? SuperMarketRefId { get; set; }
-        public int? SubCategoryRefId { get; set; }
-        public int? RestaurantRefId { get; set; }
+        public int SubCategoryRefId { get; set; }
     }
     public class AllowedExtensionsAttribute : ValidationAttribute
     {

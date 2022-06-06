@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
 using OShop.Application.Products;
-using OShop.Application.Restaurante;
+using OShop.Application.Companii;
 using OShop.Application.UnitatiMasura;
 using OShop.Database;
 using OShop.Domain.Models;
@@ -26,11 +26,11 @@ namespace OShop.UI.Pages.AdminPanel.Companies
 
 
         [BindProperty]
-        public IEnumerable<RestaurantVMUI> Restaurante { get; set; }
+        public IEnumerable<CompanieVMUI> Restaurante { get; set; }
         public IActionResult OnGet()
         {
 
-            Restaurante = new GetAllRestaurante(_context).Do();
+            Restaurante = new GetAllCompanii(_context).Do(1);
 
             return Page();
         }

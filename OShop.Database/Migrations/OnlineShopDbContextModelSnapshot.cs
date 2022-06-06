@@ -163,6 +163,9 @@ namespace OShop.Database.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int>("CompanieRefId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("CompleteProfile")
                         .HasColumnType("bit");
 
@@ -230,9 +233,6 @@ namespace OShop.Database.Migrations
                     b.Property<string>("ResetTokenPassIdentity")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RestaurantRefId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -262,22 +262,22 @@ namespace OShop.Database.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("OShop.Domain.Models.CartItems", b =>
+            modelBuilder.Entity("OShop.Domain.Models.AvailableCity", b =>
                 {
-                    b.Property<int>("CartRefId")
-                        .HasColumnType("int");
+                    b.Property<int>("CityId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
 
-                    b.Property<int>("ProductRefId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CityId"), 1L, 1);
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("CartRefId", "ProductRefId");
+                    b.HasKey("CityId");
 
-                    b.HasIndex("ProductRefId");
-
-                    b.ToTable("CartItems");
+                    b.ToTable("AvailableCities");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.Category", b =>
@@ -289,6 +289,9 @@ namespace OShop.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CategoryId"), 1L, 1);
 
+                    b.Property<int>("CompanieRefId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -296,19 +299,97 @@ namespace OShop.Database.Migrations
                     b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RestaurantRefId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SuperMarketRefId")
-                        .HasColumnType("int");
-
                     b.HasKey("CategoryId");
 
-                    b.HasIndex("RestaurantRefId");
-
-                    b.HasIndex("SuperMarketRefId");
+                    b.HasIndex("CompanieRefId");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.Companie", b =>
+                {
+                    b.Property<int>("CompanieId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanieId"), 1L, 1);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Opening")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Photo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TelefonNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TipCompanieRefId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CompanieId");
+
+                    b.HasIndex("TipCompanieRefId");
+
+                    b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.ExtraProdus", b =>
+                {
+                    b.Property<int>("ExtraProdusId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExtraProdusId"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductRefId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ExtraProdusId");
+
+                    b.HasIndex("ProductRefId");
+
+                    b.ToTable("ExtraProduse");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.FireBaseTokens", b =>
+                {
+                    b.Property<int>("FBId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FBId"), 1L, 1);
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FBToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("FBId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FBTokens");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.MeasuringUnit", b =>
@@ -338,11 +419,20 @@ namespace OShop.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"), 1L, 1);
 
+                    b.Property<bool>("ClientGaveRatingCompanie")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("ClientGaveRatingDriver")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("ClientGaveRatingRestaurant")
+                    b.Property<string>("Comments")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("CompanieGaveRating")
                         .HasColumnType("bit");
+
+                    b.Property<int>("CompanieRefId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -359,27 +449,36 @@ namespace OShop.Database.Migrations
                     b.Property<string>("EstimatedTime")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("FinishDelivery")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool?>("HasUserConfirmedET")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsRestaurant")
+                    b.Property<bool>("IsOrderPayed")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("RestaurantGaveRating")
-                        .HasColumnType("bit");
+                    b.Property<string>("PaymentMethod")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RestaurantRefId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("StartDelivery")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TelephoneOrdered")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("TotalOrdered")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TransportFee")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UserLocationId")
+                        .HasColumnType("int");
 
                     b.HasKey("OrderId");
 
@@ -429,9 +528,6 @@ namespace OShop.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"), 1L, 1);
 
-                    b.Property<int>("CategoryRefId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -453,25 +549,15 @@ namespace OShop.Database.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("RestaurantRefId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SubCategoryRefId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SuperMarketRefId")
+                    b.Property<int>("SubCategoryRefId")
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
 
-                    b.HasIndex("CategoryRefId");
-
-                    b.HasIndex("RestaurantRefId");
-
-                    b.HasIndex("SuperMarketRefId");
+                    b.HasIndex("SubCategoryRefId");
 
                     b.ToTable("Products");
                 });
@@ -483,6 +569,9 @@ namespace OShop.Database.Migrations
 
                     b.Property<int>("ProductRefId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ClientComments")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UsedQuantity")
                         .HasColumnType("int");
@@ -502,7 +591,7 @@ namespace OShop.Database.Migrations
                     b.Property<string>("UserRefId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("RatingDeLaRestaurant")
+                    b.Property<int>("RatingDeLaCompanie")
                         .HasColumnType("int");
 
                     b.Property<int>("RatingDeLaSofer")
@@ -513,6 +602,24 @@ namespace OShop.Database.Migrations
                     b.HasIndex("UserRefId");
 
                     b.ToTable("RatingClients");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.RatingCompanie", b =>
+                {
+                    b.Property<int>("OrderRefId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanieRefId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderRefId", "CompanieRefId");
+
+                    b.HasIndex("CompanieRefId");
+
+                    b.ToTable("RatingCompanies");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.RatingDriver", b =>
@@ -531,88 +638,6 @@ namespace OShop.Database.Migrations
                     b.HasIndex("DriverRefId");
 
                     b.ToTable("RatingDrivers");
-                });
-
-            modelBuilder.Entity("OShop.Domain.Models.RatingRestaurant", b =>
-                {
-                    b.Property<int>("OrderRefId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RestaurantRefId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrderRefId", "RestaurantRefId");
-
-                    b.HasIndex("RestaurantRefId");
-
-                    b.ToTable("RatingRestaurants");
-                });
-
-            modelBuilder.Entity("OShop.Domain.Models.Restaurant", b =>
-                {
-                    b.Property<int>("RestaurantId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnOrder(1);
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RestaurantId"), 1L, 1);
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("MinimumOrderValue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Opening")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Photo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TelefonNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TransporFee")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("RestaurantId");
-
-                    b.ToTable("Restaurante");
-                });
-
-            modelBuilder.Entity("OShop.Domain.Models.ShoppingCart", b =>
-                {
-                    b.Property<int>("CartId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnOrder(1);
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"), 1L, 1);
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CustomerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TotalInCart")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("CartId");
-
-                    b.ToTable("ShoppingCarts");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.SubCategory", b =>
@@ -641,14 +666,20 @@ namespace OShop.Database.Migrations
                     b.ToTable("SubCategories");
                 });
 
-            modelBuilder.Entity("OShop.Domain.Models.SuperMarket", b =>
+            modelBuilder.Entity("OShop.Domain.Models.TipCompanie", b =>
                 {
-                    b.Property<int>("SuperMarketId")
+                    b.Property<int>("TipCompanieId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnOrder(1);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SuperMarketId"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TipCompanieId"), 1L, 1);
+
+                    b.Property<int>("EndHour")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsOpen")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -657,9 +688,33 @@ namespace OShop.Database.Migrations
                     b.Property<string>("Photo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("SuperMarketId");
+                    b.Property<int>("StartHour")
+                        .HasColumnType("int");
 
-                    b.ToTable("SuperMarkets");
+                    b.HasKey("TipCompanieId");
+
+                    b.ToTable("TipCompanies");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.TransportFee", b =>
+                {
+                    b.Property<int>("CityRefId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CompanieRefId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("MinimumOrderValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TransporFee")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("CityRefId", "CompanieRefId");
+
+                    b.HasIndex("CompanieRefId");
+
+                    b.ToTable("TransportFees");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.UserLocations", b =>
@@ -690,9 +745,11 @@ namespace OShop.Database.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("LocationId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserLocations");
                 });
@@ -748,40 +805,47 @@ namespace OShop.Database.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OShop.Domain.Models.CartItems", b =>
+            modelBuilder.Entity("OShop.Domain.Models.Category", b =>
                 {
-                    b.HasOne("OShop.Domain.Models.ShoppingCart", "ShoppingCart")
-                        .WithMany("CartItems")
-                        .HasForeignKey("CartRefId")
+                    b.HasOne("OShop.Domain.Models.Companie", "Companies")
+                        .WithMany("Categories")
+                        .HasForeignKey("CompanieRefId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Companies");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.Companie", b =>
+                {
+                    b.HasOne("OShop.Domain.Models.TipCompanie", "TipCompanie")
+                        .WithMany("Companies")
+                        .HasForeignKey("TipCompanieRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TipCompanie");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.ExtraProdus", b =>
+                {
                     b.HasOne("OShop.Domain.Models.Product", "Products")
-                        .WithMany("CartItems")
+                        .WithMany("ExtraProduse")
                         .HasForeignKey("ProductRefId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Products");
-
-                    b.Navigation("ShoppingCart");
                 });
 
-            modelBuilder.Entity("OShop.Domain.Models.Category", b =>
+            modelBuilder.Entity("OShop.Domain.Models.FireBaseTokens", b =>
                 {
-                    b.HasOne("OShop.Domain.Models.Restaurant", "Restaurante")
-                        .WithMany("Categories")
-                        .HasForeignKey("RestaurantRefId")
+                    b.HasOne("OShop.Domain.Models.ApplicationUser", "User")
+                        .WithMany("FBTokens")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("OShop.Domain.Models.SuperMarket", "SuperMarkets")
-                        .WithMany("Categories")
-                        .HasForeignKey("SuperMarketRefId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Restaurante");
-
-                    b.Navigation("SuperMarkets");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.Order", b =>
@@ -807,27 +871,13 @@ namespace OShop.Database.Migrations
 
             modelBuilder.Entity("OShop.Domain.Models.Product", b =>
                 {
-                    b.HasOne("OShop.Domain.Models.Category", "Categories")
+                    b.HasOne("OShop.Domain.Models.SubCategory", "SubCategory")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryRefId")
+                        .HasForeignKey("SubCategoryRefId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OShop.Domain.Models.Restaurant", "Restaurante")
-                        .WithMany("Products")
-                        .HasForeignKey("RestaurantRefId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("OShop.Domain.Models.SuperMarket", "SuperMarkets")
-                        .WithMany("Products")
-                        .HasForeignKey("SuperMarketRefId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Categories");
-
-                    b.Navigation("Restaurante");
-
-                    b.Navigation("SuperMarkets");
+                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.ProductInOrder", b =>
@@ -868,6 +918,25 @@ namespace OShop.Database.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("OShop.Domain.Models.RatingCompanie", b =>
+                {
+                    b.HasOne("OShop.Domain.Models.Companie", "Companies")
+                        .WithMany("RatingCompanies")
+                        .HasForeignKey("CompanieRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OShop.Domain.Models.Order", "Orders")
+                        .WithMany("RatingCompanies")
+                        .HasForeignKey("OrderRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Companies");
+
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("OShop.Domain.Models.RatingDriver", b =>
                 {
                     b.HasOne("OShop.Domain.Models.ApplicationUser", "Driver")
@@ -887,25 +956,6 @@ namespace OShop.Database.Migrations
                     b.Navigation("Orderz");
                 });
 
-            modelBuilder.Entity("OShop.Domain.Models.RatingRestaurant", b =>
-                {
-                    b.HasOne("OShop.Domain.Models.Order", "Orderz")
-                        .WithMany("RatingRestaurants")
-                        .HasForeignKey("OrderRefId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OShop.Domain.Models.Restaurant", "Restaurantz")
-                        .WithMany("RatingRestaurants")
-                        .HasForeignKey("RestaurantRefId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Orderz");
-
-                    b.Navigation("Restaurantz");
-                });
-
             modelBuilder.Entity("OShop.Domain.Models.SubCategory", b =>
                 {
                     b.HasOne("OShop.Domain.Models.Category", "Categories")
@@ -917,20 +967,65 @@ namespace OShop.Database.Migrations
                     b.Navigation("Categories");
                 });
 
+            modelBuilder.Entity("OShop.Domain.Models.TransportFee", b =>
+                {
+                    b.HasOne("OShop.Domain.Models.AvailableCity", "AvailableCities")
+                        .WithMany("TransportFees")
+                        .HasForeignKey("CityRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OShop.Domain.Models.Companie", "Companii")
+                        .WithMany("TransportFees")
+                        .HasForeignKey("CompanieRefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AvailableCities");
+
+                    b.Navigation("Companii");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.UserLocations", b =>
+                {
+                    b.HasOne("OShop.Domain.Models.ApplicationUser", "User")
+                        .WithMany("Locations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("OShop.Domain.Models.ApplicationUser", b =>
                 {
                     b.Navigation("DriverOrders");
+
+                    b.Navigation("FBTokens");
+
+                    b.Navigation("Locations");
 
                     b.Navigation("RatingClients");
 
                     b.Navigation("RatingDrivers");
                 });
 
+            modelBuilder.Entity("OShop.Domain.Models.AvailableCity", b =>
+                {
+                    b.Navigation("TransportFees");
+                });
+
             modelBuilder.Entity("OShop.Domain.Models.Category", b =>
                 {
-                    b.Navigation("Products");
-
                     b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("OShop.Domain.Models.Companie", b =>
+                {
+                    b.Navigation("Categories");
+
+                    b.Navigation("RatingCompanies");
+
+                    b.Navigation("TransportFees");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.Order", b =>
@@ -941,37 +1036,26 @@ namespace OShop.Database.Migrations
 
                     b.Navigation("RatingClients");
 
-                    b.Navigation("RatingDrivers");
+                    b.Navigation("RatingCompanies");
 
-                    b.Navigation("RatingRestaurants");
+                    b.Navigation("RatingDrivers");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.Product", b =>
                 {
-                    b.Navigation("CartItems");
+                    b.Navigation("ExtraProduse");
 
                     b.Navigation("ProductInOrders");
                 });
 
-            modelBuilder.Entity("OShop.Domain.Models.Restaurant", b =>
+            modelBuilder.Entity("OShop.Domain.Models.SubCategory", b =>
                 {
-                    b.Navigation("Categories");
-
                     b.Navigation("Products");
-
-                    b.Navigation("RatingRestaurants");
                 });
 
-            modelBuilder.Entity("OShop.Domain.Models.ShoppingCart", b =>
+            modelBuilder.Entity("OShop.Domain.Models.TipCompanie", b =>
                 {
-                    b.Navigation("CartItems");
-                });
-
-            modelBuilder.Entity("OShop.Domain.Models.SuperMarket", b =>
-                {
-                    b.Navigation("Categories");
-
-                    b.Navigation("Products");
+                    b.Navigation("Companies");
                 });
 #pragma warning restore 612, 618
         }

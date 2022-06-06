@@ -36,7 +36,7 @@ namespace OShop.UI.Pages.AdminPanel.Category
         public async Task<IActionResult> OnGet(int canal, int? categId)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (canal != user.RestaurantRefId)
+            if (canal != user.CompanieRefId)
                 return RedirectToPage("/Error");
             if (categId == null)
                 Category = new CategoryVMUI();
@@ -50,11 +50,10 @@ namespace OShop.UI.Pages.AdminPanel.Category
 
         public async Task<IActionResult> OnPost()
         {
-            ModelState.Remove("Category.RestaurantRefId");
-            ModelState.Remove("Category.SuperMarketRefId");
+
             if (ModelState.IsValid)
             {
-                Category.RestaurantRefId = Canal;
+                Category.CompanieRefId = Canal;
                 if (Request.Form.Files.Count > 0)
                 {
                     var extensionAccepted = new string[] { ".jpg", ".png", ".jpeg" };

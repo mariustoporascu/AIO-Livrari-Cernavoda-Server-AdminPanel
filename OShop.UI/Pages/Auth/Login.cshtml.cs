@@ -90,12 +90,17 @@ namespace OShop.UI.Pages.Auth
                 var userName = Input.Email;
                 if (IsValidEmail(Input.Email))
                 {
-                     user = await _userManager.FindByEmailAsync(Input.Email);
+                    user = await _userManager.FindByEmailAsync(Input.Email);
                     if (user != null)
                     {
                         userName = user.UserName;
                     }
+                    if (user.CompanieRefId == 0)
+                    {
+                        return Page();
+                    }
                 }
+
                 var result = await _signInManager.PasswordSignInAsync(userName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {

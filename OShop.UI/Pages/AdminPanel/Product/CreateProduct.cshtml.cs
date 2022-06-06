@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
 using OShop.Application.Products;
+using OShop.Application.SubCategories;
 using OShop.Application.UnitatiMasura;
 using OShop.Database;
 using OShop.Domain.Models;
@@ -35,7 +36,7 @@ namespace OShop.UI.Pages.AdminPanel.Product
         public ProductVMUI Product { get; set; }
 
         [BindProperty]
-        public IEnumerable<CategoryVMUI> Categ { get; set; }
+        public IEnumerable<SubCategoryVMUI> Categ { get; set; }
 
         [BindProperty]
         public int Canal { get; set; }
@@ -45,9 +46,16 @@ namespace OShop.UI.Pages.AdminPanel.Product
         public async Task<IActionResult> OnGet(int canal, int? productId)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (canal != user.RestaurantRefId)
+            if (canal != user.CompanieRefId)
                 return RedirectToPage("/Error");
-            Categ = new GetAllCategories(_context).DoRest(canal);
+            var canalCateg = new GetAllCategories(_context).Do(canal).ToList();
+            var canalSubCateg = new List<SubCategoryVMUI>();
+            foreach (var categ in canalCateg)
+            {
+                canalSubCateg.AddRange(new GetAllSubCategories(_context).Do(categ.CategoryId));
+            }
+            Categ = canalSubCateg;
+
             if (productId == null)
                 Product = new ProductVMUI();
             else
@@ -61,12 +69,8 @@ namespace OShop.UI.Pages.AdminPanel.Product
 
         public async Task<IActionResult> OnPost()
         {
-            ModelState.Remove("Product.RestaurantRefId");
-            ModelState.Remove("Product.SuperMarketRefId");
-            ModelState.Remove("Product.SubCategoryRefId");
             if (ModelState.IsValid)
             {
-                Product.RestaurantRefId = Canal;
                 if (Request.Form.Files.Count > 0)
                 {
                     var extensionAccepted = new string[] { ".jpg", ".png", ".jpeg" };

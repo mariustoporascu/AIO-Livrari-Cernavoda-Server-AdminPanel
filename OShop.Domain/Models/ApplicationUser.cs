@@ -15,7 +15,7 @@ namespace OShop.Domain.Models
         public bool HasSetPassword { get; set; } = false;
         public string ResetTokenPass { get; set; } = "";
         public string ResetTokenPassIdentity { get; set; } = "";
-        public int RestaurantRefId { get; set; }
+        public int CompanieRefId { get; set; }
         public bool IsDriver { get; set; } = false;
         public bool IsOwner { get; set; } = false;
 
@@ -23,5 +23,7 @@ namespace OShop.Domain.Models
         public virtual ICollection<Order> DriverOrders { get; set; }
         public virtual ICollection<RatingClient> RatingClients { get; set; }
         public virtual ICollection<RatingDriver> RatingDrivers { get; set; }
+        public virtual ICollection<UserLocations> Locations { get; set; }
+        public virtual ICollection<FireBaseTokens> FBTokens { get; set; }
     }
 }

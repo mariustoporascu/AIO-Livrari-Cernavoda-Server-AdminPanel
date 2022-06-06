@@ -15,57 +15,46 @@ namespace OShop.Database
         }
 
         public DbSet<Product> Products { get; set; }
-        public DbSet<Restaurant> Restaurante { get; set; }
-        public DbSet<SuperMarket> SuperMarkets { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<SubCategory> SubCategories { get; set; }
-        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
-        public DbSet<CartItems> CartItems { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<ProductInOrder> ProductInOrders { get; set; }
         public DbSet<OrderInfo> OrdersInfos { get; set; }
         public DbSet<MeasuringUnit> MeasuringUnits { get; set; }
         public DbSet<RatingClient> RatingClients { get; set; }
         public DbSet<RatingDriver> RatingDrivers { get; set; }
-        public DbSet<RatingRestaurant> RatingRestaurants { get; set; }
+        public DbSet<RatingCompanie> RatingCompanies { get; set; }
         public DbSet<UserLocations> UserLocations { get; set; }
+        public DbSet<FireBaseTokens> FBTokens { get; set; }
+        public DbSet<Companie> Companies { get; set; }
+        public DbSet<TipCompanie> TipCompanies { get; set; }
+        public DbSet<AvailableCity> AvailableCities { get; set; }
+        public DbSet<ExtraProdus> ExtraProduse { get; set; }
+        public DbSet<TransportFee> TransportFees { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Category>().HasMany<Product>(c => c.Products)
-                .WithOne(p => p.Categories)
-                .HasForeignKey(p => p.CategoryRefId)
+            modelBuilder.Entity<SubCategory>().HasMany<Product>(c => c.Products)
+                .WithOne(p => p.SubCategory)
+                .HasForeignKey(p => p.SubCategoryRefId)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Category>().HasMany<SubCategory>(c => c.SubCategories)
                 .WithOne(p => p.Categories)
                 .HasForeignKey(p => p.CategoryRefId)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<SuperMarket>().HasMany<Product>(c => c.Products)
-                .WithOne(p => p.SuperMarkets)
-                .HasForeignKey(p => p.SuperMarketRefId)
-                .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<Restaurant>().HasMany<Product>(c => c.Products)
-                .WithOne(p => p.Restaurante)
-                .HasForeignKey(p => p.RestaurantRefId)
-                .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<SuperMarket>().HasMany<Category>(c => c.Categories)
-                .WithOne(p => p.SuperMarkets)
-                .HasForeignKey(p => p.SuperMarketRefId)
+            modelBuilder.Entity<Product>().HasMany<ExtraProdus>(c => c.ExtraProduse)
+                .WithOne(p => p.Products)
+                .HasForeignKey(p => p.ProductRefId)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Restaurant>().HasMany<Category>(c => c.Categories)
-                .WithOne(p => p.Restaurante)
-                .HasForeignKey(p => p.RestaurantRefId)
+            modelBuilder.Entity<Companie>().HasMany<Category>(c => c.Categories)
+                .WithOne(p => p.Companies)
+                .HasForeignKey(p => p.CompanieRefId)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<CartItems>().HasKey(cp => new { cp.CartRefId, cp.ProductRefId });
-            modelBuilder.Entity<CartItems>().HasOne<ShoppingCart>(cp => cp.ShoppingCart)
-                .WithMany(c => c.CartItems)
-                .HasForeignKey(cp => cp.CartRefId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<CartItems>().HasOne<Product>(cp => cp.Products)
-                .WithMany(p => p.CartItems)
-                .HasForeignKey(cp => cp.ProductRefId)
+            modelBuilder.Entity<TipCompanie>().HasMany<Companie>(c => c.Companies)
+                .WithOne(p => p.TipCompanie)
+                .HasForeignKey(p => p.TipCompanieRefId)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<ProductInOrder>().HasKey(cp => new { cp.OrderRefId, cp.ProductRefId });
             modelBuilder.Entity<ProductInOrder>().HasOne<Order>(cp => cp.Orders)
@@ -76,6 +65,15 @@ namespace OShop.Database
                 .WithMany(p => p.ProductInOrders)
                 .HasForeignKey(cp => cp.ProductRefId)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TransportFee>().HasKey(cp => new { cp.CityRefId, cp.CompanieRefId });
+            modelBuilder.Entity<TransportFee>().HasOne<Companie>(cp => cp.Companii)
+                .WithMany(c => c.TransportFees)
+                .HasForeignKey(cp => cp.CompanieRefId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TransportFee>().HasOne<AvailableCity>(cp => cp.AvailableCities)
+                .WithMany(p => p.TransportFees)
+                .HasForeignKey(cp => cp.CityRefId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Order>().HasOne(oi => oi.OrderInfos)
                 .WithOne(o => o.Orders)
                 .HasForeignKey<OrderInfo>(oi => oi.OrderRefId)
@@ -85,6 +83,16 @@ namespace OShop.Database
             .WithOne(tId => tId.Driver)
             .HasForeignKey(tId => tId.DriverRefId)
             .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<ApplicationUser>()
+            .HasMany<UserLocations>(appUser => appUser.Locations)
+            .WithOne(tId => tId.User)
+            .HasForeignKey(tId => tId.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ApplicationUser>()
+            .HasMany<FireBaseTokens>(appUser => appUser.FBTokens)
+            .WithOne(tId => tId.User)
+            .HasForeignKey(tId => tId.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
             //rating driver
             modelBuilder.Entity<RatingDriver>().HasKey(cp => new { cp.OrderRefId, cp.DriverRefId });
             modelBuilder.Entity<RatingDriver>().HasOne<Order>(cp => cp.Orderz)
@@ -96,14 +104,14 @@ namespace OShop.Database
                 .HasForeignKey(cp => cp.DriverRefId)
                 .OnDelete(DeleteBehavior.Cascade);
             //rating restaurant
-            modelBuilder.Entity<RatingRestaurant>().HasKey(cp => new { cp.OrderRefId, cp.RestaurantRefId });
-            modelBuilder.Entity<RatingRestaurant>().HasOne<Order>(cp => cp.Orderz)
-                .WithMany(c => c.RatingRestaurants)
+            modelBuilder.Entity<RatingCompanie>().HasKey(cp => new { cp.OrderRefId, cp.CompanieRefId });
+            modelBuilder.Entity<RatingCompanie>().HasOne<Order>(cp => cp.Orders)
+                .WithMany(c => c.RatingCompanies)
                 .HasForeignKey(cp => cp.OrderRefId)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<RatingRestaurant>().HasOne<Restaurant>(cp => cp.Restaurantz)
-                .WithMany(p => p.RatingRestaurants)
-                .HasForeignKey(cp => cp.RestaurantRefId)
+            modelBuilder.Entity<RatingCompanie>().HasOne<Companie>(cp => cp.Companies)
+                .WithMany(p => p.RatingCompanies)
+                .HasForeignKey(cp => cp.CompanieRefId)
                 .OnDelete(DeleteBehavior.Cascade);
             //rating client
             modelBuilder.Entity<RatingClient>().HasKey(cp => new { cp.OrderRefId, cp.UserRefId });

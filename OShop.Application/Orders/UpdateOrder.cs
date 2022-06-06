@@ -24,8 +24,7 @@ namespace OShop.Application.Orders
                 Status = vm.Status,
                 CustomerId = vm.CustomerId,
                 TotalOrdered = vm.TotalOrdered,
-                IsRestaurant = vm.IsRestaurant,
-                RestaurantRefId = vm.RestaurantRefId,
+                CompanieRefId = vm.CompanieRefId,
                 Created = vm.Created,
             };
             _context.Orders.Update(order);
@@ -36,6 +35,13 @@ namespace OShop.Application.Orders
             var order = _context.Orders.AsNoTracking().FirstOrDefault(o => o.OrderId == orderId);
             if (order == null)
                 return false;
+            if (status == "In curs de livrare")
+                order.StartDelivery = DateTime.UtcNow;
+            if (status == "Livrata" || status == "Refuzata")
+                order.FinishDelivery = DateTime.UtcNow;
+            if(status == "Livrata")
+                order.IsOrderPayed = true;
+;
             order.Status = status;
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();

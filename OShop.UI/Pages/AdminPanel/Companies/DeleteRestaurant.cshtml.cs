@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.FileManager;
-using OShop.Application.Restaurante;
+using OShop.Application.Companii;
 using OShop.Database;
 using OShop.Domain.Models;
 using System.Threading.Tasks;
@@ -24,7 +24,7 @@ namespace OShop.UI.Pages.AdminPanel.Companies
 
         public async Task<IActionResult> OnGet(int restId)
         {
-            await new DeleteRestaurant(_context, _fileManager).Do(restId);
+            await new DeleteCompanie(_context, _fileManager).Do(restId);
             return RedirectToPage("./ListaRestaurante");
         }
     }

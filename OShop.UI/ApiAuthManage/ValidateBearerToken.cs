@@ -17,7 +17,7 @@ namespace OShop.UI.ApiAuthManage
         public async Task<bool> Validate(string token, string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            if (user == null || user.RestaurantRefId == 0)
+            if (user == null || user.CompanieRefId == 0)
                 return false;
             return (token == user.LoginToken);
         }

@@ -152,26 +152,28 @@
 								</ul>
 							</li>
 						}
-
-						<li class="nav-label">Inventar Aplicatie</li>
-						<li>
-							<a class="has-arrow" href="javascript:void()" aria-expanded="false">
-								<i class="icon-note menu-icon"></i><span class="nav-text">Categorii</span>
-							</a>
-							<ul aria-expanded="false">
-								<li><a asp-page="/AdminPanel/Category/ListaCategorii" asp-route-canal="@UserManager.GetUserAsync(User).Result.RestaurantRefId">Lista Categorii</a></li>
-								<li><a asp-page="/AdminPanel/Category/CreateCategory" asp-route-canal="@UserManager.GetUserAsync(User).Result.RestaurantRefId">Adaugare Categorie</a></li>
-							</ul>
-						</li>
-						<li>
-							<a class="has-arrow" href="javascript:void()" aria-expanded="false">
-								<i class="icon-note menu-icon"></i><span class="nav-text">Produse</span>
-							</a>
-							<ul aria-expanded="false">
-								<li><a asp-page="/AdminPanel/Product/ListaProduse" asp-route-canal="@UserManager.GetUserAsync(User).Result.RestaurantRefId">Lista Produse</a></li>
-								<li><a asp-page="/AdminPanel/Product/CreateProduct" asp-route-canal="@UserManager.GetUserAsync(User).Result.RestaurantRefId">Adaugare Produs</a></li>
-							</ul>
-						</li>
+						@if (User.IsInRole("Admin"))
+						{
+							<li class="nav-label">Inventar Aplicatie</li>
+							<li>
+								<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+									<i class="icon-note menu-icon"></i><span class="nav-text">Categorii</span>
+								</a>
+								<ul aria-expanded="false">
+									<li><a asp-page="/AdminPanel/Category/ListaCategorii" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Lista Categorii</a></li>
+									<li><a asp-page="/AdminPanel/Category/CreateCategory" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Adaugare Categorie</a></li>
+								</ul>
+							</li>
+							<li>
+								<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+									<i class="icon-note menu-icon"></i><span class="nav-text">Produse</span>
+								</a>
+								<ul aria-expanded="false">
+									<li><a asp-page="/AdminPanel/Product/ListaProduse" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Lista Produse</a></li>
+									<li><a asp-page="/AdminPanel/Product/CreateProduct" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Adaugare Produs</a></li>
+								</ul>
+							</li>
+						}
 						<li class="nav-label">Info Aplicatie</li>
 						<li>
 							<a asp-page="/AdminPanel/OrderManage">

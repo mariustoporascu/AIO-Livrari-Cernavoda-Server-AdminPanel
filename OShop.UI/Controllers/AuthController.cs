@@ -37,14 +37,18 @@ namespace OShop.UI.Controllers
             public bool CompleteProfile { get; set; }
             public bool HasSetPassword { get; set; }
             public string LoginToken { get; set; }
+            public string FirebaseToken { get; set; }
+            public int LocationDeleteId { get; set; }
             public UserLocations Location { get; set; }
+            public IEnumerable<UserLocations> Locations { get; set; }
         }
         partial class AuthVMManage
         {
             public string Id { get; set; }
             public bool IsDriver { get; set; } = false;
             public bool IsOwner { get; set; } = false;
-            public int RestaurantRefId { get; set; }
+            public int CompanieRefId { get; set; }
+            public string FirebaseToken { get; set; }
             public string LoginToken { get; set; }
         }
         public AuthController(UserManager<ApplicationUser> userManager,
@@ -70,7 +74,6 @@ namespace OShop.UI.Controllers
             var account = await _userManager.FindByEmailAsync(user.Email);
             if (account == null)
             {
-                string Pass;
                 MailAddress address = new MailAddress(user.Email);
                 string userName = address.User;
                 var newAcc = new ApplicationUser
@@ -94,6 +97,17 @@ namespace OShop.UI.Controllers
                 }
                 if (result.Succeeded)
                 {
+                    if (!string.IsNullOrWhiteSpace(user.FirebaseToken))
+                    {
+                        var saveToken = new FireBaseTokens
+                        {
+                            Created = DateTime.UtcNow,
+                            FBToken = user.FirebaseToken,
+                            UserId = newAcc.Id,
+                        };
+                        _context.FBTokens.Add(saveToken);
+                        await _context.SaveChangesAsync();
+                    }
                     if (string.IsNullOrWhiteSpace(user.UserIdentification))
                     {
                         EmailSender sender = new EmailSender(_config);
@@ -149,6 +163,22 @@ namespace OShop.UI.Controllers
                     var result = await _signInManager.PasswordSignInAsync(userName, user.Password, false, false);
                     if (result.Succeeded)
                     {
+                        if (!string.IsNullOrWhiteSpace(user.FirebaseToken))
+                        {
+                            var tokenExists = _context.FBTokens.AsNoTracking().FirstOrDefault(tkn => tkn.FBToken == user.FirebaseToken);
+                            if (tokenExists == null || tokenExists.UserId != account.Id)
+                            {
+                                var saveToken = new FireBaseTokens
+                                {
+                                    Created = DateTime.UtcNow,
+                                    FBToken = user.FirebaseToken,
+                                    UserId = account.Id,
+                                };
+                                _context.FBTokens.Add(saveToken);
+                                await _context.SaveChangesAsync();
+                            }
+
+                        }
                         account.LoginToken = Password.Generate(20, 0);
                         await _userManager.UpdateAsync(account);
                         return Ok(new AuthVM
@@ -157,8 +187,8 @@ namespace OShop.UI.Controllers
                             PhoneNumber = account.PhoneNumber,
                             HasSetPassword = account.HasSetPassword,
                             CompleteProfile = account.CompleteProfile,
-                            Location = _context.UserLocations.AsNoTracking().AsEnumerable().FirstOrDefault(loc => loc.UserId == account.Id),
-                            LoginToken = account.LoginToken
+                            Locations = _context.UserLocations.AsNoTracking().AsEnumerable().Where(loc => loc.UserId == account.Id),
+                            LoginToken = account.LoginToken,
                         });
                     }
                     else
@@ -168,13 +198,28 @@ namespace OShop.UI.Controllers
                 {
                     account.LoginToken = Password.Generate(20, 0);
                     await _userManager.UpdateAsync(account);
+                    if (!string.IsNullOrWhiteSpace(user.FirebaseToken))
+                    {
+                        var tokenExists = _context.FBTokens.AsNoTracking().FirstOrDefault(tkn => tkn.FBToken == user.FirebaseToken);
+                        if (tokenExists == null || tokenExists.UserId != account.Id)
+                        {
+                            var saveToken = new FireBaseTokens
+                            {
+                                Created = DateTime.UtcNow,
+                                FBToken = user.FirebaseToken,
+                                UserId = account.Id,
+                            };
+                            _context.FBTokens.Add(saveToken);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
                     return Ok(new AuthVM
                     {
                         FullName = account.FullName,
                         PhoneNumber = account.PhoneNumber,
                         CompleteProfile = account.CompleteProfile,
                         HasSetPassword = account.HasSetPassword,
-                        Location = _context.UserLocations.AsNoTracking().AsEnumerable().FirstOrDefault(loc => loc.UserId == account.Id),
+                        Locations = _context.UserLocations.AsNoTracking().AsEnumerable().Where(loc => loc.UserId == account.Id),
                         LoginToken = account.LoginToken
 
                     });
@@ -209,6 +254,21 @@ namespace OShop.UI.Controllers
                 var result = await _signInManager.PasswordSignInAsync(userName, user.Password, false, false);
                 if (result.Succeeded)
                 {
+                    if (!string.IsNullOrWhiteSpace(user.FirebaseToken))
+                    {
+                        var tokenExists = _context.FBTokens.AsNoTracking().FirstOrDefault(tkn => tkn.FBToken == user.FirebaseToken);
+                        if (tokenExists == null || tokenExists.UserId != account.Id)
+                        {
+                            var saveToken = new FireBaseTokens
+                            {
+                                Created = DateTime.UtcNow,
+                                FBToken = user.FirebaseToken,
+                                UserId = account.Id,
+                            };
+                            _context.FBTokens.Add(saveToken);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
                     account.LoginToken = Password.Generate(20, 0);
                     await _userManager.UpdateAsync(account);
                     return Ok(new AuthVMManage
@@ -216,7 +276,7 @@ namespace OShop.UI.Controllers
                         Id = account.IsDriver ? account.Id : null,
                         IsDriver = account.IsDriver,
                         IsOwner = account.IsOwner,
-                        RestaurantRefId = account.RestaurantRefId,
+                        CompanieRefId = account.CompanieRefId,
                         LoginToken = account.LoginToken
                     });
                 }
@@ -432,49 +492,77 @@ namespace OShop.UI.Controllers
                     var result = await _signInManager.PasswordSignInAsync(userName, user.Password, false, false);
                     if (result.Succeeded)
                     {
-                        var locationDb = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == account.Id);
-                        if (locationDb == null || locationDb.LocationId == 0)
+
+                        if(user.Location.LocationId > 0)
+                        {
+                            var locationDb = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == account.Id && loc.LocationId == user.Location.LocationId);
+                            if (locationDb != null)
+                            {
+                                user.Location.UserId = account.Id;
+                                user.Location.LocationId = locationDb.LocationId;
+                                _context.UserLocations.Update(user.Location);
+                            }
+                        }
+
+                        else if(_context.UserLocations.AsNoTracking().AsEnumerable().Where(loc => loc.UserId == account.Id).Count() < 3)
                         {
                             user.Location.UserId = account.Id;
                             _context.UserLocations.Add(user.Location);
-                        }
-
-                        else
-                        {
-                            user.Location.LocationId = locationDb.LocationId;
-                            user.Location.UserId = account.Id;
-
-                            _context.UserLocations.Update(user.Location);
 
                         }
                         await _context.SaveChangesAsync();
 
-                        return Ok("Location updated.");
+                        return Ok($"{user.Location.LocationId}:Location updated.");
                     }
                 }
                 else if (account.UserIdentification == user.UserIdentification)
                 {
-                    var locationDb = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == account.Id);
-                    if (locationDb == null || locationDb.LocationId == 0)
+                    if (user.Location.LocationId > 0)
+                    {
+                        var locationDb = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == account.Id && loc.LocationId == user.Location.LocationId);
+                        if (locationDb != null)
+                        {
+                            user.Location.UserId = account.Id;
+                            user.Location.LocationId = locationDb.LocationId;
+                            _context.UserLocations.Update(user.Location);
+                        }
+                    }
+
+                    else if (_context.UserLocations.AsNoTracking().AsEnumerable().Where(loc => loc.UserId == account.Id).Count() < 3)
                     {
                         user.Location.UserId = account.Id;
                         _context.UserLocations.Add(user.Location);
-                    }
-
-                    else
-                    {
-                        user.Location.LocationId = locationDb.LocationId;
-                        user.Location.UserId = account.Id;
-
-                        _context.UserLocations.Update(user.Location);
 
                     }
                     await _context.SaveChangesAsync();
 
-                    return Ok("Location updated.");
+                    return Ok($"{user.Location.LocationId}:Location updated.");
                 }
                 return Ok("Data invalid.");
             }
+        }
+        [Authorize]
+        [HttpPost("deletelocation")]
+        public async Task<IActionResult> DeleteLocation([FromBody] object userInfo)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var user = JsonConvert.DeserializeObject<AuthVM>(userInfo.ToString(), settings);
+            var account = await _userManager.FindByEmailAsync(user.Email);
+            if (account != null)
+            {
+                var location = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.LocationId == user.LocationDeleteId && loc.UserId == account.Id);
+                if(location != null)
+                {
+                    _context.UserLocations.Remove(location);
+                    await _context.SaveChangesAsync();
+                    return Ok("Location deleted.");
+                }
+            }
+            return Ok("Data invalid.");
         }
 
         [Authorize]
@@ -518,6 +606,8 @@ namespace OShop.UI.Controllers
             {
                 Random generator = new Random();
                 String r = generator.Next(0, 1000000).ToString("D6");
+                if (r.Length < 6)
+                    r = r + "7";
                 return r;
             }
         }

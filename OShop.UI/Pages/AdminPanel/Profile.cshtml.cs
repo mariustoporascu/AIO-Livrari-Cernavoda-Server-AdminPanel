@@ -60,7 +60,7 @@ namespace OShop.UI.Pages.AdminPanel
         {
             try
             {
-                var restaurant = _context.Restaurante.AsNoTracking().FirstOrDefault(rest => rest.RestaurantId == user.RestaurantRefId);
+                var restaurant = _context.Companies.AsNoTracking().FirstOrDefault(rest => rest.CompanieId == user.CompanieRefId);
                 if (restaurant != null)
                     Input = new InputModel
                     {
@@ -111,7 +111,7 @@ namespace OShop.UI.Pages.AdminPanel
                 return Page();
             }
 
-            var restaurant = _context.Restaurante.AsNoTracking().FirstOrDefault(rest => rest.RestaurantId == user.RestaurantRefId);
+            var restaurant = _context.Companies.AsNoTracking().FirstOrDefault(rest => rest.CompanieId == user.CompanieRefId);
 
             if (Request.Form.Files.Count > 0)
             {
@@ -133,11 +133,11 @@ namespace OShop.UI.Pages.AdminPanel
                     {
                         if (!string.IsNullOrEmpty(restaurant.Photo))
                         {
-                            _fileManager.RemoveImage(restaurant.Photo, "RestaurantPhoto");
+                            _fileManager.RemoveImage(restaurant.Photo, "CompaniePhoto");
                         }
                         restaurant.TelefonNo = user.PhoneNumber;
-                        restaurant.Photo = _fileManager.SaveImage(file, "RestaurantPhoto");
-                        _context.Restaurante.Update(restaurant);
+                        restaurant.Photo = _fileManager.SaveImage(file, "CompaniePhoto");
+                        _context.Companies.Update(restaurant);
                         await _context.SaveChangesAsync();
                     }
                 }

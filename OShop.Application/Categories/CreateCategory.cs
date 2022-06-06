@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
+using OShop.Application.Companii;
 using OShop.Application.FileManager;
 using OShop.Application.Products;
+using OShop.Application.SubCategories;
 using OShop.Database;
 using OShop.Domain.Models;
 using System.ComponentModel.DataAnnotations;
@@ -19,15 +21,27 @@ namespace OShop.Application.Categories
 
         public async Task Do(CategoryVMUI vm)
         {
-            _context.Categories.Add(new Category
+            var categ = new Category
             {
                 CategoryId = vm.CategoryId,
                 Name = vm.Name,
                 Photo = vm.Photo,
-                SuperMarketRefId = vm.SuperMarketRefId,
-                RestaurantRefId = vm.RestaurantRefId,
-            });
+                CompanieRefId = vm.CompanieRefId,
+            };
+            _context.Categories.Add(categ);
             await _context.SaveChangesAsync();
+            var companie = new GetCompanie(_context).Do(vm.CompanieRefId);
+            if (companie.TipCompanieRefId == 1)
+            {
+                var subCategAuto = new SubCategory
+                {
+                    Name = vm.Name,
+                    Photo = vm.Photo,
+                    CategoryRefId = categ.CategoryId
+                };
+                _context.SubCategories.Add(subCategAuto);
+                await _context.SaveChangesAsync();
+            }
         }
 
     }
@@ -38,7 +52,6 @@ namespace OShop.Application.Categories
         public string Name { get; set; }
         public string Photo { get; set; }
         public string Image { get; set; }
-        public int? SuperMarketRefId { get; set; }
-        public int? RestaurantRefId { get; set; }
+        public int CompanieRefId { get; set; }
     }
 }

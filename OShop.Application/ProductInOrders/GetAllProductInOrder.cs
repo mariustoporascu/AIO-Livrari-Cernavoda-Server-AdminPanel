@@ -15,12 +15,13 @@ namespace OShop.Application.ProductInOrders
         }
 
         public IEnumerable<ProductInOrdersViewModel> Do(int orderId) =>
-            _context.ProductInOrders.AsNoTracking().Where(productInOrder => productInOrder.OrderRefId == orderId)
+            _context.ProductInOrders.AsNoTracking().AsEnumerable().Where(productInOrder => productInOrder.OrderRefId == orderId)
                 .Select(productInOrder => new ProductInOrdersViewModel
                 {
                     OrderRefId = productInOrder.OrderRefId,
                     ProductRefId = productInOrder.ProductRefId,
                     UsedQuantity = productInOrder.UsedQuantity,
+                    ClientComments = productInOrder.ClientComments,
                 });
     }
 }

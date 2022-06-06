@@ -17,7 +17,7 @@ namespace OShop.Application.SubCategories
         }
 
         public IEnumerable<SubCategoryVMUI> Do() =>
-            _context.SubCategories.AsNoTracking().ToList().Select(categ => new SubCategoryVMUI
+            _context.SubCategories.AsNoTracking().AsEnumerable().Select(categ => new SubCategoryVMUI
             {
                 SubCategoryId = categ.SubCategoryId,
                 Name = categ.Name,
@@ -25,7 +25,7 @@ namespace OShop.Application.SubCategories
                 CategoryRefId = categ.CategoryRefId,
             });
         public IEnumerable<SubCategoryVMUI> Do(int categoryId) =>
-            _context.SubCategories.AsNoTracking()
+            _context.SubCategories.AsNoTracking().AsEnumerable()
             .Where(categ => categ.CategoryRefId == categoryId)
             .ToList().Select(categ => new SubCategoryVMUI
             {

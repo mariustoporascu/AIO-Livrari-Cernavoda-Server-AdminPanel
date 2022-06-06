@@ -15,6 +15,7 @@ namespace OShop.Domain.Models
         public int LocationId { get; set; }
         public string LocationName { get; set; }
         public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
         public string Street { get; set; }
         public string City { get; set; }
         public string BuildingInfo { get; set; }

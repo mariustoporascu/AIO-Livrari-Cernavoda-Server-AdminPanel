@@ -5,10 +5,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using OShop.Application.Categories;
 using OShop.Application.FileManager;
 using OShop.Application.Products;
+using OShop.Application.SubCategories;
 using OShop.Application.UnitatiMasura;
 using OShop.Database;
 using OShop.Domain.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OShop.UI.Pages.AdminPanel.Product
@@ -29,7 +31,7 @@ namespace OShop.UI.Pages.AdminPanel.Product
         [BindProperty]
         public IEnumerable<ProductVMUI> Products { get; set; }
         [BindProperty]
-        public IEnumerable<CategoryVMUI> Categ { get; set; }
+        public IEnumerable<SubCategoryVMUI> Categ { get; set; }
         [BindProperty]
         public int Canal { get; set; }
         [BindProperty]
@@ -37,11 +39,22 @@ namespace OShop.UI.Pages.AdminPanel.Product
         public async Task<IActionResult> OnGet(int canal)
         {
             var user = await _userManager.GetUserAsync(User);
-            if (canal != user.RestaurantRefId)
+            if (canal != user.CompanieRefId)
                 return RedirectToPage("/Error");
             Canal = canal;
-            Products = new GetAllProducts(_context).DoRest(canal);
-            Categ = new GetAllCategories(_context).DoRest(canal);
+            var canalCateg = new GetAllCategories(_context).Do(canal).ToList();
+            var canalSubCateg = new List<SubCategoryVMUI>();
+            foreach (var categ in canalCateg)
+            {
+                canalSubCateg.AddRange(new GetAllSubCategories(_context).Do(categ.CategoryId));
+            }
+            Categ = canalSubCateg;
+            var canalProducts = new List<ProductVMUI>();
+            foreach (var subcateg in canalSubCateg)
+            {
+                canalProducts.AddRange(new GetAllProducts(_context).Do(subcateg.SubCategoryId));
+            }
+            Products = canalProducts;
             UnitatiMasura = new GetAllMeasuringUnits(_context).Do();
             return Page();
         }

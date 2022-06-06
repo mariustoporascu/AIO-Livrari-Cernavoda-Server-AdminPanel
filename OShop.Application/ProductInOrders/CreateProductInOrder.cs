@@ -23,6 +23,7 @@ namespace OShop.Application.ProductInOrders
                     OrderRefId = item.OrderRefId,
                     ProductRefId = item.ProductRefId,
                     UsedQuantity = item.UsedQuantity,
+                    ClientComments = item.ClientComments,
                 });
             }
 
@@ -37,5 +38,6 @@ namespace OShop.Application.ProductInOrders
         public int ProductRefId { get; set; }
 
         public int UsedQuantity { get; set; }
+        public string ClientComments { get; set; }
     }
 }

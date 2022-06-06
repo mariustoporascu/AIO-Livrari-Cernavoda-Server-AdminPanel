@@ -16,8 +16,8 @@
 						<th>Nr Telefon</th>
 						<th>Deschis ?</th>
 						<th>Data deschiderii</th>
-						<th>Cost transport</th>
-						<th>Comanda minima</th>
+@*						<th>Cost transport</th>
+						<th>Comanda minima</th>*@
 						<th>Poza</th>
 						<th style="text-align:right"></th>
 					</tr>
@@ -30,8 +30,8 @@
 							<td>@product.TelefonNo</td>
 							<td>@product.IsActive</td>
 							<td>@product.Opening</td>
-							<td>@product.TransporFee</td>
-							<td>@product.MinimumOrderValue</td>
+@*							<td>@product.TransporFee</td>
+							<td>@product.MinimumOrderValue</td>*@
 							<td>
 								@if (product.Photo != null)
 								{
@@ -44,8 +44,8 @@
 								}
 							</td>
 							<td>
-								<a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/Companies/DeleteRestaurant" asp-route-restId="@product.RestaurantId">Sterge</a>
-								<a class="btn btn-primary" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/Companies/CreateRestaurant" asp-route-restId="@product.RestaurantId">Editeaza</a>
+								<a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/Companies/DeleteRestaurant" asp-route-restId="@product.CompanieId">Sterge</a>
+								<a class="btn btn-primary" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/Companies/CreateRestaurant" asp-route-restId="@product.CompanieId">Editeaza</a>
 							</td>
 						</tr>
 					}

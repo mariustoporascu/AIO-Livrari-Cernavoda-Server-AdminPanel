@@ -14,11 +14,8 @@ namespace OShop.Domain.Models
         public string Name { get; set; }
 
         public string Photo { get; set; } = "";
-        public int? RestaurantRefId { get; set; }
-        public Restaurant Restaurante { get; set; }
-        public int? SuperMarketRefId { get; set; }
-        public SuperMarket SuperMarkets { get; set; }
-        public virtual ICollection<Product> Products { get; set; }
+        public int CompanieRefId { get; set; }
+        public Companie Companies { get; set; }
         public virtual ICollection<SubCategory> SubCategories { get; set; }
     }
 }

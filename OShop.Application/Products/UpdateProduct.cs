@@ -27,10 +27,7 @@ namespace OShop.Application.Products
                 Photo = vm.Photo,
                 Gramaj = vm.Gramaj,
                 MeasuringUnitId = vm.MeasuringUnitId,
-                CategoryRefId = vm.CategoryRefId,
                 SubCategoryRefId = vm.SubCategoryRefId,
-                SuperMarketRefId = vm.SuperMarketRefId,
-                RestaurantRefId = vm.RestaurantRefId,
             };
             _context.Products.Update(product);
             await _context.SaveChangesAsync();

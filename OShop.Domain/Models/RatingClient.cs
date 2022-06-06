@@ -7,7 +7,7 @@
         public ApplicationUser Users { get; set; }
         public int OrderRefId { get; set; }
         public Order Orderz { get; set; }
-        public int RatingDeLaRestaurant { get; set; }
+        public int RatingDeLaCompanie { get; set; }
         public int RatingDeLaSofer { get; set; }
     }
 }

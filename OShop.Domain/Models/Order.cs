@@ -23,23 +23,32 @@ namespace OShop.Domain.Models
         public decimal TransportFee { get; set; }
         public string CustomerId { get; set; }
         public string EstimatedTime { get; set; }
+        public bool TelephoneOrdered { get; set; } = false;
         public bool? HasUserConfirmedET { get; set; } = null;
-        public bool IsRestaurant { get; set; }
-        public int RestaurantRefId { get; set; }
+        public string PaymentMethod { get; set; }
+        public bool IsOrderPayed { get; set; } = false;
+        public int CompanieRefId { get; set; }
+        public int UserLocationId { get; set; }
 
         [DataType(DataType.DateTime)]
-        public DateTime Created { get; set; } 
+        public DateTime StartDelivery { get; set; }
+        [DataType(DataType.DateTime)]
+        public DateTime FinishDelivery { get; set; }
+        public string Comments { get; set; } = "";
+
+        [DataType(DataType.DateTime)]
+        public DateTime Created { get; set; }
 
         public OrderInfo OrderInfos { get; set; }
-        public string? DriverRefId { get; set; }
+        public string DriverRefId { get; set; }
         public ApplicationUser Driver { get; set; }
-        public bool RestaurantGaveRating { get; set; } = false;
+        public bool CompanieGaveRating { get; set; } = false;
         public bool ClientGaveRatingDriver { get; set; } = false;
-        public bool ClientGaveRatingRestaurant { get; set; } = false;
+        public bool ClientGaveRatingCompanie { get; set; } = false;
         public bool DriverGaveRating { get; set; } = false;
         public virtual ICollection<ProductInOrder> ProductInOrders { get; set; }
         public virtual ICollection<RatingClient> RatingClients { get; set; }
         public virtual ICollection<RatingDriver> RatingDrivers { get; set; }
-        public virtual ICollection<RatingRestaurant> RatingRestaurants { get; set; }
+        public virtual ICollection<RatingCompanie> RatingCompanies { get; set; }
     }
 }
