@@ -36,6 +36,19 @@ namespace OShop.UI.Controllers
             maxAllowedOrdersForDriver = int.Parse(config["ConnectionStrings:MaxNrOrdersDriver"]);
         }
         [Authorize]
+        [HttpGet("updatetelno/{id}&{telno}")]
+        public async Task<IActionResult> UpdateTelNo(string id, string telno)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user != null && (user.IsDriver || user.IsOwner))
+            {
+                user.PhoneNumber = telno;
+                await _userManager.UpdateAsync(user);
+                return Ok("Phone nr updated.");
+            }
+            return Ok("Data invalid.");
+        }
+        [Authorize]
         [HttpGet("getalldriverorders")]
         public async Task<IActionResult> GetAllOrders() =>
             Ok(await new GetAllOrders(_context, _userManager).Do());
@@ -108,7 +121,7 @@ namespace OShop.UI.Controllers
             return Ok("Order not found!");
         }
         [Authorize]
-        [HttpPost("adjustOrder/{orderId}&{comment}&{newTotal}")]
+        [HttpGet("adjustOrder/{orderId}&{comment}&{newTotal}")]
         public async Task<IActionResult> AdjustProducts(int orderId, string comment, decimal newTotal)
         {
 
@@ -117,6 +130,34 @@ namespace OShop.UI.Controllers
             {
                 order.Comments = comment;
                 order.TotalOrdered = newTotal;
+
+                if (!order.TelephoneOrdered)
+                {
+                    var locationCity = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.LocationId == order.UserLocationId).City;
+                    var city = _context.AvailableCities.AsNoTracking().FirstOrDefault(ct => ct.Name == locationCity);
+                    var transportFee = _context.TransportFees.AsNoTracking().FirstOrDefault(tf => tf.CityRefId == city.CityId);
+                    if (order.TotalOrdered >= transportFee.MinimumOrderValue)
+                        order.TransportFee = 0;
+                    else
+                        order.TransportFee = transportFee.TransporFee;
+                    var userToken = _context.FBTokens.AsNoTracking().Where(tkn => tkn.UserId == order.CustomerId)
+                        .Select(tkn => tkn.FBToken).Distinct().ToList();
+                    if (userToken != null)
+                    {
+                        foreach (var token in userToken)
+                            NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Comanda {orderId} a fost modificata conform cererii tale, are un nou pret total si un comentariu.");
+                    }
+                }
+                else
+                {
+                    var locationCity = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == $"{order.OrderId}").City;
+                    var city = _context.AvailableCities.AsNoTracking().FirstOrDefault(ct => ct.Name == locationCity);
+                    var transportFee = _context.TransportFees.AsNoTracking().FirstOrDefault(tf => tf.CityRefId == city.CityId);
+                    if (order.TotalOrdered >= transportFee.MinimumOrderValue)
+                        order.TransportFee = 0;
+                    else
+                        order.TransportFee = transportFee.TransporFee;
+                }
                 _context.Orders.Update(order);
                 await _context.SaveChangesAsync();
                 return Ok("Comanda a fost modificata");

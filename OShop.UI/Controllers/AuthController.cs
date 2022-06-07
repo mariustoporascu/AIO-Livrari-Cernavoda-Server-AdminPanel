@@ -50,6 +50,7 @@ namespace OShop.UI.Controllers
             public int CompanieRefId { get; set; }
             public string FirebaseToken { get; set; }
             public string LoginToken { get; set; }
+            public string TelNo { get; set; }
         }
         public AuthController(UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
@@ -274,6 +275,7 @@ namespace OShop.UI.Controllers
                     return Ok(new AuthVMManage
                     {
                         Id = account.IsDriver ? account.Id : null,
+                        TelNo = account.PhoneNumber,
                         IsDriver = account.IsDriver,
                         IsOwner = account.IsOwner,
                         CompanieRefId = account.CompanieRefId,
@@ -493,7 +495,7 @@ namespace OShop.UI.Controllers
                     if (result.Succeeded)
                     {
 
-                        if(user.Location.LocationId > 0)
+                        if (user.Location.LocationId > 0)
                         {
                             var locationDb = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == account.Id && loc.LocationId == user.Location.LocationId);
                             if (locationDb != null)
@@ -504,7 +506,7 @@ namespace OShop.UI.Controllers
                             }
                         }
 
-                        else if(_context.UserLocations.AsNoTracking().AsEnumerable().Where(loc => loc.UserId == account.Id).Count() < 3)
+                        else if (_context.UserLocations.AsNoTracking().AsEnumerable().Where(loc => loc.UserId == account.Id).Count() < 3)
                         {
                             user.Location.UserId = account.Id;
                             _context.UserLocations.Add(user.Location);
@@ -555,7 +557,7 @@ namespace OShop.UI.Controllers
             if (account != null)
             {
                 var location = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.LocationId == user.LocationDeleteId && loc.UserId == account.Id);
-                if(location != null)
+                if (location != null)
                 {
                     _context.UserLocations.Remove(location);
                     await _context.SaveChangesAsync();

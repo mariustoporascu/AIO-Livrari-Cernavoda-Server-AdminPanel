@@ -17,6 +17,7 @@ namespace OShop.UI.Extras
         public const string Plasata = "Plasata";
         public const string Preluata = "Preluata";
         public const string Modificata = "Modificata";
+        public const string Pregatire = "In pregatire";
         public const string Pregatita = "Pregatita pentru livrare";
         public const string SpreLivrare = "In curs de livrare";
         public const string Livrata = "Livrata";
@@ -99,7 +100,7 @@ namespace OShop.UI.Extras
     }
     public static class NotificationSender
     {
-        public static async void SendNotif(string apiKey, string appId,string userToken, string msg)
+        public static async void SendNotif(string apiKey, string appId, string userToken, string msg)
         {
             try
             {

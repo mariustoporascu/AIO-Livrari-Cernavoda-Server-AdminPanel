@@ -39,9 +39,9 @@ namespace OShop.Application.Orders
                 order.StartDelivery = DateTime.UtcNow;
             if (status == "Livrata" || status == "Refuzata")
                 order.FinishDelivery = DateTime.UtcNow;
-            if(status == "Livrata")
+            if (status == "Livrata")
                 order.IsOrderPayed = true;
-;
+            ;
             order.Status = status;
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();
@@ -52,6 +52,11 @@ namespace OShop.Application.Orders
             var order = _context.Orders.AsNoTracking().FirstOrDefault(o => o.OrderId == orderId);
             if (order == null)
                 return false;
+            if (order.TelephoneOrdered)
+            {
+                order.HasUserConfirmedET = true;
+                order.Status = "In pregatire";
+            }
             order.EstimatedTime = estimatedTime;
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();

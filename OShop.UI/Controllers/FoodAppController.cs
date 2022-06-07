@@ -31,9 +31,11 @@ namespace OShop.UI.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly string OneSignalApiKey;
         private readonly string OneSignalAppId;
+        private readonly IConfiguration _config;
         public FoodAppController(IConfiguration config, OnlineShopDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _config = config;
             _userManager = userManager;
             OneSignalApiKey = config["ConnectionStrings:SignalApiKey"];
             OneSignalAppId = config["ConnectionStrings:SignalAppId"];
@@ -110,6 +112,13 @@ namespace OShop.UI.Controllers
             var driverLocation = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.UserId == driverId);
             return Ok(driverLocation);
         }
+        partial class HelpMe
+        {
+            public string Email { get; set; }
+            public string TelNo { get; set; }
+            public string Name { get; set; }
+            public string Message { get; set; }
+        }
         partial class ServerOrder
         {
             public int OrderId { get; set; }
@@ -148,7 +157,7 @@ namespace OShop.UI.Controllers
                 NullValueHandling = NullValueHandling.Ignore,
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
-            var order = JsonConvert.DeserializeObject< ServerOrder>(orders.ToString(), settings);
+            var order = JsonConvert.DeserializeObject<ServerOrder>(orders.ToString(), settings);
             var user = await _userManager.FindByEmailAsync(order.CustomerId);
             if (user != null)
             {
@@ -172,7 +181,22 @@ namespace OShop.UI.Controllers
                     orderVM.Status = OrderStatusEnum.Plasata;
                 }
                 else
-                    orderVM.Status = OrderStatusEnum.Preluata;
+                {
+                    orderVM.EstimatedTime = order.EstimatedTime;
+                    orderVM.HasUserConfirmedET = true;
+                    orderVM.Status = OrderStatusEnum.Pregatire;
+                    var drivers = _userManager.Users.Where(us => us.IsDriver == true).ToList();
+                    foreach (var driver in drivers)
+                    {
+                        var driverToken = _context.FBTokens.AsNoTracking().Where(tkn => tkn.UserId == driver.Id)
+                        .Select(tkn => tkn.FBToken).Distinct().ToList();
+                        if (driverToken != null)
+                        {
+                            foreach (var token in driverToken)
+                                NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"A aparut o noua comanda fara livrator!");
+                        }
+                    }
+                }
                 int orderId = await new CreateOrder(_context).Do(orderVM);
                 if (orderVM.TelephoneOrdered)
                 {
@@ -194,7 +218,7 @@ namespace OShop.UI.Controllers
                     product.OrderRefId = orderId;
                 await new CreateProductInOrder(_context).Do(order.ProductsInOrder);
                 var restaurant = _userManager.Users.FirstOrDefault(us => us.CompanieRefId == orderVM.CompanieRefId);
-                if (restaurant != null)
+                if (restaurant != null && !order.TelephoneOrdered)
                 {
                     var restaurantToken = _context.FBTokens.AsNoTracking().Where(tkn => tkn.UserId == restaurant.Id)
                         .Select(tkn => tkn.FBToken).Distinct().ToList();
@@ -210,7 +234,22 @@ namespace OShop.UI.Controllers
             }
             return Ok("User not found!");
         }
+        [HttpPost("askhelp")]
+        public async Task<IActionResult> SendHelpMsg([FromBody] object helpMsg)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                MissingMemberHandling = MissingMemberHandling.Ignore
+            };
+            var help = JsonConvert.DeserializeObject<HelpMe>(helpMsg.ToString(), settings);
+            var sender = new EmailSender(_config);
+            if (sender.SendEmail("support@livro.ro", $"Mesaj din applicatie de la : {help.Email}",
+                $"{help.Name}, {help.TelNo}, {help.Message}"))
+                return Ok("Message sent!");
 
+            return Ok("Message not sent!");
+        }
         [Authorize]
         [HttpPost("createorderinfo")]
         public async Task<IActionResult> CreateOrderInfo([FromBody] object orderInfo)
