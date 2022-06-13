@@ -180,8 +180,13 @@ namespace OShop.UI.Controllers
                             }
 
                         }
-                        account.LoginToken = Password.Generate(20, 0);
-                        await _userManager.UpdateAsync(account);
+                        if (account.LoginTokenExpiry.CompareTo(DateTime.UtcNow) <= 0)
+                        {
+                            account.LoginToken = Password.Generate(20, 0);
+                            account.LoginTokenExpiry = DateTime.UtcNow.AddDays(1);
+                            await _userManager.UpdateAsync(account);
+                        }
+
                         return Ok(new AuthVM
                         {
                             FullName = account.FullName,
@@ -197,8 +202,12 @@ namespace OShop.UI.Controllers
                 }
                 else if (account.UserIdentification == user.UserIdentification)
                 {
-                    account.LoginToken = Password.Generate(20, 0);
-                    await _userManager.UpdateAsync(account);
+                    if (account.LoginTokenExpiry.CompareTo(DateTime.UtcNow) <= 0)
+                    {
+                        account.LoginToken = Password.Generate(20, 0);
+                        account.LoginTokenExpiry = DateTime.UtcNow.AddDays(1);
+                        await _userManager.UpdateAsync(account);
+                    }
                     if (!string.IsNullOrWhiteSpace(user.FirebaseToken))
                     {
                         var tokenExists = _context.FBTokens.AsNoTracking().FirstOrDefault(tkn => tkn.FBToken == user.FirebaseToken);
@@ -270,8 +279,12 @@ namespace OShop.UI.Controllers
                             await _context.SaveChangesAsync();
                         }
                     }
-                    account.LoginToken = Password.Generate(20, 0);
-                    await _userManager.UpdateAsync(account);
+                    if (account.LoginTokenExpiry.CompareTo(DateTime.UtcNow) <= 0)
+                    {
+                        account.LoginToken = Password.Generate(20, 0);
+                        account.LoginTokenExpiry = DateTime.UtcNow.AddDays(1);
+                        await _userManager.UpdateAsync(account);
+                    }
                     return Ok(new AuthVMManage
                     {
                         Id = account.IsDriver ? account.Id : null,

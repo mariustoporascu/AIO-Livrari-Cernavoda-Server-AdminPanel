@@ -13,6 +13,7 @@ namespace OShop.Domain.Models
         [Required]
         public string Name { get; set; }
         public virtual ICollection<TransportFee> TransportFees { get; set; }
+        public virtual ICollection<TransportFee> TransportFees2 { get; set; }
 
     }
 }

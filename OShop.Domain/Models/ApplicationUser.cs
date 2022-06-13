@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace OShop.Domain.Models
@@ -20,6 +21,7 @@ namespace OShop.Domain.Models
         public bool IsOwner { get; set; } = false;
 
         public string LoginToken { get; set; }
+        public DateTime LoginTokenExpiry { get; set; } = DateTime.UtcNow;
         public virtual ICollection<Order> DriverOrders { get; set; }
         public virtual ICollection<RatingClient> RatingClients { get; set; }
         public virtual ICollection<RatingDriver> RatingDrivers { get; set; }

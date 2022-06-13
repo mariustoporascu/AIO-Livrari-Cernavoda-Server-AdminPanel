@@ -72,12 +72,21 @@ namespace OShop.UI.Pages
                             TotalVanzari += order.TotalOrdered;
                         }
                         TotalCLienti = orders.Select(or => or.CustomerId).Distinct().Count();
-                        var ratings = _context.RatingCompanies.AsNoTracking().AsEnumerable().Where(rat => rat.CompanieRefId == user.CompanieRefId).Select(ra => ra.Rating);
-                        decimal sumRating = ratings.Count() * 5.0M;
-                        decimal totalRating = 0.0M;
-                        foreach (var rat in ratings)
-                            totalRating += rat;
-                        Rating = (int)Math.Abs(totalRating / sumRating * 100.0M);
+                        try
+                        {
+                            var ratings = _context.RatingCompanies.AsNoTracking().AsEnumerable().Where(rat => rat.CompanieRefId == user.CompanieRefId).Select(ra => ra.Rating);
+                            decimal sumRating = ratings.Count() * 5.0M;
+                            decimal totalRating = 0.0M;
+                            foreach (var rat in ratings)
+                                totalRating += rat;
+                            Rating = (int)Math.Abs(totalRating / sumRating * 100.0M);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            Rating = 0;
+                        }
+
                     }
                     else
                     {

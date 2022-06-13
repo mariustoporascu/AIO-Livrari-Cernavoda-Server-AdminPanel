@@ -31,12 +31,11 @@ namespace OShop.Application.Categories
             _context.Categories.Add(categ);
             await _context.SaveChangesAsync();
             var companie = new GetCompanie(_context).Do(vm.CompanieRefId);
-            if (companie.TipCompanieRefId == 1)
+            if (companie.TipCompanieRefId != 2)
             {
                 var subCategAuto = new SubCategory
                 {
                     Name = vm.Name,
-                    Photo = vm.Photo,
                     CategoryRefId = categ.CategoryId
                 };
                 _context.SubCategories.Add(subCategAuto);

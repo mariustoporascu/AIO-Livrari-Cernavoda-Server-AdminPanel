@@ -15,7 +15,7 @@ namespace OShop.Domain.Models
         public int FBId { get; set; }
         public string FBToken { get; set; }
         public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public ApplicationUser AppUser { get; set; }
         public DateTime Created { get; set; }
     }
 }

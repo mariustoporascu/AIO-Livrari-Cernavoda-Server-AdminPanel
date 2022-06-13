@@ -30,7 +30,7 @@ namespace OShop.UI.Pages.AdminPanel.Companies
         public IActionResult OnGet()
         {
 
-            Restaurante = new GetAllCompanii(_context).Do(1);
+            Restaurante = new GetAllCompanii(_context).Do();
 
             return Page();
         }

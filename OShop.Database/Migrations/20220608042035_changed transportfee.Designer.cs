@@ -12,8 +12,8 @@ using OShop.Database;
 namespace OShop.Database.Migrations
 {
     [DbContext(typeof(OnlineShopDbContext))]
-    [Migration("20220606045449_link user to fb token and locations for delete")]
-    partial class linkusertofbtokenandlocationsfordelete
+    [Migration("20220608042035_changed transportfee")]
+    partial class changedtransportfee
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -706,13 +706,21 @@ namespace OShop.Database.Migrations
                     b.Property<int>("CompanieRefId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CompanieId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("MinimumOrderValue")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("TipCompanieRefId")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TransporFee")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("CityRefId", "CompanieRefId");
+
+                    b.HasIndex("CompanieId");
 
                     b.HasIndex("CompanieRefId");
 
@@ -727,6 +735,9 @@ namespace OShop.Database.Migrations
                         .HasColumnOrder(1);
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LocationId"), 1L, 1);
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("BuildingInfo")
                         .HasColumnType("nvarchar(max)");
@@ -747,11 +758,11 @@ namespace OShop.Database.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("LocationId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("UserLocations");
                 });
@@ -842,12 +853,12 @@ namespace OShop.Database.Migrations
 
             modelBuilder.Entity("OShop.Domain.Models.FireBaseTokens", b =>
                 {
-                    b.HasOne("OShop.Domain.Models.ApplicationUser", "User")
+                    b.HasOne("OShop.Domain.Models.ApplicationUser", "AppUser")
                         .WithMany("FBTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.Navigation("User");
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.Order", b =>
@@ -977,10 +988,14 @@ namespace OShop.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OShop.Domain.Models.Companie", "Companii")
+                    b.HasOne("OShop.Domain.Models.Companie", null)
                         .WithMany("TransportFees")
+                        .HasForeignKey("CompanieId");
+
+                    b.HasOne("OShop.Domain.Models.AvailableCity", "Companii")
+                        .WithMany("TransportFees2")
                         .HasForeignKey("CompanieRefId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("AvailableCities");
@@ -990,12 +1005,9 @@ namespace OShop.Database.Migrations
 
             modelBuilder.Entity("OShop.Domain.Models.UserLocations", b =>
                 {
-                    b.HasOne("OShop.Domain.Models.ApplicationUser", "User")
+                    b.HasOne("OShop.Domain.Models.ApplicationUser", null)
                         .WithMany("Locations")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("User");
+                        .HasForeignKey("ApplicationUserId");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.ApplicationUser", b =>
@@ -1014,6 +1026,8 @@ namespace OShop.Database.Migrations
             modelBuilder.Entity("OShop.Domain.Models.AvailableCity", b =>
                 {
                     b.Navigation("TransportFees");
+
+                    b.Navigation("TransportFees2");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.Category", b =>

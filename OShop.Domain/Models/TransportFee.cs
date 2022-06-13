@@ -11,11 +11,12 @@ namespace OShop.Domain.Models
     public class TransportFee
     {
         public int CompanieRefId { get; set; }
-        public Companie Companii { get; set; }
+        public AvailableCity Companii { get; set; }
 
 
         public int CityRefId { get; set; }
         public AvailableCity AvailableCities { get; set; }
+        public int TipCompanieRefId { get; set; }
 
         [Range(0.01, 100.0)]
         [DataType(DataType.Currency)]

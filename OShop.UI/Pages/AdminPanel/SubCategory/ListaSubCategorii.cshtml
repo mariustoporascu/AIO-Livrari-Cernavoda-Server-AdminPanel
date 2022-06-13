@@ -1,48 +1,47 @@
 ﻿@page
-@model IndexModel
+@model ListaSubCategoriiModel
 @{
-    ViewData["Title"] = "Sub Categorii";
-    var base_path = Request.PathBase;
+	ViewData["Title"] = "Sub Categorii";
+	var base_path = Request.PathBase;
 }
-<div class="container">
-    <h1>@Model.CategoryName/Sub Categorii</h1>
-    <h2>
-        <a class="btn btn-primary" asp-area="AdminPanel" asp-page="/SubCategory/CreateSubCategory" asp-route-canal="@Model.Canal" asp-route-category="@Model.Category">Adauga SubCategorie</a>
-        <a class="btn btn-primary" asp-area="AdminPanel" asp-page="/Category/Index" asp-route-canal="@Model.Canal">Mergi la Categorii</a>
-    </h2>
+<div class="container-fluid mt-3">
+	<h1>Sub Categorii</h1>
+	<div class="row card mt-2">
+		<div class="table-responsive">
+			<table class="table header-border table-hover verticle-middle">
+				<thead>
+					<tr>
+						<th>Nume</th>
+						<th>Poza</th>
+						<th style="text-align:right"></th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var category in Model.SubCategories)
+					{
+						<tr>
+							<td>@category.Name</td>
 
+							<td>
+								@if (category.Photo != null)
+								{
+									var image_path = $"{base_path}/api/webimage/GetImage/{category.Photo}";
+									<img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="@image_path">
+								}
+								else
+								{
+									<img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="~/content/No_image_available.svg">
+								}
+							</td>
+							<td>
+								<a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/SubCategory/DeleteSubCategory" asp-route-canal="@Model.Canal" asp-route-categId="@category.SubCategoryId">Sterge</a>
+								<a class="btn btn-primary" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/SubCategory/CreateSubCategory" asp-route-canal="@Model.Canal" asp-route-categId="@category.SubCategoryId">Editeaza</a>
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Nume</th>
-                <th>Poza</th>
-                <th style="text-align:right">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var category in Model.SubCategories)
-            {
-                <tr>
-                    <td>@category.Name</td>
-                    <td>
-                        @if (category.Photo != null)
-                        {
-                            var image_path = $"{base_path}/api/webimage/GetImage/{category.Photo}";
-                            <img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="@image_path">
-                        }
-                        else
-                        {
-                            <img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="~/content/No_image_available.svg">
-                        }
-                    </td>
-                    <td>
-                        <a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="AdminPanel" asp-page="/SubCategory/DeleteSubCategory" asp-route-canal="@Model.Canal" asp-route-category="@Model.Category" asp-route-subcategId="@category.SubCategoryId">Sterge</a>
-                        <a class="btn btn-primary" style="float:right" asp-area="AdminPanel" asp-page="/SubCategory/CreateSubCategory" asp-route-canal="@Model.Canal" asp-route-category="@Model.Category" asp-route-subcategId="@category.SubCategoryId">Editeaza</a>
-
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>

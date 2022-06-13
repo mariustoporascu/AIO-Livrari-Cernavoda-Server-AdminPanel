@@ -66,10 +66,10 @@ namespace OShop.Database
                 .HasForeignKey(cp => cp.ProductRefId)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<TransportFee>().HasKey(cp => new { cp.CityRefId, cp.CompanieRefId });
-            modelBuilder.Entity<TransportFee>().HasOne<Companie>(cp => cp.Companii)
-                .WithMany(c => c.TransportFees)
+            modelBuilder.Entity<TransportFee>().HasOne<AvailableCity>(cp => cp.Companii)
+                .WithMany(c => c.TransportFees2)
                 .HasForeignKey(cp => cp.CompanieRefId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<TransportFee>().HasOne<AvailableCity>(cp => cp.AvailableCities)
                 .WithMany(p => p.TransportFees)
                 .HasForeignKey(cp => cp.CityRefId)
@@ -84,13 +84,8 @@ namespace OShop.Database
             .HasForeignKey(tId => tId.DriverRefId)
             .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<ApplicationUser>()
-            .HasMany<UserLocations>(appUser => appUser.Locations)
-            .WithOne(tId => tId.User)
-            .HasForeignKey(tId => tId.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<ApplicationUser>()
             .HasMany<FireBaseTokens>(appUser => appUser.FBTokens)
-            .WithOne(tId => tId.User)
+            .WithOne(tId => tId.AppUser)
             .HasForeignKey(tId => tId.UserId)
             .OnDelete(DeleteBehavior.Cascade);
             //rating driver

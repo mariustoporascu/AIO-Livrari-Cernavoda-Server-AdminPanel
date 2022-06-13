@@ -1,55 +1,57 @@
 ﻿@page
 @model OShop.UI.Pages.AdminPanel.TransportFeesAddModel
 @{
-    ViewData["Title"] = "Editare Cost Transport/Comanda minima";
-    var base_path = Request.PathBase;
+	ViewData["Title"] = "Editare Cost Transport/Comanda minima";
+	var base_path = Request.PathBase;
 }
 <div class="container-fluid mt-3">
 
-    <h1>Editare Cost Transport/Comanda minima</h1>
+	<h1>Editare Cost Transport/Comanda minima</h1>
 	<div class="row card mt-2">
-		
-    <form method="post" enctype="multipart/form-data">
-        <input asp-for="@Model.TipCompanie" type="hidden" />
-        <div class="table-responsive">
-			<table class="table header-border table-hover verticle-middle">
-            <thead>
-                <tr>
-                    <th>Nume Oras</th>
-                    <th>Cost Transport</th>
-                    <th>Comanda minima</th>
-                </tr>
-            </thead>
-            <tbody>
-                        @foreach (var fee in Model.TransportFees){
-                            <tr class="form-group">
-                        <td>
-                        <input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].CityRefId" type="hidden"/>
-                        <label class="form-label">@Model.Cities.FirstOrDefault(city => city.CityId == fee.CityRefId).Name</label>
-                        </td>
-                    <td >
-                        <input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].TransporFee" class="form-control" value="0.01"/>
-                        <span asp-validation-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].TransporFee" class="text-danger"></span>
-                    </td>
-                    <td >
-                        <input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].MinimumOrderValue" class="form-control" value="0.01"/>
-                        <span asp-validation-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].MinimumOrderValue" class="text-danger"></span>
-                    </td>
-                </tr>
-                }
-            </tbody>
-        </table>
-        </div>
-        <div class="d-flex align-items-center flex-column">
-            <button type="submit" class="btn btn-primary">
-                <span>Aplica</span>
-            </button>
-        <a class="btn btn-warning mt-5" asp-area="" asp-page="/AdminPanel/Index" ><span>Anuleaza</span></a>
-        </div>
-    </form>
-</div>
+
+		<form method="post" enctype="multipart/form-data">
+			<div class="table-responsive">
+				<table class="table header-border table-hover verticle-middle">
+					<thead>
+						<tr>
+							<th>Nume Oras</th>
+							<th>Cost Transport</th>
+							<th>Comanda minima</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var fee in Model.TransportFees)
+						{
+							<tr class="form-group">
+								<td>
+									<input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].CityRefId" type="hidden" />
+									<input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].TipCompanieRefId" type="hidden" />
+									<input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].CompanieRefId" type="hidden" />
+									<label class="form-label">@Model.Cities.FirstOrDefault(city => city.CityId == fee.CityRefId).Name</label>
+								</td>
+								<td>
+									<input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].TransporFee" class="form-control" />
+									<span asp-validation-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].TransporFee" class="text-danger"></span>
+								</td>
+								<td>
+									<input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].MinimumOrderValue" class="form-control" />
+									<span asp-validation-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].MinimumOrderValue" class="text-danger"></span>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+			<div class="d-flex align-items-center flex-column">
+				<button type="submit" class="btn btn-primary">
+					<span>Aplica</span>
+				</button>
+				<a class="btn btn-warning mt-5" asp-area="" asp-page="/AdminPanel/Index"><span>Anuleaza</span></a>
+			</div>
+		</form>
+	</div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
 }

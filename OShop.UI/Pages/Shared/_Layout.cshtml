@@ -11,7 +11,7 @@
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<title>@ViewData["Title"] - AIO Livrari Cernavoda</title>
+	<title>@ViewData["Title"] - Livro</title>
 	<link rel="icon" type="image/png" sizes="16x16" href="~/images/favicon.png">
 	<!-- Pignose Calender -->
 	<link href="~/plugins/pg-calendar/css/pignose.calendar.min.css" rel="stylesheet">
@@ -144,11 +144,11 @@
 							<li class="nav-label">Companii aplicatie</li>
 							<li>
 								<a class="has-arrow" href="javascript:void()" aria-expanded="false">
-									<i class="icon-note menu-icon"></i><span class="nav-text">Restaurante</span>
+									<i class="icon-note menu-icon"></i><span class="nav-text">Companii</span>
 								</a>
 								<ul aria-expanded="false">
-									<li><a asp-page="/AdminPanel/Companies/ListaRestaurante">Lista Restaurante</a></li>
-									<li><a asp-page="/AdminPanel/Companies/CreateRestaurant">Adaugare Restaurant</a></li>
+									<li><a asp-page="/AdminPanel/Companies/ListaRestaurante">Lista Companii</a></li>
+									<li><a asp-page="/AdminPanel/Companies/CreateRestaurant">Adaugare Companie</a></li>
 								</ul>
 							</li>
 						}
@@ -162,6 +162,15 @@
 								<ul aria-expanded="false">
 									<li><a asp-page="/AdminPanel/Category/ListaCategorii" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Lista Categorii</a></li>
 									<li><a asp-page="/AdminPanel/Category/CreateCategory" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Adaugare Categorie</a></li>
+								</ul>
+							</li>
+							<li>
+								<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+									<i class="icon-note menu-icon"></i><span class="nav-text">SubCategorii</span>
+								</a>
+								<ul aria-expanded="false">
+									<li><a asp-page="/AdminPanel/SubCategory/ListaSubCategorii" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Lista SubCategorii</a></li>
+									<li><a asp-page="/AdminPanel/SubCategory/CreateSubCategory" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Adaugare SubCategorie</a></li>
 								</ul>
 							</li>
 							<li>

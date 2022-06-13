@@ -24,18 +24,19 @@ namespace OShop.UI.Pages.AdminPanel
         public List<AvailableCity> Cities { get; set; }
         [BindProperty]
         public List<TransportFee> TransportFees { get; set; }
-        [BindProperty]
-        public int TipCompanie { get; set; }
-        public IActionResult OnGet(int tipCompanie)
+
+        public IActionResult OnGet(int tipCompanie, int cityId)
         {
+            TransportFees = _context.TransportFees.AsNoTracking().AsEnumerable().Where(tf => tf.CompanieRefId == cityId && tf.TipCompanieRefId == tipCompanie).ToList();
             Cities = _context.AvailableCities.AsNoTracking().AsEnumerable().ToList();
-            TransportFees = new List<TransportFee>();
-            foreach (var city in Cities)
-                TransportFees.Add(new TransportFee
-                {
-                    CityRefId = city.CityId,
-                });
-            TipCompanie = tipCompanie;
+            if (TransportFees.Count == 0)
+                foreach (var city in Cities)
+                    TransportFees.Add(new TransportFee
+                    {
+                        CityRefId = city.CityId,
+                        TipCompanieRefId = tipCompanie,
+                        CompanieRefId = cityId
+                    });
             return Page();
         }
 
@@ -43,27 +44,23 @@ namespace OShop.UI.Pages.AdminPanel
         {
             if (ModelState.IsValid)
             {
-                var allCompanies = _context.Companies.AsNoTracking().Where(comp => comp.TipCompanieRefId == TipCompanie).AsEnumerable().ToList();
                 foreach (var fee in TransportFees)
                 {
-                    foreach (var company in allCompanies)
+                    fee.TransporFee = fee.MinimumOrderValue * 15 / 100;
+                    if (_context.TransportFees.AsNoTracking().FirstOrDefault(fs => fs.CompanieRefId == fee.CompanieRefId && fs.CityRefId == fee.CityRefId) == null)
                     {
-                        if (_context.TransportFees.AsNoTracking().FirstOrDefault(fs => fs.CompanieRefId == company.CompanieId && fs.CityRefId == fee.CityRefId) == null)
-                        {
-                            fee.CompanieRefId = company.CompanieId;
-                            _context.TransportFees.Add(fee);
-                            await _context.SaveChangesAsync();
+                        _context.TransportFees.Add(fee);
+                        await _context.SaveChangesAsync();
 
-                        }
-                        else
-                        {
-                            var feeDB = _context.TransportFees.AsNoTracking().FirstOrDefault(fs => fs.CompanieRefId == company.CompanieId && fs.CityRefId == fee.CityRefId);
-                            feeDB.TransporFee = fee.TransporFee;
-                            feeDB.MinimumOrderValue = fee.MinimumOrderValue;
-                            _context.TransportFees.Update(feeDB);
-                            await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        var feeDB = _context.TransportFees.AsNoTracking().FirstOrDefault(fs => fs.CompanieRefId == fee.CompanieRefId && fs.CityRefId == fee.CityRefId);
+                        feeDB.TransporFee = fee.TransporFee;
+                        feeDB.MinimumOrderValue = fee.MinimumOrderValue;
+                        _context.TransportFees.Update(feeDB);
+                        await _context.SaveChangesAsync();
 
-                        }
                     }
                 }
                 return RedirectToPage("/Index");
