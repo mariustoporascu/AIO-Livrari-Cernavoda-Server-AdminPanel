@@ -26,7 +26,9 @@ namespace OShop.UI.Pages.AdminPanel.SubCategory
         }
 
         [BindProperty]
-        public IEnumerable<SubCategoryVMUI> SubCategories { get; set; }
+        public IEnumerable<OShop.Domain.Models.SubCategory> SubCategories { get; set; }
+        [BindProperty]
+        public IEnumerable<OShop.Domain.Models.Category> Categories { get; set; }
         public int Canal { get; set; }
         public async Task<IActionResult> OnGet(int canal)
         {
@@ -35,7 +37,8 @@ namespace OShop.UI.Pages.AdminPanel.SubCategory
                 return RedirectToPage("/Error");
             Canal = canal;
             var canalCateg = new GetAllCategories(_context).Do(canal).ToList();
-            var canalSubCateg = new List<SubCategoryVMUI>();
+            Categories = canalCateg;
+            var canalSubCateg = new List<OShop.Domain.Models.SubCategory>();
             foreach (var categ in canalCateg)
             {
                 canalSubCateg.AddRange(new GetAllSubCategories(_context).Do(categ.CategoryId));

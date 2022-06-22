@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OShop.Database;
+using OShop.Domain.Models;
 using System.Linq;
 
 namespace OShop.Application.ProductInOrders
@@ -13,16 +14,11 @@ namespace OShop.Application.ProductInOrders
             _context = context;
         }
 
-        public ProductInOrdersViewModel Do(int orderId, int productId)
+        public ProductInOrder Do(int orderId, int productId)
         {
             var productInOrder = _context.ProductInOrders.AsNoTracking().FirstOrDefault(productInOrder => productInOrder.OrderRefId == orderId && productInOrder.ProductRefId == productId);
             if (productInOrder != null)
-                return new ProductInOrdersViewModel
-                {
-                    OrderRefId = productInOrder.OrderRefId,
-                    ProductRefId = productInOrder.ProductRefId,
-                    UsedQuantity = productInOrder.UsedQuantity,
-                };
+                return productInOrder;
             else
                 return null;
         }

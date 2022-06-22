@@ -14,7 +14,7 @@ namespace OShop.Domain.Models
         [Column(Order = 1)]
         public int TipCompanieId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Name { get; set; }
 
         public string Photo { get; set; } = "";

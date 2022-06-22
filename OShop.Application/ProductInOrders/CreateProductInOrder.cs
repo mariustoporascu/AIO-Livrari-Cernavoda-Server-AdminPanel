@@ -14,30 +14,15 @@ namespace OShop.Application.ProductInOrders
             _context = context;
         }
 
-        public async Task Do(List<ProductInOrdersViewModel> vm)
+        public async Task Do(List<ProductInOrder> vm)
         {
             foreach (var item in vm)
             {
-                _context.ProductInOrders.Add(new ProductInOrder
-                {
-                    OrderRefId = item.OrderRefId,
-                    ProductRefId = item.ProductRefId,
-                    UsedQuantity = item.UsedQuantity,
-                    ClientComments = item.ClientComments,
-                });
+                _context.ProductInOrders.Add(item);
             }
 
             await _context.SaveChangesAsync();
         }
     }
 
-    public class ProductInOrdersViewModel
-    {
-        public int OrderRefId { get; set; }
-
-        public int ProductRefId { get; set; }
-
-        public int UsedQuantity { get; set; }
-        public string ClientComments { get; set; }
-    }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OShop.Application.FileManager;
 using OShop.Database;
+using OShop.Domain.Models;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,23 +17,11 @@ namespace OShop.Application.SubCategories
             _context = context;
         }
 
-        public IEnumerable<SubCategoryVMUI> Do() =>
-            _context.SubCategories.AsNoTracking().AsEnumerable().Select(categ => new SubCategoryVMUI
-            {
-                SubCategoryId = categ.SubCategoryId,
-                Name = categ.Name,
-                Photo = categ.Photo,
-                CategoryRefId = categ.CategoryRefId,
-            });
-        public IEnumerable<SubCategoryVMUI> Do(int categoryId) =>
+        public IEnumerable<SubCategory> Do() =>
+            _context.SubCategories.AsNoTracking().AsEnumerable();
+        public IEnumerable<SubCategory> Do(int categoryId) =>
             _context.SubCategories.AsNoTracking().AsEnumerable()
             .Where(categ => categ.CategoryRefId == categoryId)
-            .ToList().Select(categ => new SubCategoryVMUI
-            {
-                SubCategoryId = categ.SubCategoryId,
-                Name = categ.Name,
-                Photo = categ.Photo,
-                CategoryRefId = categ.CategoryRefId,
-            });
+            .ToList();
     }
 }

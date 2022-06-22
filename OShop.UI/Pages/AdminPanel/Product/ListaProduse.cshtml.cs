@@ -31,11 +31,11 @@ namespace OShop.UI.Pages.AdminPanel.Product
         [BindProperty]
         public IEnumerable<ProductVMUI> Products { get; set; }
         [BindProperty]
-        public IEnumerable<SubCategoryVMUI> Categ { get; set; }
+        public IEnumerable<OShop.Domain.Models.SubCategory> Categ { get; set; }
         [BindProperty]
         public int Canal { get; set; }
         [BindProperty]
-        public IEnumerable<UnitateMasuraVMUI> UnitatiMasura { get; set; }
+        public IEnumerable<MeasuringUnit> UnitatiMasura { get; set; }
         public async Task<IActionResult> OnGet(int canal)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -43,7 +43,7 @@ namespace OShop.UI.Pages.AdminPanel.Product
                 return RedirectToPage("/Error");
             Canal = canal;
             var canalCateg = new GetAllCategories(_context).Do(canal).ToList();
-            var canalSubCateg = new List<SubCategoryVMUI>();
+            var canalSubCateg = new List<OShop.Domain.Models.SubCategory>();
             foreach (var categ in canalCateg)
             {
                 canalSubCateg.AddRange(new GetAllSubCategories(_context).Do(categ.CategoryId));

@@ -28,7 +28,7 @@ namespace OShop.UI.Pages.AdminPanel.Category
         }
 
         [BindProperty]
-        public CategoryVMUI Category { get; set; }
+        public OShop.Domain.Models.Category Category { get; set; }
 
 
         [BindProperty]
@@ -39,7 +39,7 @@ namespace OShop.UI.Pages.AdminPanel.Category
             if (canal != user.CompanieRefId)
                 return RedirectToPage("/Error");
             if (categId == null)
-                Category = new CategoryVMUI();
+                Category = new OShop.Domain.Models.Category();
             else
             {
                 Category = new GetCategory(_context).Do(categId);

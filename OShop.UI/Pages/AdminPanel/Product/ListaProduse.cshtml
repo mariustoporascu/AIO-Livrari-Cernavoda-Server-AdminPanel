@@ -16,7 +16,7 @@
 						<th>Gramaj</th>
 						<th>Unitate de masura</th>
 						<th>Pret</th>
-						<th>Categorie</th>
+						<th>SubCategorie</th>
 						<th>Poza</th>
 						<th style="text-align:right"></th>
 					</tr>
@@ -44,7 +44,7 @@
 								}
 							</td>
 							<td>
-								<a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/Product/DeleteProduct" asp-route-canal="@Model.Canal" asp-route-productId="@product.ProductId">Sterge</a>
+								<button class="btn btn-danger" style="float:right;margin-left:5px" onclick="ConfirmDelete(@Model.Canal,@product.ProductId)">Sterge</button>
 								<a class="btn btn-primary" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/Product/CreateProduct" asp-route-canal="@Model.Canal" asp-route-productId="@product.ProductId">Editeaza</a>
 							</td>
 						</tr>
@@ -54,3 +54,12 @@
 		</div>
 	</div>
 </div>
+@section Scripts {
+	<script type="text/javascript">
+		function ConfirmDelete(canal, productId) {
+			var x = confirm("Esti sigur ca vrei sa stergi?");
+			if (x !== false)
+				window.location.href = '/AdminPanel/Product/DeleteProduct?canal=' + canal + '&productId=' + productId;
+		}
+	</script>
+}

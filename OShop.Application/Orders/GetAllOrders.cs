@@ -22,7 +22,7 @@ namespace OShop.Application.Orders
         }
 
         //driver
-        public async Task<IEnumerable<OrderViewModel>> Do()
+        public IEnumerable<OrderViewModel> Do()
         {
             var orders = _context.Orders.AsNoTracking().AsEnumerable().Select(order => new OrderViewModel
             {
@@ -185,7 +185,7 @@ namespace OShop.Application.Orders
             }
             return orders;
         }
-        private  UserLocation GetUserLocation(int locationId)
+        private UserLocation GetUserLocation(int locationId)
         {
 
             var userLocation = _context.UserLocations.AsNoTracking().FirstOrDefault(loc => loc.LocationId == locationId);

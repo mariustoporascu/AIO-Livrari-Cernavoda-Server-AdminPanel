@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OShop.Database;
 
@@ -11,9 +12,10 @@ using OShop.Database;
 namespace OShop.Database.Migrations
 {
     [DbContext(typeof(OnlineShopDbContext))]
-    partial class OnlineShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220621034544_added company and product fields")]
+    partial class addedcompanyandproductfields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -339,9 +341,6 @@ namespace OShop.Database.Migrations
 
                     b.Property<int>("TipCompanieRefId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("VisibleInApp")
-                        .HasColumnType("bit");
 
                     b.HasKey("CompanieId");
 

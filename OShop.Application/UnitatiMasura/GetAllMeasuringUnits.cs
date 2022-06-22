@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OShop.Database;
+using OShop.Domain.Models;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,17 +16,8 @@ namespace OShop.Application.UnitatiMasura
             _context = context;
         }
 
-        public IEnumerable<UnitateMasuraVMUI> Do() =>
-            _context.MeasuringUnits.AsNoTracking().ToList().Select(unit => new UnitateMasuraVMUI
-            {
-                UnitId = unit.UnitId,
-                Name = unit.Name,
-            });
+        public IEnumerable<MeasuringUnit> Do() =>
+            _context.MeasuringUnits.AsNoTracking().ToList();
     }
-    public class UnitateMasuraVMUI
-    {
-        public int UnitId { get; set; }
-        [Required]
-        public string Name { get; set; }
-    }
+
 }

@@ -19,27 +19,12 @@ namespace OShop.Application.Orders
             _context = context;
         }
 
-        public async Task<int> Do(OrderViewModel vm)
+        public async Task<int> Do(Order vm)
         {
-            var order = new Order
-            {
-                OrderId = vm.OrderId,
-                Status = vm.Status,
-                CustomerId = vm.CustomerId,
-                TotalOrdered = vm.TotalOrdered,
-                CompanieRefId = vm.CompanieRefId,
-                TelephoneOrdered = vm.TelephoneOrdered,
-                EstimatedTime = vm.EstimatedTime,
-                HasUserConfirmedET = vm.HasUserConfirmedET,
-                UserLocationId = vm.UserLocationId,
-                IsOrderPayed = vm.IsOrderPayed,
-                PaymentMethod = vm.PaymentMethod,
-                TransportFee = vm.TransportFee,
-                Created = vm.Created,
-            };
-            _context.Orders.Add(order);
+
+            _context.Orders.Add(vm);
             await _context.SaveChangesAsync();
-            return order.OrderId;
+            return vm.OrderId;
         }
     }
     public class OrderViewModel
@@ -77,8 +62,8 @@ namespace OShop.Application.Orders
 
         [DataType(DataType.DateTime)]
         public DateTime Created { get; set; }
-        public IEnumerable<ProductInOrdersViewModel> ProductsInOrder { get; set; }
-        public OrderInfosViewModel OrderInfo { get; set; }
+        public IEnumerable<ProductInOrder> ProductsInOrder { get; set; }
+        public OrderInfo OrderInfo { get; set; }
         public Companie Companie { get; set; }
         public string DriverRefId { get; set; }
         public Driver Driver { get; set; }

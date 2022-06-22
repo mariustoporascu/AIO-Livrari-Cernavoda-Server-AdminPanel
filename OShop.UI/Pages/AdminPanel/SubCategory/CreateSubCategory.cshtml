@@ -18,6 +18,7 @@
 		<form method="post" enctype="multipart/form-data">
 			<input asp-for="@Model.SubCategory.SubCategoryId" type="hidden" />
 			<input asp-for="@Model.Canal" type="hidden" />
+			<input type="hidden" asp-for="@Model.SubCategory.Photo" />
 			<div class="table-responsive">
 				<table class="table header-border table-hover verticle-middle">
 					<thead>
@@ -47,28 +48,28 @@
 							</td>
 						</tr>
 
-						<tr>
-							<th>Poza</th>
-							<td class="form-group">
-								<input type="hidden" asp-for="@Model.SubCategory.Photo" />
-								@if (@Model.SubCategory.Photo != null)
-								{
-									var image_path = $"{base_path}/api/webimage/GetImage/{Model.SubCategory.Photo}";
-									<img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="@image_path">
-								}
-								else
-								{
-									<img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="~/content/No_image_available.svg">
-								}
-								<input type="file"
-									   accept=".png,.jpg,.jpeg,.gif,.tif"
-									   asp-for="@Model.SubCategory.Photo"
-									   class="form-control"
-									   style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
-									   onchange="document.getElementById('productphoto').src = window.URL.createObjectURL(this.files[0])" />
-								<span asp-validation-for="@Model.SubCategory.Photo" class="text-danger"></span>
-							</td>
-						</tr>
+						@*<tr>
+						<th>Poza</th>
+						<td class="form-group">
+						<input type="hidden" asp-for="@Model.SubCategory.Photo" />
+						@if (@Model.SubCategory.Photo != null)
+						{
+						var image_path = $"{base_path}/api/webimage/GetImage/{Model.SubCategory.Photo}";
+						<img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="@image_path">
+						}
+						else
+						{
+						<img id="productphoto" style="width:150px;height:150px; object-fit:cover" src="~/content/No_image_available.svg">
+						}
+						<input type="file"
+						accept=".png,.jpg,.jpeg,.gif,.tif"
+						asp-for="@Model.SubCategory.Photo"
+						class="form-control"
+						style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+						onchange="document.getElementById('productphoto').src = window.URL.createObjectURL(this.files[0])" />
+						<span asp-validation-for="@Model.SubCategory.Photo" class="text-danger"></span>
+						</td>
+						</tr>*@
 					</tbody>
 				</table>
 			</div>

@@ -11,7 +11,7 @@ namespace OShop.Domain.Models
         [Column(Order = 1)]
         public int OrderId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Status { get; set; }
 
         [Range(0.01, 1000000.0)]

@@ -33,15 +33,15 @@ namespace OShop.UI.Pages.AdminPanel.Product
 
 
         [BindProperty]
-        public ProductVMUI Product { get; set; }
+        public OShop.Domain.Models.Product Product { get; set; }
 
         [BindProperty]
-        public IEnumerable<SubCategoryVMUI> Categ { get; set; }
+        public IEnumerable<OShop.Domain.Models.SubCategory> Categ { get; set; }
 
         [BindProperty]
         public int Canal { get; set; }
         [BindProperty]
-        public IEnumerable<UnitateMasuraVMUI> UnitatiMasura { get; set; }
+        public IEnumerable<MeasuringUnit> UnitatiMasura { get; set; }
 
         public async Task<IActionResult> OnGet(int canal, int? productId)
         {
@@ -49,7 +49,7 @@ namespace OShop.UI.Pages.AdminPanel.Product
             if (canal != user.CompanieRefId)
                 return RedirectToPage("/Error");
             var canalCateg = new GetAllCategories(_context).Do(canal).ToList();
-            var canalSubCateg = new List<SubCategoryVMUI>();
+            var canalSubCateg = new List<OShop.Domain.Models.SubCategory>();
             foreach (var categ in canalCateg)
             {
                 canalSubCateg.AddRange(new GetAllSubCategories(_context).Do(categ.CategoryId));
@@ -57,7 +57,7 @@ namespace OShop.UI.Pages.AdminPanel.Product
             Categ = canalSubCateg;
 
             if (productId == null)
-                Product = new ProductVMUI();
+                Product = new OShop.Domain.Models.Product();
             else
             {
                 Product = new GetProduct(_context).Do(productId);
@@ -71,6 +71,7 @@ namespace OShop.UI.Pages.AdminPanel.Product
         {
             if (ModelState.IsValid)
             {
+                Product.IsAvailable = true;
                 if (Request.Form.Files.Count > 0)
                 {
                     var extensionAccepted = new string[] { ".jpg", ".png", ".jpeg" };

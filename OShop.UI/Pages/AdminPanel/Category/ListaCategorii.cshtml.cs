@@ -25,7 +25,7 @@ namespace OShop.UI.Pages.AdminPanel.Category
         }
 
         [BindProperty]
-        public IEnumerable<CategoryVMUI> Categories { get; set; }
+        public IEnumerable<OShop.Domain.Models.Category> Categories { get; set; }
 
         [BindProperty]
         public int Canal { get; set; }

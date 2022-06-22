@@ -10,7 +10,7 @@ namespace OShop.Domain.Models
         [Column(Order = 1)]
         public int CityId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Name { get; set; }
         public virtual ICollection<TransportFee> TransportFees { get; set; }
         public virtual ICollection<TransportFee> TransportFees2 { get; set; }

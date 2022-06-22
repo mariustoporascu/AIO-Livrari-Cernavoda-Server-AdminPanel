@@ -50,8 +50,8 @@ namespace OShop.UI.Controllers
         }
         [Authorize]
         [HttpGet("getalldriverorders")]
-        public async Task<IActionResult> GetAllOrders() =>
-            Ok(await new GetAllOrders(_context, _userManager).Do());
+        public IActionResult GetAllOrders() =>
+            Ok(new GetAllOrders(_context, _userManager).Do());
         [Authorize]
         [HttpGet("getallrestaurantorders/{restaurantRefId}")]
         public async Task<IActionResult> GetAllOrders(int restaurantRefId) =>
@@ -79,7 +79,7 @@ namespace OShop.UI.Controllers
                 }
                 var orderVM = _context.Orders.AsNoTracking().FirstOrDefault(or => or.OrderId == orderId);
 
-                if (!isOwner)
+                if (!isOwner && !status.Contains("Livrata") && !status.Contains("Refuzata") && !status.Contains("In curs de livrare"))
                 {
                     var restaurant = _userManager.Users.FirstOrDefault(us => us.CompanieRefId == orderVM.CompanieRefId);
                     if (restaurant != null)
@@ -254,6 +254,40 @@ namespace OShop.UI.Controllers
             }
 
             return Ok($"estTime : {await new UpdateOrder(_context).DoET(orderId, esttime)}");
+        }
+        [Authorize]
+        [HttpGet("toggleordering/{companieId}")]
+        public async Task<IActionResult> ToggleOrdering(int companieId)
+        {
+            var companie = _context.Companies.AsNoTracking().FirstOrDefault(comp => comp.CompanieId == companieId);
+            if (companie != null)
+            {
+                companie.TemporaryClosed = !companie.TemporaryClosed;
+                _context.Companies.Update(companie);
+                await _context.SaveChangesAsync();
+                return Ok("Campul a fost modificat");
+
+            }
+            return Ok("Data invalid.");
+        }
+        [Authorize]
+        [HttpGet("toggleproduct/{companieId}&{productId}")]
+        public async Task<IActionResult> ToggleOrdering(int companieId, int productId)
+        {
+            var companie = _context.Companies.AsNoTracking().FirstOrDefault(comp => comp.CompanieId == companieId);
+            if (companie != null)
+            {
+                var product = _context.Products.AsNoTracking().FirstOrDefault(prod => prod.ProductId == productId);
+                if (product != null)
+                {
+                    product.IsAvailable = !product.IsAvailable;
+                    _context.Products.Update(product);
+                    await _context.SaveChangesAsync();
+                }
+                return Ok("Campul a fost modificat");
+
+            }
+            return Ok("Data invalid.");
         }
         [Authorize]
         [HttpGet("ratingclient/{isOwner}&{orderId}&{rating}")]

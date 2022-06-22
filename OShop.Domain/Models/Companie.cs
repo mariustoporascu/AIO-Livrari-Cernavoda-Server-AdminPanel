@@ -14,7 +14,7 @@ namespace OShop.Domain.Models
         [Column(Order = 1)]
         public int CompanieId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Name { get; set; }
 
         public string Photo { get; set; } = "";
@@ -22,6 +22,8 @@ namespace OShop.Domain.Models
         public DateTime Opening { get; set; } = DateTime.UtcNow;
 
         public bool IsActive { get; set; } = false;
+        public bool TemporaryClosed { get; set; } = false;
+        public bool VisibleInApp { get; set; } = false;
         public int TipCompanieRefId { get; set; }
         public TipCompanie TipCompanie { get; set; }
         public virtual ICollection<Category> Categories { get; set; }

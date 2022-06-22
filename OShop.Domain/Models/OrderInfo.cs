@@ -8,11 +8,11 @@ namespace OShop.Domain.Models
         [Key]
         [Column(Order = 1)]
         public int OrderInfoId { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string FullName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Address { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string PhoneNo { get; set; }
 
         public int OrderRefId { get; set; }

@@ -39,7 +39,7 @@ namespace OShop.UI.Pages
         public IEnumerable<ProductVMUI> Products { get; set; }
 
         [BindProperty]
-        public IEnumerable<CategoryVMUI> Categ { get; set; }
+        public IEnumerable<Category> Categ { get; set; }
 
         [BindProperty]
         public int ProduseVandute { get; set; }

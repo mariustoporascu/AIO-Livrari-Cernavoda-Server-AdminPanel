@@ -29,6 +29,8 @@ namespace OShop.Application.Companii
                 Opening = categ.Opening,
                 TransportFees = _context.TransportFees.AsNoTracking().AsEnumerable().Where(fee => fee.CompanieRefId == 1 && fee.TipCompanieRefId == categ.TipCompanieRefId),
                 IsActive = categ.IsActive,
+                VisibleInApp = categ.VisibleInApp,
+                TemporaryClosed = categ.TemporaryClosed,
                 TipCompanieRefId = categ.TipCompanieRefId,
                 //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
             });
@@ -40,8 +42,10 @@ namespace OShop.Application.Companii
                 Photo = categ.Photo,
                 TelefonNo = categ.TelefonNo,
                 Opening = categ.Opening,
+                TemporaryClosed = categ.TemporaryClosed,
                 TransportFees = _context.TransportFees.AsNoTracking().AsEnumerable().Where(fee => fee.CompanieRefId == 1 && fee.TipCompanieRefId == categ.TipCompanieRefId),
                 IsActive = categ.IsActive,
+                VisibleInApp = categ.VisibleInApp,
                 TipCompanieRefId = categ.TipCompanieRefId,
                 //Image = (categ.Photo == null || categ.Photo == "") ? null : Convert.ToBase64String(getBytes(_fileManager.ImageStream(categ.Photo))),
             });
@@ -63,7 +67,8 @@ namespace OShop.Application.Companii
         public string TelefonNo { get; set; }
         public string Image { get; set; }
         public DateTime Opening { get; set; }
-
+        public bool TemporaryClosed { get; set; }
+        public bool VisibleInApp { get; set; }
         public bool IsActive { get; set; }
         public int TipCompanieRefId { get; set; }
         public IEnumerable<TransportFee> TransportFees { get; set; }

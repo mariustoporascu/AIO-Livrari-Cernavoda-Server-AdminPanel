@@ -13,15 +13,9 @@ namespace OShop.Application.ProductInOrders
             _context = context;
         }
 
-        public async Task Do(ProductInOrdersViewModel vm)
+        public async Task Do(ProductInOrder vm)
         {
-            var productInOrder = new ProductInOrder
-            {
-                OrderRefId = vm.OrderRefId,
-                ProductRefId = vm.ProductRefId,
-                UsedQuantity = vm.UsedQuantity,
-            };
-            _context.ProductInOrders.Update(productInOrder);
+            _context.ProductInOrders.Update(vm);
             await _context.SaveChangesAsync();
         }
     }

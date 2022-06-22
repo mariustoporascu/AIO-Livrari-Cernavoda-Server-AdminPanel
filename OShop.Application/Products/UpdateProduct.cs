@@ -15,21 +15,10 @@ namespace OShop.Application.Products
             _context = context;
         }
 
-        public async Task Do(ProductVMUI vm)
+        public async Task Do(Product vm)
         {
-            var product = new Product
-            {
-                ProductId = vm.ProductId,
-                Name = vm.Name,
-                Description = vm.Description,
-                Stock = vm.Stock,
-                Price = vm.Price,
-                Photo = vm.Photo,
-                Gramaj = vm.Gramaj,
-                MeasuringUnitId = vm.MeasuringUnitId,
-                SubCategoryRefId = vm.SubCategoryRefId,
-            };
-            _context.Products.Update(product);
+
+            _context.Products.Update(vm);
             await _context.SaveChangesAsync();
         }
         public async Task UpdateStockAfterOrder(int productId, int usedQuantity)

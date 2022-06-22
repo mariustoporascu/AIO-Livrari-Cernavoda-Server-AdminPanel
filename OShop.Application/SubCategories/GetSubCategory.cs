@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OShop.Database;
+using OShop.Domain.Models;
 using System.Linq;
 
 namespace OShop.Application.SubCategories
@@ -13,16 +14,7 @@ namespace OShop.Application.SubCategories
             _context = context;
         }
 
-        public SubCategoryVMUI Do(int? categId)
-        {
-            var categ = _context.SubCategories.AsNoTracking().FirstOrDefault(categ => categ.SubCategoryId == categId);
-            return new SubCategoryVMUI
-            {
-                SubCategoryId = categ.SubCategoryId,
-                Name = categ.Name,
-                Photo = categ.Photo,
-                CategoryRefId = categ.CategoryRefId,
-            };
-        }
+        public SubCategory Do(int? categId) => _context.SubCategories.AsNoTracking().FirstOrDefault(categ => categ.SubCategoryId == categId);
+
     }
 }

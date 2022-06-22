@@ -32,7 +32,7 @@ namespace OShop.UI.Pages.AdminPanel.Companies
 
 
         [BindProperty]
-        public CompanieVMUI Companie { get; set; }
+        public Companie Companie { get; set; }
         [BindProperty]
         public IEnumerable<TipCompanie> TipCompanie { get; set; }
 
@@ -40,7 +40,7 @@ namespace OShop.UI.Pages.AdminPanel.Companies
         {
             TipCompanie = _context.TipCompanies.AsNoTracking().AsEnumerable().ToList();
             if (restId == null)
-                Companie = new CompanieVMUI();
+                Companie = new Companie();
             else
             {
                 Companie = new GetCompanie(_context).Do(restId);

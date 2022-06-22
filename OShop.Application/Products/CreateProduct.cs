@@ -21,21 +21,10 @@ namespace OShop.Application.Products
             _context = context;
         }
 
-        public async Task Do(ProductVMUI vm)
+        public async Task Do(Product vm)
         {
-            var product = new Product
-            {
-                ProductId = vm.ProductId,
-                Name = vm.Name,
-                Description = vm.Description,
-                Stock = vm.Stock,
-                Price = vm.Price,
-                Photo = vm.Photo,
-                Gramaj = vm.Gramaj,
-                MeasuringUnitId = vm.MeasuringUnitId,
-                SubCategoryRefId = vm.SubCategoryRefId,
-            };
-            _context.Products.Add(product);
+
+            _context.Products.Add(vm);
             await _context.SaveChangesAsync();
         }
     }
@@ -62,7 +51,7 @@ namespace OShop.Application.Products
         public int MeasuringUnitId { get; set; }
 
         public string Photo { get; set; }
-
+        public bool IsAvailable { get; set; }
         public string Image { get; set; }
         public IEnumerable<ExtraProdus> ExtraProduse { get; set; }
 

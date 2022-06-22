@@ -10,7 +10,7 @@ namespace OShop.Domain.Models
         [Column(Order = 1)]
         public int ExtraProdusId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Name { get; set; }
         [Range(0.01, 10000.0)]
         [DataType(DataType.Currency)]

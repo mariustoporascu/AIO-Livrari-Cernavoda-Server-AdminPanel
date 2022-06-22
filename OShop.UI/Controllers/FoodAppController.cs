@@ -31,6 +31,7 @@ namespace OShop.UI.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly string OneSignalApiKey;
         private readonly string OneSignalAppId;
+        private readonly string FBLoginIosEnabled;
         private readonly IConfiguration _config;
         public FoodAppController(IConfiguration config, OnlineShopDbContext context, UserManager<ApplicationUser> userManager)
         {
@@ -39,7 +40,7 @@ namespace OShop.UI.Controllers
             _userManager = userManager;
             OneSignalApiKey = config["ConnectionStrings:SignalApiKey"];
             OneSignalAppId = config["ConnectionStrings:SignalAppId"];
-
+            FBLoginIosEnabled = config["ConnectionStrings:FBLoginIosEnabled"];
         }
 
         [HttpGet("getallproducts")]
@@ -52,6 +53,8 @@ namespace OShop.UI.Controllers
 
         [HttpGet("getallsubcategories")]
         public IActionResult ManageSubCategories() => Ok(new GetAllSubCategories(_context).Do());
+        [HttpGet("fbbtnios")]
+        public IActionResult FbIos() => Ok(FBLoginIosEnabled);
 
         [HttpGet("getallcompanii")]
         public IActionResult ManageRestaurante() => Ok(new GetAllCompanii(_context).Do());
@@ -143,9 +146,9 @@ namespace OShop.UI.Controllers
             public UserLocations UserLocation { get; set; }
             public DateTime Created { get; set; }
             [JsonProperty("productsInOrder")]
-            public List<ProductInOrdersViewModel> ProductsInOrder { get; set; }
+            public List<ProductInOrder> ProductsInOrder { get; set; }
             [JsonProperty("orderInfo")]
-            public OrderInfosViewModel OrderInfos { get; set; }
+            public OrderInfo OrderInfos { get; set; }
 
         }
         [Authorize]
@@ -162,7 +165,7 @@ namespace OShop.UI.Controllers
             if (user != null)
             {
 
-                var orderVM = new OrderViewModel
+                var orderVM = new Order
                 {
                     OrderId = 0,
                     TotalOrdered = order.TotalOrdered,
@@ -175,7 +178,7 @@ namespace OShop.UI.Controllers
                     Created = order.Created,
                 };
 
-                if (!orderVM.TelephoneOrdered)
+                if (!order.TelephoneOrdered)
                 {
                     orderVM.CustomerId = user.Id;
                     orderVM.Status = OrderStatusEnum.Plasata;
@@ -198,7 +201,7 @@ namespace OShop.UI.Controllers
                     }
                 }
                 int orderId = await new CreateOrder(_context).Do(orderVM);
-                if (orderVM.TelephoneOrdered)
+                if (order.TelephoneOrdered)
                 {
                     var location = new UserLocations
                     {
@@ -235,7 +238,7 @@ namespace OShop.UI.Controllers
             return Ok("User not found!");
         }
         [HttpPost("askhelp")]
-        public async Task<IActionResult> SendHelpMsg([FromBody] object helpMsg)
+        public IActionResult SendHelpMsg([FromBody] object helpMsg)
         {
             var settings = new JsonSerializerSettings
             {
@@ -259,7 +262,7 @@ namespace OShop.UI.Controllers
                 NullValueHandling = NullValueHandling.Ignore,
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
-            var orderInfoVM = JsonConvert.DeserializeObject<OrderInfosViewModel>(orderInfo.ToString(), settings);
+            var orderInfoVM = JsonConvert.DeserializeObject<OrderInfo>(orderInfo.ToString(), settings);
             await new CreateOrderInfo(_context).Do(orderInfoVM);
             return Ok();
         }
@@ -273,7 +276,7 @@ namespace OShop.UI.Controllers
                 NullValueHandling = NullValueHandling.Ignore,
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
-            var orderProductsVM = JsonConvert.DeserializeObject<List<ProductInOrdersViewModel>>(orderproducts.ToString(), settings);
+            var orderProductsVM = JsonConvert.DeserializeObject<List<ProductInOrder>>(orderproducts.ToString(), settings);
             await new CreateProductInOrder(_context).Do(orderProductsVM);
             return Ok();
         }

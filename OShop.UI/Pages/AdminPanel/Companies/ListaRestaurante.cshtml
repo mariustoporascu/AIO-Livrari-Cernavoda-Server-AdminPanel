@@ -16,7 +16,7 @@
 						<th>Nr Telefon</th>
 						<th>Deschis ?</th>
 						<th>Data deschiderii</th>
-@*						<th>Cost transport</th>
+						@*						<th>Cost transport</th>
 						<th>Comanda minima</th>*@
 						<th>Poza</th>
 						<th style="text-align:right"></th>
@@ -30,8 +30,8 @@
 							<td>@product.TelefonNo</td>
 							<td>@product.IsActive</td>
 							<td>@product.Opening</td>
-@*							<td>@product.TransporFee</td>
-							<td>@product.MinimumOrderValue</td>*@
+							@*							<td>@product.TransporFee</td>
+						<td>@product.MinimumOrderValue</td>*@
 							<td>
 								@if (product.Photo != null)
 								{
@@ -44,7 +44,7 @@
 								}
 							</td>
 							<td>
-								<a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/Companies/DeleteRestaurant" asp-route-restId="@product.CompanieId">Sterge</a>
+								<button class="btn btn-danger" style="float:right;margin-left:5px" onclick="ConfirmDelete(@product.CompanieId)">Sterge</button>
 								<a class="btn btn-primary" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/Companies/CreateRestaurant" asp-route-restId="@product.CompanieId">Editeaza</a>
 							</td>
 						</tr>
@@ -54,3 +54,12 @@
 		</div>
 	</div>
 </div>
+@section Scripts {
+	<script type="text/javascript">
+		function ConfirmDelete(restId) {
+			var x = confirm("Esti sigur ca vrei sa stergi compania din baza de date (este ireversibil)?");
+			if (x !== false)
+				window.location.href = '/AdminPanel/Companies/DeleteRestaurant?restId=' + restId;
+		}
+	</script>
+}

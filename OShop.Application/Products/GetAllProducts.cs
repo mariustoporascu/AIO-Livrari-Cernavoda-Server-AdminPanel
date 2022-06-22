@@ -30,6 +30,7 @@ namespace OShop.Application.Products
                     Price = prod.Price,
                     Photo = prod.Photo,
                     Gramaj = prod.Gramaj,
+                    IsAvailable = prod.IsAvailable,
                     MeasuringUnitId = prod.MeasuringUnitId,
                     SubCategoryRefId = prod.SubCategoryRefId,
                     ExtraProduse = _context.ExtraProduse.AsNoTracking().AsEnumerable().Where(extr => extr.ProductRefId == prod.ProductId),
@@ -48,6 +49,7 @@ namespace OShop.Application.Products
                     Price = prod.Price,
                     Photo = prod.Photo,
                     Gramaj = prod.Gramaj,
+                    IsAvailable = prod.IsAvailable,
                     MeasuringUnitId = prod.MeasuringUnitId,
                     SubCategoryRefId = prod.SubCategoryRefId,
                 });

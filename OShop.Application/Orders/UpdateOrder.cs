@@ -16,18 +16,10 @@ namespace OShop.Application.Orders
             _context = context;
         }
 
-        public async Task Do(OrderViewModel vm)
+        public async Task Do(Order vm)
         {
-            var order = new Order
-            {
-                OrderId = vm.OrderId,
-                Status = vm.Status,
-                CustomerId = vm.CustomerId,
-                TotalOrdered = vm.TotalOrdered,
-                CompanieRefId = vm.CompanieRefId,
-                Created = vm.Created,
-            };
-            _context.Orders.Update(order);
+
+            _context.Orders.Update(vm);
             await _context.SaveChangesAsync();
         }
         public async Task<bool> Do(int orderId, string status)

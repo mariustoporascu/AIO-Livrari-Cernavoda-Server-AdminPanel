@@ -16,20 +16,9 @@ namespace OShop.Application.Companii
         {
             _context = context;
         }
-        public async Task Do(CompanieVMUI vm)
+        public async Task Do(Companie vm)
         {
-            var restaurant = new Companie
-            {
-                CompanieId = vm.CompanieId,
-                Name = vm.Name,
-                Photo = vm.Photo,
-                TelefonNo = vm.TelefonNo,
-                Opening = vm.Opening,
-
-                TipCompanieRefId = vm.TipCompanieRefId,
-                IsActive = vm.IsActive,
-            };
-            _context.Companies.Update(restaurant);
+            _context.Companies.Update(vm);
             await _context.SaveChangesAsync();
         }
     }

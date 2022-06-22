@@ -41,6 +41,24 @@
 							</td>
 						</tr>
 						<tr>
+							<th>Afiseaza in app?</th>
+							<td class="form-group">
+								<div class="form-check">
+									<input asp-for="@Model.Companie.VisibleInApp" class="form-check-input" type="checkbox" />
+									<span asp-validation-for="@Model.Companie.VisibleInApp" class="text-danger"></span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th>Inchis temporar in app?</th>
+							<td class="form-group">
+								<div class="form-check">
+									<input asp-for="@Model.Companie.TemporaryClosed" class="form-check-input" type="checkbox" />
+									<span asp-validation-for="@Model.Companie.TemporaryClosed" class="text-danger"></span>
+								</div>
+							</td>
+						</tr>
+						<tr>
 							<th>Este deschis?</th>
 							<td class="form-group">
 								<div class="form-check">

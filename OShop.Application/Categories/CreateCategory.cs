@@ -19,16 +19,9 @@ namespace OShop.Application.Categories
             _context = context;
         }
 
-        public async Task Do(CategoryVMUI vm)
+        public async Task Do(Category vm)
         {
-            var categ = new Category
-            {
-                CategoryId = vm.CategoryId,
-                Name = vm.Name,
-                Photo = vm.Photo,
-                CompanieRefId = vm.CompanieRefId,
-            };
-            _context.Categories.Add(categ);
+            _context.Categories.Add(vm);
             await _context.SaveChangesAsync();
             var companie = new GetCompanie(_context).Do(vm.CompanieRefId);
             if (companie.TipCompanieRefId != 2)
@@ -36,21 +29,12 @@ namespace OShop.Application.Categories
                 var subCategAuto = new SubCategory
                 {
                     Name = vm.Name,
-                    CategoryRefId = categ.CategoryId
+                    CategoryRefId = vm.CategoryId
                 };
                 _context.SubCategories.Add(subCategAuto);
                 await _context.SaveChangesAsync();
             }
         }
 
-    }
-    public class CategoryVMUI
-    {
-        public int CategoryId { get; set; }
-        [Required]
-        public string Name { get; set; }
-        public string Photo { get; set; }
-        public string Image { get; set; }
-        public int CompanieRefId { get; set; }
     }
 }

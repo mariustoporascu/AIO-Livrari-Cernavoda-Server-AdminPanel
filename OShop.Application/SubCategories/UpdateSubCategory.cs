@@ -15,16 +15,10 @@ namespace OShop.Application.SubCategories
             _context = context;
         }
 
-        public async Task Do(SubCategoryVMUI vm)
+        public async Task Do(SubCategory vm)
         {
-            var category = new SubCategory
-            {
-                SubCategoryId = vm.SubCategoryId,
-                Name = vm.Name,
-                Photo = vm.Photo,
-                CategoryRefId = vm.CategoryRefId,
-            };
-            _context.SubCategories.Update(category);
+
+            _context.SubCategories.Update(vm);
             await _context.SaveChangesAsync();
         }
 

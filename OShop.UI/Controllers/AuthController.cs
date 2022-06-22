@@ -138,7 +138,11 @@ namespace OShop.UI.Controllers
                 MissingMemberHandling = MissingMemberHandling.Ignore
             };
             var user = JsonConvert.DeserializeObject<AuthVM>(userInfo.ToString(), settings);
-            var account = await _userManager.FindByEmailAsync(user.Email);
+            ApplicationUser account;
+            if (user.Email == "apple@apple.com")
+                account = _userManager.Users.FirstOrDefault(usr => usr.UserIdentification == user.UserIdentification);
+            else
+                account = await _userManager.FindByEmailAsync(user.Email);
             if (account == null)
             {
                 return Ok("Email is wrong or user not existing.");
@@ -225,6 +229,7 @@ namespace OShop.UI.Controllers
                     }
                     return Ok(new AuthVM
                     {
+                        Email = account.Email,
                         FullName = account.FullName,
                         PhoneNumber = account.PhoneNumber,
                         CompleteProfile = account.CompleteProfile,

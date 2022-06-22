@@ -30,9 +30,9 @@ namespace OShop.UI.Pages.AdminPanel.SubCategory
         }
 
         [BindProperty]
-        public SubCategoryVMUI SubCategory { get; set; }
+        public OShop.Domain.Models.SubCategory SubCategory { get; set; }
         [BindProperty]
-        public IEnumerable<CategoryVMUI> Categ { get; set; }
+        public IEnumerable<OShop.Domain.Models.Category> Categ { get; set; }
 
         [BindProperty]
         public int Canal { get; set; }
@@ -43,7 +43,7 @@ namespace OShop.UI.Pages.AdminPanel.SubCategory
                 return RedirectToPage("/Error");
             Categ = new GetAllCategories(_context).Do(canal).ToList();
             if (categId == null)
-                SubCategory = new SubCategoryVMUI();
+                SubCategory = new OShop.Domain.Models.SubCategory();
             else
             {
                 SubCategory = new GetSubCategory(_context).Do(categId);

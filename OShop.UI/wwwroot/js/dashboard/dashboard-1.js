@@ -217,7 +217,7 @@
 
 //})(jQuery);
 async function fetchData(chart) {
-    const url = 'http://192.168.0.160/foodapp/api/foodappmanage/getmyearnings';
+    const url = 'http://livro.sytes.net/foodapp/api/foodappmanage/getmyearnings';
     const response = await fetch(url);
     const dataPoints = await response.json();
     chart.data.datasets[0].data = dataPoints;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OShop.Database;
+using OShop.Domain.Models;
 using System.Linq;
 
 namespace OShop.Application.OrderInfos
@@ -13,20 +14,7 @@ namespace OShop.Application.OrderInfos
             _context = context;
         }
 
-        public OrderInfosViewModel Do(int orderId)
-        {
-            var orderInfo = _context.OrdersInfos.AsNoTracking().FirstOrDefault(orderinfo => orderinfo.OrderRefId == orderId);
-            if (orderInfo == null)
-                return null;
-            else
-                return new OrderInfosViewModel
-                {
-                    OrderInfoId = orderInfo.OrderInfoId,
-                    FullName = orderInfo.FullName,
-                    Address = orderInfo.Address,
-                    PhoneNo = orderInfo.PhoneNo,
-                    OrderRefId = orderInfo.OrderRefId,
-                };
-        }
+        public OrderInfo Do(int orderId) => _context.OrdersInfos.AsNoTracking().FirstOrDefault(orderinfo => orderinfo.OrderRefId == orderId);
+
     }
 }

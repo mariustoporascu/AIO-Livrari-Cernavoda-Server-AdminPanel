@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OShop.Application.Companii;
 using OShop.Database;
+using OShop.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,20 +18,7 @@ namespace OShop.Application.Companii
         {
             _context = context;
         }
-        public CompanieVMUI Do(int? restaurantId)
-        {
-            var vm = _context.Companies.AsNoTracking().FirstOrDefault(prod => prod.CompanieId == restaurantId);
-            return new CompanieVMUI
-            {
-                CompanieId = vm.CompanieId,
-                Name = vm.Name,
-                Photo = vm.Photo,
-                TelefonNo = vm.TelefonNo,
-                Opening = vm.Opening,
+        public Companie Do(int? restaurantId) => _context.Companies.AsNoTracking().FirstOrDefault(prod => prod.CompanieId == restaurantId);
 
-                TipCompanieRefId = vm.TipCompanieRefId,
-                IsActive = vm.IsActive,
-            };
-        }
     }
 }

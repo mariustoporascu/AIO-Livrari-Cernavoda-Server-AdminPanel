@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OShop.Database;
+using OShop.Domain.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,14 +15,7 @@ namespace OShop.Application.ProductInOrders
             _context = context;
         }
 
-        public IEnumerable<ProductInOrdersViewModel> Do(int orderId) =>
-            _context.ProductInOrders.AsNoTracking().AsEnumerable().Where(productInOrder => productInOrder.OrderRefId == orderId)
-                .Select(productInOrder => new ProductInOrdersViewModel
-                {
-                    OrderRefId = productInOrder.OrderRefId,
-                    ProductRefId = productInOrder.ProductRefId,
-                    UsedQuantity = productInOrder.UsedQuantity,
-                    ClientComments = productInOrder.ClientComments,
-                });
+        public IEnumerable<ProductInOrder> Do(int orderId) =>
+            _context.ProductInOrders.AsNoTracking().AsEnumerable().Where(productInOrder => productInOrder.OrderRefId == orderId);
     }
 }

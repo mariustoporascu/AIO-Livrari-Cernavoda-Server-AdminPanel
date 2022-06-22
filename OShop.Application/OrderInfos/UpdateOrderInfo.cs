@@ -13,17 +13,9 @@ namespace OShop.Application.OrderInfos
             _context = context;
         }
 
-        public async Task Do(OrderInfosViewModel vm)
+        public async Task Do(OrderInfo vm)
         {
-            var orderInfo = new OrderInfo
-            {
-                OrderInfoId = vm.OrderInfoId,
-                FullName = vm.FullName,
-                Address = vm.Address,
-                PhoneNo = vm.PhoneNo,
-                OrderRefId = vm.OrderRefId,
-            };
-            _context.OrdersInfos.Update(orderInfo);
+            _context.OrdersInfos.Update(vm);
             await _context.SaveChangesAsync();
         }
     }

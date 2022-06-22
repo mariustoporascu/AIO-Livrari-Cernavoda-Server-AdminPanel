@@ -12,7 +12,7 @@
 				<thead>
 					<tr>
 						<th>Nume</th>
-						<th>Poza</th>
+						<th>Categorie</th>
 						<th style="text-align:right"></th>
 					</tr>
 				</thead>
@@ -21,20 +21,22 @@
 					{
 						<tr>
 							<td>@category.Name</td>
-
 							<td>
-								@if (category.Photo != null)
-								{
-									var image_path = $"{base_path}/api/webimage/GetImage/{category.Photo}";
-									<img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="@image_path">
-								}
-								else
-								{
-									<img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="~/content/No_image_available.svg">
-								}
+								@Model.Categories.FirstOrDefault(categ => categ.CategoryId == category.CategoryRefId).Name
 							</td>
+							@*<td>
+						@if (category.Photo != null)
+						{
+						var image_path = $"{base_path}/api/webimage/GetImage/{category.Photo}";
+						<img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="@image_path">
+						}
+						else
+						{
+						<img id="categoryphoto" style="width:50px;height:50px; object-fit:cover" src="~/content/No_image_available.svg">
+						}
+						</td>*@
 							<td>
-								<a class="btn btn-danger" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/SubCategory/DeleteSubCategory" asp-route-canal="@Model.Canal" asp-route-categId="@category.SubCategoryId">Sterge</a>
+								<button class="btn btn-danger" style="float:right;margin-left:5px" onclick="ConfirmDelete(@Model.Canal,@category.SubCategoryId)">Sterge</button>
 								<a class="btn btn-primary" style="float:right;margin-left:5px" asp-area="" asp-page="/AdminPanel/SubCategory/CreateSubCategory" asp-route-canal="@Model.Canal" asp-route-categId="@category.SubCategoryId">Editeaza</a>
 
 							</td>
@@ -45,3 +47,12 @@
 		</div>
 	</div>
 </div>
+@section Scripts {
+	<script type="text/javascript">
+		function ConfirmDelete(canal, categId) {
+			var x = confirm("Esti sigur ca vrei sa stergi, se vor sterge si produsele care apartin acestei subcategorii?");
+			if (x !== false)
+				window.location.href = '/AdminPanel/SubCategory/DeleteSubCategory?canal=' + canal + '&categId=' + categId;
+		}
+	</script>
+}
