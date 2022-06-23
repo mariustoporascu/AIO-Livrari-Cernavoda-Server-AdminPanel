@@ -25,7 +25,6 @@ namespace OShop.Domain.Models
         public virtual ICollection<Order> DriverOrders { get; set; }
         public virtual ICollection<RatingClient> RatingClients { get; set; }
         public virtual ICollection<RatingDriver> RatingDrivers { get; set; }
-        public virtual ICollection<UserLocations> Locations { get; set; }
         public virtual ICollection<FireBaseTokens> FBTokens { get; set; }
     }
 }

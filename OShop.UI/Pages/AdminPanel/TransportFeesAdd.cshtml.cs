@@ -27,7 +27,7 @@ namespace OShop.UI.Pages.AdminPanel
 
         public IActionResult OnGet(int tipCompanie, int cityId)
         {
-            TransportFees = _context.TransportFees.AsNoTracking().AsEnumerable().Where(tf => tf.CompanieRefId == cityId && tf.TipCompanieRefId == tipCompanie).ToList();
+            TransportFees = _context.TransportFees.AsNoTracking().AsEnumerable().Where(tf => tf.MainCityRefId == cityId && tf.TipCompanieRefId == tipCompanie).ToList();
             Cities = _context.AvailableCities.AsNoTracking().AsEnumerable().ToList();
             if (TransportFees.Count == 0)
                 foreach (var city in Cities)
@@ -35,7 +35,7 @@ namespace OShop.UI.Pages.AdminPanel
                     {
                         CityRefId = city.CityId,
                         TipCompanieRefId = tipCompanie,
-                        CompanieRefId = cityId
+                        MainCityRefId = cityId
                     });
             return Page();
         }
@@ -47,7 +47,7 @@ namespace OShop.UI.Pages.AdminPanel
                 foreach (var fee in TransportFees)
                 {
                     fee.TransporFee = fee.MinimumOrderValue * 15 / 100;
-                    if (_context.TransportFees.AsNoTracking().FirstOrDefault(fs => fs.CompanieRefId == fee.CompanieRefId && fs.CityRefId == fee.CityRefId) == null)
+                    if (_context.TransportFees.AsNoTracking().FirstOrDefault(fs => fs.MainCityRefId == fee.MainCityRefId && fs.CityRefId == fee.CityRefId) == null)
                     {
                         _context.TransportFees.Add(fee);
                         await _context.SaveChangesAsync();
@@ -55,7 +55,7 @@ namespace OShop.UI.Pages.AdminPanel
                     }
                     else
                     {
-                        var feeDB = _context.TransportFees.AsNoTracking().FirstOrDefault(fs => fs.CompanieRefId == fee.CompanieRefId && fs.CityRefId == fee.CityRefId);
+                        var feeDB = _context.TransportFees.AsNoTracking().FirstOrDefault(fs => fs.MainCityRefId == fee.MainCityRefId && fs.CityRefId == fee.CityRefId);
                         feeDB.TransporFee = fee.TransporFee;
                         feeDB.MinimumOrderValue = fee.MinimumOrderValue;
                         _context.TransportFees.Update(feeDB);

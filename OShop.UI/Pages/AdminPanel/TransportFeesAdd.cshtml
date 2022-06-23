@@ -26,7 +26,7 @@
 								<td>
 									<input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].CityRefId" type="hidden" />
 									<input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].TipCompanieRefId" type="hidden" />
-									<input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].CompanieRefId" type="hidden" />
+									<input asp-for="@Model.TransportFees[Model.TransportFees.IndexOf(fee)].MainCityRefId" type="hidden" />
 									<label class="form-label">@Model.Cities.FirstOrDefault(city => city.CityId == fee.CityRefId).Name</label>
 								</td>
 								<td>

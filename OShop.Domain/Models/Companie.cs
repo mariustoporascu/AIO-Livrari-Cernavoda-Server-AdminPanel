@@ -28,7 +28,6 @@ namespace OShop.Domain.Models
         public TipCompanie TipCompanie { get; set; }
         public virtual ICollection<Category> Categories { get; set; }
         public virtual ICollection<RatingCompanie> RatingCompanies { get; set; }
-        public virtual ICollection<TransportFee> TransportFees { get; set; }
 
     }
 }

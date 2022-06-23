@@ -10,10 +10,10 @@ namespace OShop.Domain.Models
 {
     public class TransportFee
     {
-        public int CompanieRefId { get; set; }
-        public AvailableCity Companii { get; set; }
-
-
+        [Key]
+        [Column(Order = 1)]
+        public int TranspFeeId { get; set; }
+        public int MainCityRefId { get; set; }
         public int CityRefId { get; set; }
         public AvailableCity AvailableCities { get; set; }
         public int TipCompanieRefId { get; set; }

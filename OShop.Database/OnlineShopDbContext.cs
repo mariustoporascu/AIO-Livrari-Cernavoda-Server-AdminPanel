@@ -65,14 +65,9 @@ namespace OShop.Database
                 .WithMany(p => p.ProductInOrders)
                 .HasForeignKey(cp => cp.ProductRefId)
                 .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<TransportFee>().HasKey(cp => new { cp.CityRefId, cp.CompanieRefId });
-            modelBuilder.Entity<TransportFee>().HasOne<AvailableCity>(cp => cp.Companii)
-                .WithMany(c => c.TransportFees2)
-                .HasForeignKey(cp => cp.CompanieRefId)
-                .OnDelete(DeleteBehavior.NoAction);
-            modelBuilder.Entity<TransportFee>().HasOne<AvailableCity>(cp => cp.AvailableCities)
-                .WithMany(p => p.TransportFees)
-                .HasForeignKey(cp => cp.CityRefId)
+            modelBuilder.Entity<AvailableCity>().HasMany<TransportFee>(c => c.TransportFees)
+                .WithOne(p => p.AvailableCities)
+                .HasForeignKey(p => p.CityRefId)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Order>().HasOne(oi => oi.OrderInfos)
                 .WithOne(o => o.Orders)

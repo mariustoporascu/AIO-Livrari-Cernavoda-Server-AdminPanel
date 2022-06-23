@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OShop.Database;
 
@@ -11,9 +12,10 @@ using OShop.Database;
 namespace OShop.Database.Migrations
 {
     [DbContext(typeof(OnlineShopDbContext))]
-    partial class OnlineShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220623082255_city availablity")]
+    partial class cityavailablity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -713,17 +715,10 @@ namespace OShop.Database.Migrations
 
             modelBuilder.Entity("OShop.Domain.Models.TransportFee", b =>
                 {
-                    b.Property<int>("TranspFeeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnOrder(1);
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TranspFeeId"), 1L, 1);
-
                     b.Property<int>("CityRefId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MainCityRefId")
+                    b.Property<int>("CompanieRefId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("MinimumOrderValue")
@@ -735,9 +730,9 @@ namespace OShop.Database.Migrations
                     b.Property<decimal>("TransporFee")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("TranspFeeId");
+                    b.HasKey("CityRefId", "CompanieRefId");
 
-                    b.HasIndex("CityRefId");
+                    b.HasIndex("CompanieRefId");
 
                     b.ToTable("TransportFees");
                 });
@@ -998,7 +993,15 @@ namespace OShop.Database.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("OShop.Domain.Models.AvailableCity", "Companii")
+                        .WithMany("TransportFees2")
+                        .HasForeignKey("CompanieRefId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("AvailableCities");
+
+                    b.Navigation("Companii");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.ApplicationUser", b =>
@@ -1015,6 +1018,8 @@ namespace OShop.Database.Migrations
             modelBuilder.Entity("OShop.Domain.Models.AvailableCity", b =>
                 {
                     b.Navigation("TransportFees");
+
+                    b.Navigation("TransportFees2");
                 });
 
             modelBuilder.Entity("OShop.Domain.Models.Category", b =>

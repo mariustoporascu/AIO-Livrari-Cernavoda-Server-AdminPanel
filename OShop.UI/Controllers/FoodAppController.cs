@@ -49,7 +49,7 @@ namespace OShop.UI.Controllers
         [HttpGet("getallcategories")]
         public IActionResult ManageCategories() => Ok(new GetAllCategories(_context).Do());
         [HttpGet("getallcities")]
-        public IActionResult ManageCities() => Ok(_context.AvailableCities.AsNoTracking().AsEnumerable());
+        public IActionResult ManageCities() => Ok(_context.AvailableCities.AsNoTracking().AsEnumerable().Where(city => city.IsAvailable == true));
 
         [HttpGet("getallsubcategories")]
         public IActionResult ManageSubCategories() => Ok(new GetAllSubCategories(_context).Do());

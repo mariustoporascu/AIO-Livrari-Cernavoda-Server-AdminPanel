@@ -12,8 +12,8 @@ namespace OShop.Domain.Models
 
         [Required(ErrorMessage = "Campul este obligatoriu")]
         public string Name { get; set; }
+        public bool IsAvailable { get; set; } = false;
         public virtual ICollection<TransportFee> TransportFees { get; set; }
-        public virtual ICollection<TransportFee> TransportFees2 { get; set; }
 
     }
 }
