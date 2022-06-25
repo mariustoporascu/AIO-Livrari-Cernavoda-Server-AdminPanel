@@ -15,6 +15,9 @@ namespace OShop.Domain.Models
         public bool CompleteProfile { get; set; } = false;
         public bool HasSetPassword { get; set; } = false;
         public string ResetTokenPass { get; set; } = "";
+        public int ResetTokenRetries { get; set; }
+        public DateTime ResetTokenExpiry { get; set; } = DateTime.UtcNow;
+
         public string ResetTokenPassIdentity { get; set; } = "";
         public int CompanieRefId { get; set; }
         public bool IsDriver { get; set; } = false;

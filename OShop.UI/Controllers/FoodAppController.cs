@@ -55,9 +55,11 @@ namespace OShop.UI.Controllers
         public IActionResult ManageSubCategories() => Ok(new GetAllSubCategories(_context).Do());
         [HttpGet("fbbtnios")]
         public IActionResult FbIos() => Ok(FBLoginIosEnabled);
+        [HttpGet("getpaymentmethods")]
+        public IActionResult PaymentMethods() => Ok(new List<string>() { "Cash la livrare"});
 
         [HttpGet("getallcompanii")]
-        public IActionResult ManageRestaurante() => Ok(new GetAllCompanii(_context).Do());
+        public IActionResult ManageRestaurante() => Ok(new GetAllCompanii(_context).Do().Where(comp => comp.VisibleInApp == true));
         [HttpGet("getalltipcompanii")]
         public IActionResult ManageTipCompanii() => Ok(_context.TipCompanies.AsNoTracking().AsEnumerable());
 
@@ -171,7 +173,7 @@ namespace OShop.UI.Controllers
                     TotalOrdered = order.TotalOrdered,
                     TransportFee = order.TransportFee,
                     CompanieRefId = order.CompanieRefId,
-                    PaymentMethod = order.PaymentMethod,
+                    PaymentMethod = "Cash la livrare",//order.PaymentMethod,
                     IsOrderPayed = order.IsOrderPayed,
                     UserLocationId = order.UserLocationId,
                     TelephoneOrdered = order.TelephoneOrdered,

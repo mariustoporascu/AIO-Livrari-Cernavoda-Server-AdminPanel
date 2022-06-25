@@ -376,6 +376,11 @@ namespace OShop.UI.Controllers
             {
                 return Ok("Email is wrong or user not existing.");
             }
+            else if (account.ResetTokenRetries >= 5)
+            {
+                return Ok("Tried too many times");
+
+            }
             else
             {
                 if (user.ResetTokenPass == account.ResetTokenPass)
@@ -384,13 +389,15 @@ namespace OShop.UI.Controllers
                     if (result.Succeeded)
                     {
                         account.ResetTokenPass = "";
+                        account.ResetTokenRetries = 0;
                         account.HasSetPassword = true;
                         account.ResetTokenPassIdentity = "";
                         await _userManager.UpdateAsync(account);
                         return Ok("Password changed");
                     }
                 }
-
+                account.ResetTokenRetries += 1;
+                await _userManager.UpdateAsync(account);
                 return Ok("Data invalid.");
             }
         }
@@ -435,9 +442,14 @@ namespace OShop.UI.Controllers
             {
                 return Ok("Email is wrong or user not existing.");
             }
+            else if (!string.IsNullOrWhiteSpace(account.ResetTokenPass) && account.ResetTokenExpiry.CompareTo(DateTime.UtcNow) > 0)
+            {
+                return Ok("Already generated");
+            }
             else
             {
                 account.ResetTokenPass = CodeGen.Generate();
+                account.ResetTokenExpiry = DateTime.UtcNow.AddMinutes(15);
                 account.ResetTokenPassIdentity = await _userManager.GeneratePasswordResetTokenAsync(account);
                 await _userManager.UpdateAsync(account);
                 EmailSender sender = new EmailSender(_config);
