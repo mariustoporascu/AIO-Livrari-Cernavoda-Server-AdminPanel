@@ -1,0 +1,48 @@
+﻿@page
+@model ManageRolesModel
+@{
+	ViewData["Title"] = "Roluri pe server";
+	Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+<div class="container-fluid mt-3">
+	<div class="row flex-column">
+		<h2>Roluri pe server</h2>
+		<form method="post">
+			<div class="input-group">
+				<input name="roleName" class="form-control w-25">
+
+			</div>
+			<span class="input-group-btn">
+				<button class="btn btn-info mt-2 " asp-area="" asp-page="/AdminPanel/RolesManagement/AddRole">Adauga un nou rol</button>
+			</span>
+		</form>
+	</div>
+	<div class="row card mt-2">
+		<div class="table-responsive">
+			<table class="table header-border table-hover verticle-middle">
+				<thead>
+					<tr>
+						<th>Id</th>
+						<th>Nume rol</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var role in Model.RolesViewModels)
+					{
+						<tr>
+							<td>@role.Id</td>
+							<td>@role.Name</td>
+							<td>
+								<form method="post" asp-area="Identity" asp-page="/AdminPanel/RolesManagement/RemoveRole" asp-route-id="@role.Id">
+									<button type="submit" class="btn btn-sm btn-danger">
+										Sterge
+									</button>
+								</form>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

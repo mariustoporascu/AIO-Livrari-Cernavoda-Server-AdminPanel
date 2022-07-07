@@ -1,0 +1,97 @@
+﻿@page
+@model OrderManageModel
+@{
+	ViewData["Title"] = "Istoric comenzi";
+}
+<div class="container-fluid mt-3">
+	<h1>Comenzi</h1>
+	<form method="post" asp-page-handler="export">
+		<input type="hidden" value="@Model.FiltruCompanie" asp-for="@Model.FiltruCompanie" />
+		<input type="hidden" value="@Model.FiltruData" asp-for="@Model.FiltruData" />
+		<button type="submit" class="btn btn-info"><span>Exporta Excel</span></button>
+	</form>
+	@*@using (Html.BeginForm("Index", "Products"))
+	{
+	<input type="text" name="category" />
+	<input type="submit" value="Search by category" />
+	}*@
+	<div class="row card mt-2">
+		<div class="table-responsive">
+			<table class="table header-border table-hover verticle-middle">
+				<thead>
+					<tr>
+						<th>Numar</th>
+						@if (User.IsInRole("SuperAdmin"))
+						{
+							<th>Companie</th>
+
+						}
+						<th>Client</th>
+						<th>Status</th>
+						<th>Total</th>
+						@if (User.IsInRole("SuperAdmin"))
+						{
+							<th>Transport</th>
+
+						}
+						<th>Data</th>
+						<th style="text-align:right"></th>
+					</tr>
+					<tr>
+						<form method="post" asp-page-handler="filter">
+						<th></th>
+							@if (User.IsInRole("SuperAdmin"))
+							{
+							<th>
+								<select asp-for="@Model.FiltruCompanie">
+									<option value="0">Toate</option>
+										@foreach (var comp in Model.Companii)
+										{
+										<option value="@comp.CompanieId">@comp.Name</option>
+
+										}
+								</select>
+							</th>
+							}
+						<th></th>
+						<th></th>
+						<th></th>
+							@if (User.IsInRole("SuperAdmin"))
+							{
+							<th></th>
+
+							}
+						<th><input type="date" asp-for="@Model.FiltruData" /></th>
+						<th style="text-align:right"> <button type="submit" class="btn btn-info"><span>Aplica filtru</span></button></th>
+						</form>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var order in Model.Orders)
+					{
+						<tr>
+							<td>@order.OrderId</td>
+							@if (User.IsInRole("SuperAdmin"))
+							{
+								<td>@Model.Companii.FirstOrDefault(comp => comp.CompanieId == order.CompanieRefId).Name</td>
+							}
+							<td><span>@order.OrderInfo.FullName</span></td>
+							<td>@order.Status</td>
+							<td>@order.TotalOrdered</td>
+							@if (User.IsInRole("SuperAdmin"))
+							{
+								<td>
+									@order.TransportFee
+								</td>
+							}
+							<td>@order.Created</td>
+							<td>
+								<a class="btn btn-primary" style="float:right" asp-area="" asp-page="/AdminPanel/OrderInfo" asp-route-vm="@order.OrderId">Detalii Comanda</a>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>

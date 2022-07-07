@@ -1,0 +1,149 @@
+﻿@page
+@model CreateCompanieModel
+@{
+	ViewData["Title"] = "Editare Companie";
+	var base_path = Request.PathBase;
+}
+<div class="container-fluid mt-3">
+	@if (Model.Companie.CompanieId > 0)
+	{
+		<h1>Editare Companie</h1>
+	}
+	else
+	{
+		<h1>Adaugare Companie</h1>
+	}
+
+	<div class="row card mt-2">
+		<form method="post" enctype="multipart/form-data">
+			<input asp-for="@Model.Companie.CompanieId" type="hidden" />
+			<div class="table-responsive">
+				<table class="table header-border table-hover verticle-middle">
+					<thead>
+						<tr>
+							<th>Tip camp</th>
+							<th>Valoare</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<th>Nume</th>
+							<td class="form-group">
+								<input asp-for="@Model.Companie.Name" class="form-control" />
+								<span asp-validation-for="@Model.Companie.Name" class="text-danger"></span>
+							</td>
+						</tr>
+						<tr>
+							<th>Nr Telefon</th>
+							<td class="form-group">
+								<input asp-for="@Model.Companie.TelefonNo" class="form-control" />
+								<span asp-validation-for="@Model.Companie.TelefonNo" class="text-danger"></span>
+							</td>
+						</tr>
+						<tr>
+							<th>Afiseaza in app?</th>
+							<td class="form-group">
+								<div class="form-check">
+									<input asp-for="@Model.Companie.VisibleInApp" class="form-check-input" type="checkbox" />
+									<span asp-validation-for="@Model.Companie.VisibleInApp" class="text-danger"></span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th>Inchis temporar in app?</th>
+							<td class="form-group">
+								<div class="form-check">
+									<input asp-for="@Model.Companie.TemporaryClosed" class="form-check-input" type="checkbox" />
+									<span asp-validation-for="@Model.Companie.TemporaryClosed" class="text-danger"></span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th>Este deschis?</th>
+							<td class="form-group">
+								<div class="form-check">
+									<input asp-for="@Model.Companie.IsActive" class="form-check-input" type="checkbox" />
+									<span asp-validation-for="@Model.Companie.IsActive" class="text-danger"></span>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th>Tip Companie</th>
+							<td>
+								<select asp-for="@Model.Companie.TipCompanieRefId" class="form-control">
+									@foreach (var category in Model.TipCompanie)
+									{
+										<option value="@category.TipCompanieId">@category.Name</option>
+									}
+								</select>
+								<span asp-validation-for="@Model.Companie.TipCompanieRefId" class="text-danger"></span>
+							</td>
+						</tr>
+						<tr>
+							<th>Data deschiderii</th>
+							<td class="form-group">
+								<input type="date" asp-for="@Model.Companie.Opening" class="form-control" />
+								<span asp-validation-for="@Model.Companie.Opening" class="text-danger"></span>
+							</td>
+						</tr>
+						@*						<tr>
+						<th>Cost transport</th>
+						<td class="form-group">
+						<input min="0.01" max="100" asp-for="@Model.Companie.TransporFee" class="form-control" />
+						<span asp-validation-for="@Model.Companie.TransporFee" class="text-danger"></span>
+						</td>
+						</tr>
+						<tr>
+						<th>Comanda minima</th>
+						<td class="form-group">
+						<input min="0.01" max="10000" asp-for="@Model.Companie.MinimumOrderValue" class="form-control" />
+						<span asp-validation-for="@Model.Companie.MinimumOrderValue" class="text-danger"></span>
+						</td>
+						</tr>*@
+						<tr>
+							<th>Poza</th>
+							<td class="form-group">
+								<input type="hidden" asp-for="@Model.Companie.Photo" />
+								@if (@Model.Companie.Photo != null)
+								{
+									var image_path = $"{base_path}/api/webimage/GetImage/{Model.Companie.Photo}";
+									<img id="productphoto" style="width:150px;height:150px; object-fit:contain" src="@image_path">
+								}
+								else
+								{
+									<img id="productphoto" style="width:150px;height:150px; object-fit:contain" src="~/content/No_image_available.svg">
+								}
+								<input type="file"
+									   accept=".png,.jpg,.jpeg,.gif,.tif"
+									   asp-for="@Model.Companie.Photo"
+									   class="form-control"
+									   style="border:0px!important;padding: 0px;padding-top: 10px;padding-bottom: 30px;"
+									   onchange="document.getElementById('productphoto').src = window.URL.createObjectURL(this.files[0])" />
+								<span asp-validation-for="@Model.Companie.Photo" class="text-danger"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="d-flex align-items-center flex-column">
+				@if (Model.Companie.CompanieId > 0)
+				{
+					<button type="submit" class="btn btn-primary" asp-route-restId="@Model.Companie.CompanieId">
+						<text>Salveaza modificari</text>
+					</button>
+				}
+				else
+				{
+					<button type="submit" class="btn btn-primary">
+						<text>Adauga Companie</text>
+					</button>
+				}
+				<a class="btn btn-warning mt-5" asp-area="" asp-page="/AdminPanel/Companies/ListaCompanii">Anuleaza</a>
+			</div>
+		</form>
+	</div>
+</div>
+@section Scripts {
+
+	<partial name="_ValidationScriptsPartial" />
+}

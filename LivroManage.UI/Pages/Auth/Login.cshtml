@@ -1,0 +1,48 @@
+﻿@page
+@model LoginModel
+
+@{
+	ViewData["Title"] = "Log in";
+}
+
+<div class="brand-logo mt-5">
+	<div class="d-flex align-items-center flex-column">
+		<b class="logo-abbr"><img class="rounded" src="~/images/logo-text.png" alt=""> </b>
+	</div>
+</div>
+<div class="login-form-bg h-100">
+	<div class="container h-100">
+		<div class="row justify-content-center h-75">
+			<div class="col-xl-6">
+				<div class="form-input-content">
+					<div class="card login-form mb-0">
+						<div class="card-body pt-5">
+							<div class="h3"><span>Autentificare</span></div>
+							<partial name="_StatusMessage" model="Model.StatusMessage" />
+							<form class="mt-5 mb-5 login-input" method="post">
+								<div class="form-group">
+									<label asp-for="Input.Email"></label>
+									<input asp-for="Input.Email" class="form-control" />
+									<span asp-validation-for="Input.Email" class="text-danger"></span>
+								</div>
+								<div class="form-group">
+									<label asp-for="Input.Password"></label>
+									<input asp-for="Input.Password" class="form-control" />
+									<span asp-validation-for="Input.Password" class="text-danger"></span>
+								</div>
+
+								<button type="submit" class="btn login-form__btn submit w-100">Sign In</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}
+
+
+

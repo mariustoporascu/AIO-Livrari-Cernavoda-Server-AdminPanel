@@ -1,0 +1,248 @@
+﻿@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Mvc.ViewEngines
+@using Microsoft.AspNetCore.Identity
+@using LivroManage.Domain.Models;
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject IWebHostEnvironment Environment
+@inject ICompositeViewEngine Engine
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Livro</title>
+	<link rel="icon" type="image/png" sizes="16x16" href="~/images/favicon.png">
+	<!-- Pignose Calender -->
+	<link href="~/plugins/pg-calendar/css/pignose.calendar.min.css" rel="stylesheet">
+	<!-- Chartist -->
+	<link rel="stylesheet" href="~/plugins/chartist/css/chartist.min.css">
+	<link rel="stylesheet" href="~/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css">
+	<!-- Custom Stylesheet -->
+	<link href="~/css/style.css" asp-append-version="true" rel="stylesheet">
+</head>
+<body>
+	<!--*******************
+		Preloader start
+	********************-->
+	<div id="preloader">
+		<div class="loader">
+			<svg class="circular" viewBox="25 25 50 50">
+				<circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+			</svg>
+		</div>
+	</div>
+	<!--*******************
+		Preloader end
+	********************-->
+	<div id="main-wrapper">
+		@if (SignInManager.IsSignedIn(User))
+		{
+
+
+				<!--**********************************
+					Nav header start
+				***********************************-->
+				<div class="nav-header">
+					<div class="brand-logo">
+						<a asp-page="/Index" class="d-flex align-items-center flex-column">
+							<b class="logo-abbr"><img src="~/images/logo.png" alt=""> </b>
+							<span class="logo-compact"><img src="~/images/logo-compact.png" alt=""></span>
+							<span class="brand-title">
+								<img class="rounded" src="~/images/logo-text.png" style="height:55px" alt="">
+							</span>
+						</a>
+					</div>
+				</div>
+
+				<!--**********************************
+					Nav header end
+				***********************************-->
+				<!--**********************************
+					Header start
+				***********************************-->
+				<div class="header">
+					<div class="header-content clearfix">
+
+						<div class="nav-control">
+							<div class="hamburger">
+								<span class="toggle-icon"><i class="icon-menu"></i></span>
+							</div>
+						</div>
+
+						<div class="header-right">
+							<ul class="clearfix">
+
+								<li class="icons dropdown">
+
+
+									<div class="user-img c-pointer position-relative" data-toggle="dropdown">
+										<span class="activity active"></span>
+
+									@if (!String.IsNullOrEmpty(UserManager.GetUserAsync(User).Result.ProfilePicture))
+									{
+										var image_path = $"/api/webimage/GetImage/{UserManager.GetUserAsync(User).Result.ProfilePicture}";
+												<img style="width:40px;height:40px; object-fit:cover; border-radius:30px" src="@image_path">
+									}
+									else
+									{
+												<img style="width:40px;height:40px; object-fit:cover; border-radius:30px" src="~/content/No_image_available.svg">
+
+									}
+									</div>
+									<div class="drop-down dropdown-profile animated fadeIn dropdown-menu">
+										<div class="dropdown-content-body">
+											<ul>
+												<li>
+													<a class="icon-user" asp-area="" asp-page="/AdminPanel/Profile"> <span>Profilul tau</span></a>
+
+												</li>
+												<li>
+													<a class="icon-key" asp-area="" asp-page="/AdminPanel/ChangePassword"> <span>Schimba Parola</span></a>
+
+												</li>
+											@if (User.IsInRole("SuperAdmin"))
+											{
+														<li>
+															<a class="icon-lock" asp-area="" asp-page="/AdminPanel/RolesManagement/Index"> <span>Management</span></a>
+														</li>
+											}
+
+												<hr class="my-2">
+
+												<li>
+													<a class="icon-lock" asp-page="/Auth/Logout"> <span>Inchide sesiunea</span></a>
+
+												</li>
+											</ul>
+										</div>
+									</div>
+
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!--**********************************
+					Header end ti-comment-alt
+				***********************************-->
+				<!--**********************************
+					Sidebar start
+				***********************************-->
+				<div class="nk-sidebar">
+					<div class="nk-nav-scroll">
+						<ul class="metismenu" id="menu">
+							<li class="nav-label">Administrare</li>
+							<li>
+								<a asp-page="/Index">
+									<i class="icon-speedometer menu-icon"></i><span class="nav-text">Dashboard</span>
+								</a>
+
+							</li>
+						@if (User.IsInRole("SuperAdmin"))
+						{
+									<li class="nav-label">Companii aplicatie</li>
+									<li>
+										<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+											<i class="icon-note menu-icon"></i><span class="nav-text">Companii</span>
+										</a>
+										<ul aria-expanded="false">
+											<li><a asp-page="/AdminPanel/Companies/ListaRestaurante">Lista Companii</a></li>
+											<li><a asp-page="/AdminPanel/Companies/CreateRestaurant">Adaugare Companie</a></li>
+										</ul>
+									</li>
+						}
+						@if (User.IsInRole("Admin"))
+						{
+									<li class="nav-label">Inventar Aplicatie</li>
+									<li>
+										<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+											<i class="icon-note menu-icon"></i><span class="nav-text">Categorii</span>
+										</a>
+										<ul aria-expanded="false">
+											<li><a asp-page="/AdminPanel/Category/ListaCategorii" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Lista Categorii</a></li>
+											<li><a asp-page="/AdminPanel/Category/CreateCategory" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Adaugare Categorie</a></li>
+										</ul>
+									</li>
+									<li>
+										<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+											<i class="icon-note menu-icon"></i><span class="nav-text">SubCategorii</span>
+										</a>
+										<ul aria-expanded="false">
+											<li><a asp-page="/AdminPanel/SubCategory/ListaSubCategorii" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Lista SubCategorii</a></li>
+											<li><a asp-page="/AdminPanel/SubCategory/CreateSubCategory" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Adaugare SubCategorie</a></li>
+										</ul>
+									</li>
+									<li>
+										<a class="has-arrow" href="javascript:void()" aria-expanded="false">
+											<i class="icon-note menu-icon"></i><span class="nav-text">Produse</span>
+										</a>
+										<ul aria-expanded="false">
+											<li><a asp-page="/AdminPanel/Product/ListaProduse" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Lista Produse</a></li>
+											<li><a asp-page="/AdminPanel/Product/CreateProduct" asp-route-canal="@UserManager.GetUserAsync(User).Result.CompanieRefId">Adaugare Produs</a></li>
+										</ul>
+									</li>
+						}
+							<li class="nav-label">Info Aplicatie</li>
+							<li>
+								<a asp-page="/AdminPanel/OrderManage">
+									<i class="icon-menu menu-icon"></i><span class="nav-text">Istoric Comenzi</span>
+								</a>
+							</li>
+
+						</ul>
+					</div>
+				</div>
+		}
+		<!--**********************************
+			Sidebar end
+		***********************************-->
+		<!--**********************************
+			Content body start
+		***********************************-->
+		@if (SignInManager.IsSignedIn(User))
+		{
+				<div class="content-body">
+
+				@RenderBody()
+				</div>
+				<div class="footer">
+					<div class="copyright">
+						<p>Copyright &copy; Designed & Developed by TMIIT 2022</p>
+					</div>
+				</div>
+		}
+		else
+		{
+			@RenderBody()
+		}
+
+
+
+		<!--**********************************
+			Content body end
+		***********************************-->
+		<!--**********************************
+			Footer start
+		***********************************-->
+		<!--**********************************
+			Footer end
+		***********************************-->
+	</div>
+	<!--**********************************
+		Main wrapper end
+	***********************************-->
+
+	<script src="~/plugins/common/common.min.js" asp-append-version="true"></script>
+	<script src="~/js/custom.min.js" asp-append-version="true"></script>
+	<script src="~/js/settings.js" asp-append-version="true"></script>
+	<script src="~/js/gleek.js" asp-append-version="true"></script>
+	<script src="~/js/styleSwitcher.js" asp-append-version="true"></script>
+
+
+
+
+
+	@RenderSection("Scripts", required: false)
+</body>
+</html>
