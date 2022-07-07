@@ -1,4 +1,4 @@
-# AIO Livrari Cernavoda
+# Livro Management
 Management website for Delivery App in ASP.NET Core
 
 •	Used Visual Studio to develop using C#, HTML, JavaScript and CSS programming languages.
@@ -15,9 +15,8 @@ Management website for Delivery App in ASP.NET Core
 
 •	Hosted with full SSL communication on SmarterASP.net
 
-•	Website domain from GoDaddy.
+•	Dns handled by Cloudflare for increased security
 
-Link to website: https://aiolivraricvd.com/
-Credentials:
-User : testaccowner@test.com
-Password : testacc
+•	Website domain from Romarg.
+
+Link to clients website: https://livro.ro/
