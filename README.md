@@ -20,3 +20,8 @@ Management website for Delivery App in ASP.NET Core
 •	Website domain from Romarg.
 
 Link to clients website: https://livro.ro/
+
+Test Username: labosoi@livro.ro
+Test Password: bosoi2022
+
+
