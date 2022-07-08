@@ -6,13 +6,13 @@ using Newtonsoft.Json;
 using LivroManage.Database;
 using LivroManage.Domain.Models;
 using LivroManage.UI.ApiAuth;
-using LivroManage.UI.Extras;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using LivroManage.UI.Utilities;
 
 namespace LivroManage.UI.Controllers
 {

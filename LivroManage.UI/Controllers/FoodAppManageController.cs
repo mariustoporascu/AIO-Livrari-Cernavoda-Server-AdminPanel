@@ -7,7 +7,7 @@ using LivroManage.Application;
 using LivroManage.Database;
 using LivroManage.Domain.Models;
 using LivroManage.UI.ApiAuthManage;
-using LivroManage.UI.Extras;
+using LivroManage.UI.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,7 +59,7 @@ namespace LivroManage.UI.Controllers
         [HttpGet("updatestatus/{orderId}&{status}&{isOwner}")]
         public async Task<IActionResult> OrderStatus(int orderId, string status, bool isOwner)
         {
-
+            var notifSender = new NotificationSender();
             if (await new OrderOperations(_context, _userManager).UpdateBool(orderId, status))
             {
                 if (status == "In pregatire")
@@ -72,7 +72,7 @@ namespace LivroManage.UI.Controllers
                         if (driverToken != null)
                         {
                             foreach (var token in driverToken)
-                                NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"A aparut o noua comanda fara livrator!");
+                                await notifSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"A aparut o noua comanda fara livrator!");
                         }
                     }
                 }
@@ -88,7 +88,7 @@ namespace LivroManage.UI.Controllers
                         if (restaurantToken != null)
                         {
                             foreach (var token in restaurantToken)
-                                NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Statusul comenzii {orderId} a fost schimbat in {status}!");
+                                await notifSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Statusul comenzii {orderId} a fost schimbat in {status}!");
                         }
                     }
                 }
@@ -99,7 +99,7 @@ namespace LivroManage.UI.Controllers
                     if (driverToken != null)
                     {
                         foreach (var token in driverToken)
-                            NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Statusul comenzii {orderId} a fost schimbat in {status}!");
+                            await notifSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Statusul comenzii {orderId} a fost schimbat in {status}!");
                     }
                 }
                 if (!orderVM.TelephoneOrdered)
@@ -109,7 +109,7 @@ namespace LivroManage.UI.Controllers
                     if (userToken != null)
                     {
                         foreach (var token in userToken)
-                            NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, status.Contains("In curs de livrare") ? $"Comanda {orderId} este in curs de livrare catre tine, o poti urmari pe harta."
+                            await notifSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, status.Contains("In curs de livrare") ? $"Comanda {orderId} este in curs de livrare catre tine, o poti urmari pe harta."
                                 : $"Statusul comenzii {orderId} a fost schimbat in {status}!");
                     }
                 }
@@ -143,8 +143,9 @@ namespace LivroManage.UI.Controllers
                         .Select(tkn => tkn.FBToken).Distinct().ToList();
                     if (userToken != null)
                     {
+                        var notifSender = new NotificationSender();
                         foreach (var token in userToken)
-                            NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Comanda {orderId} a fost modificata conform cererii tale, are un nou pret total si un comentariu.");
+                            await notifSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Comanda {orderId} a fost modificata conform cererii tale, are un nou pret total si un comentariu.");
                     }
                 }
                 else
@@ -167,6 +168,7 @@ namespace LivroManage.UI.Controllers
         [HttpGet("driverlockorder/{email}&{orderId}")]
         public async Task<IActionResult> DriverLockorder(string email, int orderId)
         {
+            var notifSender = new NotificationSender();
             var driverId = (await _userManager.FindByEmailAsync(email)).Id;
             if (_context.Orders.AsNoTracking().Where(ord => ord.DriverRefId == driverId && ord.Status != "Refuzata" && ord.Status != "Livrata").Count() >= maxAllowedOrdersForDriver)
             {
@@ -183,7 +185,7 @@ namespace LivroManage.UI.Controllers
                     if (restaurantToken != null)
                     {
                         foreach (var token in restaurantToken)
-                            NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"La comanda {orderId} s-a alaturat un livrator pentru livrarea ulterioara!");
+                            await notifSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"La comanda {orderId} s-a alaturat un livrator pentru livrarea ulterioara!");
                     }
                 }
                 if (!orderVM.TelephoneOrdered)
@@ -193,7 +195,7 @@ namespace LivroManage.UI.Controllers
                     if (userToken != null)
                     {
                         foreach (var token in userToken)
-                            NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"La comanda {orderId} s-a alaturat un livrator pentru livrarea ulterioara!");
+                            await notifSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"La comanda {orderId} s-a alaturat un livrator pentru livrarea ulterioara!");
                     }
                 }
 
@@ -247,8 +249,9 @@ namespace LivroManage.UI.Controllers
                         .Select(tkn => tkn.FBToken).Distinct().ToList();
                 if (userToken != null)
                 {
+                    var notifSender = new NotificationSender();
                     foreach (var token in userToken)
-                        NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Ai primit un timp estimat de pregatire al comenzii cu numarul {orderId}, te rugam sa iti exprimi acordul!");
+                        await notifSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Ai primit un timp estimat de pregatire al comenzii cu numarul {orderId}, te rugam sa iti exprimi acordul!");
                 }
             }
 

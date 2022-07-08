@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using LivroManage.UI.ApiAuth;
-using LivroManage.UI.Extras;
+using LivroManage.UI.Google;
 using System.Threading.Tasks;
 
 namespace LivroManage.UI.Controllers

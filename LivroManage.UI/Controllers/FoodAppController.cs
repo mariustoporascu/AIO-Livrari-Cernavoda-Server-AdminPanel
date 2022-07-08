@@ -8,7 +8,7 @@ using LivroManage.Application.FileManager;
 using LivroManage.Database;
 using LivroManage.Domain.Models;
 using LivroManage.UI.ApiAuth;
-using LivroManage.UI.Extras;
+using LivroManage.UI.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,8 +93,9 @@ namespace LivroManage.UI.Controllers
                         .Select(tkn => tkn.FBToken).Distinct().ToList();
                     if (restaurantToken != null && restaurantToken.Count > 0)
                     {
+                        var notifSender = new NotificationSender();
                         foreach (var token in restaurantToken)
-                            NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, accept ? "Timpul estimat a fost acceptat!" : "Timpul estimat nu a fost acceptat. Poti anula comanda!");
+                            await notifSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, accept ? "Timpul estimat a fost acceptat!" : "Timpul estimat nu a fost acceptat. Poti anula comanda!");
                     }
 
                 }
@@ -151,13 +152,13 @@ namespace LivroManage.UI.Controllers
                 if (!order.TelephoneOrdered)
                 {
                     order.CustomerId = user.Id;
-                    order.Status = OrderStatusEnum.Plasata;
+                    order.Status = "Plasata";
                 }
                 else
                 {
                     order.EstimatedTime = order.EstimatedTime;
                     order.HasUserConfirmedET = true;
-                    order.Status = OrderStatusEnum.Pregatire;
+                    order.Status = "In pregatire";
                     var drivers = _userManager.Users.Where(us => us.IsDriver == true).ToList();
                     foreach (var driver in drivers)
                     {
@@ -165,8 +166,9 @@ namespace LivroManage.UI.Controllers
                         .Select(tkn => tkn.FBToken).Distinct().ToList();
                         if (driverToken != null)
                         {
+                            var notifSender = new NotificationSender();
                             foreach (var token in driverToken)
-                                NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"A aparut o noua comanda fara livrator!");
+                                await notifSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"A aparut o noua comanda fara livrator!");
                         }
                     }
                 }
@@ -197,8 +199,9 @@ namespace LivroManage.UI.Controllers
                         .Select(tkn => tkn.FBToken).Distinct().ToList();
                     if (restaurantToken != null)
                     {
+                        var notifSender = new NotificationSender();
                         foreach (var token in restaurantToken)
-                            NotificationSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Ai primit o noua comanda in sistem cu numarul {orderId}!");
+                            await notifSender.SendNotif(OneSignalApiKey, OneSignalAppId, token, $"Ai primit o noua comanda in sistem cu numarul {orderId}!");
                     }
                 }
                 return Ok("Order placed.");
