@@ -19,7 +19,7 @@ Management website for Delivery App in ASP.NET Core
 
 •	Website domain from Romarg.
 
-Link to admin website: https://manage.livro.ro/
+Link to admin website: https://livromng.topodvlp.website
 
 Test Username: labosoi@livro.ro
 Test Password: bosoi2022

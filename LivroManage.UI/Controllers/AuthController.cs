@@ -17,6 +17,7 @@ using LivroManage.UI.Utilities;
 namespace LivroManage.UI.Controllers
 {
     [ApiController]
+    [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
@@ -49,7 +50,7 @@ namespace LivroManage.UI.Controllers
             _config = config;
             _context = context;
         }
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateAccount([FromBody] object userInfo)
         {
@@ -115,7 +116,7 @@ namespace LivroManage.UI.Controllers
                 return Ok("User already exists.");
             }
         }
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpPost("login")]
         public async Task<IActionResult> LoginAccount([FromBody] object userInfo)
         {
@@ -173,7 +174,7 @@ namespace LivroManage.UI.Controllers
                         }
                         if (account.LoginTokenExpiry.CompareTo(DateTime.UtcNow) <= 0)
                         {
-                            account.LoginToken = Password.Generate(20, 0);
+                            account.LoginToken = Token.Generate(20, 0);
                             account.LoginTokenExpiry = DateTime.UtcNow.AddDays(1);
                             await _userManager.UpdateAsync(account);
                         }
@@ -195,7 +196,7 @@ namespace LivroManage.UI.Controllers
                 {
                     if (account.LoginTokenExpiry.CompareTo(DateTime.UtcNow) <= 0)
                     {
-                        account.LoginToken = Password.Generate(20, 0);
+                        account.LoginToken = Token.Generate(20, 0);
                         account.LoginTokenExpiry = DateTime.UtcNow.AddDays(1);
                         await _userManager.UpdateAsync(account);
                     }
@@ -230,7 +231,7 @@ namespace LivroManage.UI.Controllers
                 return Ok("Login data invalid.");
             }
         }
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpPost("loginManage")]
         public async Task<IActionResult> LoginAccountManage([FromBody] object userInfo)
         {
@@ -273,7 +274,7 @@ namespace LivroManage.UI.Controllers
                     }
                     if (account.LoginTokenExpiry.CompareTo(DateTime.UtcNow) <= 0)
                     {
-                        account.LoginToken = Password.Generate(20, 0);
+                        account.LoginToken = Token.Generate(20, 0);
                         account.LoginTokenExpiry = DateTime.UtcNow.AddDays(1);
                         await _userManager.UpdateAsync(account);
                     }
@@ -291,6 +292,7 @@ namespace LivroManage.UI.Controllers
                     return Ok("Password is wrong.");
             }
         }
+
         [Authorize]
         [HttpPost("setpassword")]
         public async Task<IActionResult> SetPassword([FromBody] object userInfo)
@@ -320,6 +322,7 @@ namespace LivroManage.UI.Controllers
                 return Ok("Data invalid.");
             }
         }
+
         [Authorize]
         [HttpPost("changepassword")]
         public async Task<IActionResult> ChangePassword([FromBody] object userInfo)
@@ -349,7 +352,7 @@ namespace LivroManage.UI.Controllers
                 return Ok("Data invalid.");
             }
         }
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpPost("resetpassword")]
         public async Task<IActionResult> ResetPassword([FromBody] object userInfo)
         {
@@ -389,7 +392,7 @@ namespace LivroManage.UI.Controllers
                 return Ok("Data invalid.");
             }
         }
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpPost("confirmemail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] object userInfo)
         {
@@ -417,7 +420,7 @@ namespace LivroManage.UI.Controllers
                 return Ok("Data invalid.");
             }
         }
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpPost("sendtokenpassword")]
         public async Task<IActionResult> SendTokenPassword([FromBody] object userInfo)
         {
@@ -448,6 +451,7 @@ namespace LivroManage.UI.Controllers
                 return Ok("Token sent.");
             }
         }
+
         [Authorize]
         [HttpPost("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] object userInfo)
@@ -634,7 +638,7 @@ namespace LivroManage.UI.Controllers
                 return r;
             }
         }
-        public static class Password
+        public static class Token
         {
             private static readonly char[] Punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 

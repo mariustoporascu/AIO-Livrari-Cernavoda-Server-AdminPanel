@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace LivroManage.UI.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]

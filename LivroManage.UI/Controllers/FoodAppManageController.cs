@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace LivroManage.UI.Controllers
 {
-
+    [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class FoodAppManageController : ControllerBase
@@ -52,7 +52,7 @@ namespace LivroManage.UI.Controllers
         public IActionResult GetAllOrders() =>
             Ok(new OrderOperations(_context, _userManager).GetAllVMDriver());
         [Authorize]
-        [HttpGet("getallrestaurantorders/{companyRefId}")]
+        [HttpGet("getallcompanyorders/{companyRefId}")]
         public async Task<IActionResult> GetAllOrders(int companyRefId) =>
             Ok(await new OrderOperations(_context, _userManager).GetAllVMOwner(companyRefId));
         [Authorize]
@@ -333,7 +333,7 @@ namespace LivroManage.UI.Controllers
             await _context.SaveChangesAsync();
             return Ok("Rating acordat");
         }
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpGet("getmyearnings")]
         public async Task<IActionResult> FetchTotalComenzi()
         {

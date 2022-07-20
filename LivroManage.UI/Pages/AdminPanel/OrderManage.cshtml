@@ -75,7 +75,7 @@
 							{
 								<td>@Model.Companii.FirstOrDefault(comp => comp.CompanieId == order.CompanieRefId).Name</td>
 							}
-							<td><span>@order.OrderInfo.FullName</span></td>
+							<td><span>@order.OrderInfo?.FullName</span></td>
 							<td>@order.Status</td>
 							<td>@order.TotalOrdered</td>
 							@if (User.IsInRole("SuperAdmin"))

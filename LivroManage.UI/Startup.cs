@@ -67,12 +67,6 @@ namespace LivroManage.UI
                 options.Validate();
             });
             services.AddTransient<IFileManager, FileManager>();
-            services.AddControllersWithViews();
-
-            services.AddRazorPages();
-            services.AddMvc();
-            services.AddTransient<ValidateBearerToken>();
-            services.AddTransient<ValidateBearerTokenManage>();
             services.AddTransient<IGoogleApiDirections, GoogleApiClient>();
             services.AddAuthorization(options =>
             {
@@ -80,6 +74,12 @@ namespace LivroManage.UI
                     .RequireAuthenticatedUser()
                     .Build();
             });
+            services.AddTransient<ValidateBearerToken>();
+            services.AddTransient<ValidateBearerTokenManage>();
+
+            services.AddControllersWithViews();
+            services.AddRazorPages();
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

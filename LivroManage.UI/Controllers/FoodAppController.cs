@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace LivroManage.UI.Controllers
 {
+    [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class FoodAppController : ControllerBase
@@ -38,31 +39,31 @@ namespace LivroManage.UI.Controllers
             FBLoginIosEnabled = config["ConnectionStrings:FBLoginIosEnabled"];
         }
 
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpGet("getallproducts")]
         public IActionResult GetProducts() => Ok(new ProductOperations(_context, _fileManager).GetAllVM());
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpGet("getallcategories")]
         public IActionResult GetCategories() => Ok(new CategoryOperations(_context, _fileManager).GetAll());
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpGet("getallcities")]
         public IActionResult GetCities() => Ok(_context.AvailableCities.AsNoTracking().AsEnumerable().Where(city => city.IsAvailable == true));
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpGet("getallsubcategories")]
         public IActionResult GetSubCategories() => Ok(new SubCategoryOperations(_context, _fileManager).GetAll());
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpGet("fbbtnios")]
         public IActionResult FbIos() => Ok(FBLoginIosEnabled);
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpGet("getpaymentmethods")]
         public IActionResult PaymentMethods() => Ok(new List<string>() { "Cash la livrare" });
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpGet("getallcompanii")]
         public IActionResult GetCompanies() => Ok(new CompanieOperations(_context, _fileManager).GetAllVM().Where(comp => comp.VisibleInApp == true));
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpGet("getalltipcompanii")]
         public IActionResult GetTipCompanii() => Ok(_context.TipCompanies.AsNoTracking().AsEnumerable());
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpGet("getallmeasuringunits")]
         public IActionResult GetMeasuringUnits() => Ok(_context.MeasuringUnits.AsNoTracking().AsEnumerable());
 
@@ -187,8 +188,8 @@ namespace LivroManage.UI.Controllers
                     _context.UserLocations.Add(location);
                     await _context.SaveChangesAsync();
                 }
-                order.OrderInfos.OrderRefId = orderId;
-                await new OrderInfoOperations(_context).Create(order.OrderInfos);
+                order.OrderInfo.OrderRefId = orderId;
+                await new OrderInfoOperations(_context).Create(order.OrderInfo);
                 foreach (var product in order.ProductsInOrder)
                     product.OrderRefId = orderId;
                 await new ProductInOrderOperations(_context).CreateList(order.ProductsInOrder);
@@ -210,7 +211,7 @@ namespace LivroManage.UI.Controllers
             }
             return Ok("User not found!");
         }
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+
         [HttpPost("askhelp")]
         public IActionResult SendHelpMsg([FromBody] object helpMsg)
         {

@@ -77,7 +77,7 @@ namespace LivroManage.UI.Pages.AdminPanel.Companies
                 }
                 else
                     await new CompanieOperations(_context, _fileManager).Create(Companie);
-                return RedirectToPage("./ListaRestaurante");
+                return RedirectToPage("./ListaCompanii");
             }
             return RedirectToPage("/Error", new { Area = "" });
         }

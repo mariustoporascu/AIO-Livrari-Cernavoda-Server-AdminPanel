@@ -48,7 +48,7 @@ namespace LivroManage.UI.Pages.AdminPanel
             [Phone]
             [Display(Name = "Numar de telefon")]
             public string PhoneNumber { get; set; }
-            [Display(Name = "Poza restaurant")]
+            [Display(Name = "Poza profil")]
             public string ProfilePicture { get; set; }
         }
 

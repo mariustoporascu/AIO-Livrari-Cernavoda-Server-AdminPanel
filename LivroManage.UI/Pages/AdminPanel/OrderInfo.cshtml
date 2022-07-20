@@ -17,9 +17,9 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td>@Model.Order.OrderInfo.FullName</td>
-						<td>@Model.Order.OrderInfo.Address</td>
-						<td>@Model.Order.OrderInfo.PhoneNo</td>
+						<td>@Model.Order.OrderInfo?.FullName</td>
+						<td>@Model.Order.OrderInfo?.Address</td>
+						<td>@Model.Order.OrderInfo?.PhoneNo</td>
 					</tr>
 				</tbody>
 			</table>
@@ -37,13 +37,13 @@
 					</tr>
 				</thead>
 				<tbody>
-					@foreach(var product in @Model.Products)
+					@foreach (var product in @Model.Products)
 					{
 						<tr>
 							<td>@product.Name</td>
 							<td>@product.Description</td>
-							<td>@Model.Order.ProductsInOrder.FirstOrDefault(prod => prod.ProductRefId == product.ProductId).UsedQuantity</td>
-							<td>@(Model.Order.ProductsInOrder.FirstOrDefault(prod => prod.ProductRefId == product.ProductId).UsedQuantity * product.Price) RON</td>
+							<td>@Model.Order.ProductsInOrder?.FirstOrDefault(prod => prod.ProductRefId == product.ProductId).UsedQuantity</td>
+							<td>@(Model.Order.ProductsInOrder?.FirstOrDefault(prod => prod.ProductRefId == product.ProductId).UsedQuantity * product.Price) RON</td>
 						</tr>
 					}
 				</tbody>
